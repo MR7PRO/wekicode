@@ -1,6 +1,6 @@
 import { Award, Star, Zap, Trophy, Target, Flame, Crown, Shield, Heart, Rocket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, forwardRef } from "react";
 
 export interface Badge {
   id: string;
@@ -194,54 +194,58 @@ interface BadgeDisplayProps {
   showAll?: boolean;
 }
 
-export function BadgeDisplay({ badges, showAll = false }: BadgeDisplayProps) {
-  const unlockedBadges = allBadges.filter(b => badges.includes(b.id));
-  const lockedBadges = allBadges.filter(b => !badges.includes(b.id));
-  
-  const displayBadges = showAll ? [...unlockedBadges, ...lockedBadges] : unlockedBadges.slice(0, 6);
+export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
+  function BadgeDisplay({ badges, showAll = false }, ref) {
+    const unlockedBadges = allBadges.filter(b => badges.includes(b.id));
+    const lockedBadges = allBadges.filter(b => !badges.includes(b.id));
+    
+    const displayBadges = showAll ? [...unlockedBadges, ...lockedBadges] : unlockedBadges.slice(0, 6);
 
-  return (
-    <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
-      {displayBadges.map((badge) => {
-        const Icon = badgeIcons[badge.icon];
-        const isUnlocked = badges.includes(badge.id);
-        const colorClasses = {
-          primary: "from-primary/20 to-primary/5 border-primary/30 text-primary",
-          accent: "from-accent/20 to-accent/5 border-accent/30 text-accent",
-          success: "from-success/20 to-success/5 border-success/30 text-success",
-          warning: "from-warning/20 to-warning/5 border-warning/30 text-warning",
-        };
+    return (
+      <div ref={ref} className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
+        {displayBadges.map((badge) => {
+          const Icon = badgeIcons[badge.icon];
+          const isUnlocked = badges.includes(badge.id);
+          const colorClasses = {
+            primary: "from-primary/20 to-primary/5 border-primary/30 text-primary",
+            accent: "from-accent/20 to-accent/5 border-accent/30 text-accent",
+            success: "from-success/20 to-success/5 border-success/30 text-success",
+            warning: "from-warning/20 to-warning/5 border-warning/30 text-warning",
+          };
 
-        return (
-          <motion.div
-            key={badge.id}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.05 }}
-            className={`relative p-3 rounded-xl border text-center transition-all cursor-pointer ${
-              isUnlocked 
-                ? `bg-gradient-to-b ${colorClasses[badge.color]}` 
-                : "bg-secondary/50 border-border/50 opacity-50 grayscale"
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-lg mx-auto mb-2 flex items-center justify-center ${
-              isUnlocked ? "bg-background/20" : "bg-secondary"
-            }`}>
-              <Icon className={`w-5 h-5 ${isUnlocked ? "" : "text-muted-foreground"}`} />
-            </div>
-            <div className={`text-xs font-medium truncate ${isUnlocked ? "" : "text-muted-foreground"}`}>
-              {badge.name}
-            </div>
-            {!isUnlocked && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center">
-                  <span className="text-xs">🔒</span>
-                </div>
+          return (
+            <motion.div
+              key={badge.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              whileHover={{ scale: 1.05 }}
+              className={`relative p-3 rounded-xl border text-center transition-all cursor-pointer ${
+                isUnlocked 
+                  ? `bg-gradient-to-b ${colorClasses[badge.color]}` 
+                  : "bg-secondary/50 border-border/50 opacity-50 grayscale"
+              }`}
+            >
+              <div className={`w-10 h-10 rounded-lg mx-auto mb-2 flex items-center justify-center ${
+                isUnlocked ? "bg-background/20" : "bg-secondary"
+              }`}>
+                <Icon className={`w-5 h-5 ${isUnlocked ? "" : "text-muted-foreground"}`} />
               </div>
-            )}
-          </motion.div>
-        );
-      })}
-    </div>
-  );
-}
+              <div className={`text-xs font-medium truncate ${isUnlocked ? "" : "text-muted-foreground"}`}>
+                {badge.name}
+              </div>
+              {!isUnlocked && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center">
+                    <span className="text-xs">🔒</span>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    );
+  }
+);
+
+BadgeDisplay.displayName = "BadgeDisplay";
