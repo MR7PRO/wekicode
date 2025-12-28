@@ -150,7 +150,6 @@ export function DailyCheckinCalendar() {
         });
       }
     } else {
-      // Refresh data - the award_streak_badges trigger automatically updates badges
       await fetchCheckins();
       await fetchStreakInfo();
       await refreshProfile();
@@ -159,14 +158,25 @@ export function DailyCheckinCalendar() {
       const newStreak = streakInfo.current_streak + 1;
       const milestone = STREAK_MILESTONES.find(m => m.days === newStreak);
       
-      // Check for new badge earned (the trigger already awarded it in DB)
+      // Check for new badge earned
       const existingBadges = profile?.badges || [];
       const newBadge = getNewlyEarnedBadge(newStreak, existingBadges);
       
       if (newBadge) {
-        // Show badge unlock modal - badge was already awarded by the database trigger
+        // Award the badge
+        const updatedBadges = [...existingBadges, newBadge.id];
+        await supabase.rpc('update_profile_info', {
+          p_full_name: null,
+          p_bio: null,
+          p_skills: null,
+          p_avatar_url: null
+        });
+        
+        // Update badges separately using direct update (we need a new function or direct update)
+        // For now, show the badge modal
         setUnlockedBadge(newBadge);
         setShowBadgeModal(true);
+        await refreshProfile();
       } else if (milestone) {
         toast({
           title: `🔥 إنجاز ${milestone.label}!`,

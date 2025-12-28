@@ -1,10 +1,9 @@
 import { Code2, Heart, MapPin, Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { forwardRef } from "react";
 
-export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
+export function Footer() {
   return (
-    <footer ref={ref} className="bg-card border-t border-border/50 py-12">
+    <footer className="bg-card border-t border-border/50 py-12">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -90,6 +89,4 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
       </div>
     </footer>
   );
-});
-
-Footer.displayName = "Footer";
+}
