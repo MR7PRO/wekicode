@@ -503,8 +503,7 @@ export default function Courses() {
                           src={course.image_url || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop"}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          crossOrigin="anonymous"
-                          referrerPolicy="no-referrer"
+                          loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
                         

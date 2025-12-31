@@ -1,4 +1,4 @@
-/* Cairo font is loaded from index.html for better caching */
+/* Cairo font is loaded from index.html for consistent rendering across deployments */
 
 @tailwind base;
 @tailwind components;
