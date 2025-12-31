@@ -9,6 +9,10 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # Public build-time vars so deploys (Netlify/PWA) match Lovable
+  VITE_SUPABASE_URL = "https://epajjiiuaqjieecvmpln.supabase.co"
+  VITE_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwYWpqaWl1YXFqaWVlY3ZtcGxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDk2MzIsImV4cCI6MjA4MTg4NTYzMn0.J9X8OXVHC2vTOVFixckZM3so1R3whJe0Gs-WZfQ758M"
+  VITE_SUPABASE_PROJECT_ID = "epajjiiuaqjieecvmpln"
 
 [[headers]]
   for = "/*"
@@ -18,7 +22,7 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://ai.gateway.lovable.dev wss://*.supabase.co; frame-ancestors 'none'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://*.functions.supabase.co https://ai.gateway.lovable.dev wss://*.supabase.co wss://*.functions.supabase.co; frame-ancestors 'none'"
 
 [[headers]]
   for = "/assets/*"

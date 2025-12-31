@@ -93,6 +93,20 @@ export default defineConfig(({ mode }) => ({
             }
           },
           {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "storage-images-cache",
+              expiration: {
+                maxEntries: 80,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
             handler: "CacheFirst",
             options: {
@@ -100,6 +114,21 @@ export default defineConfig(({ mode }) => ({
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+              }
+            }
+          },
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/functions\/v1\/.*/i,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "functions-cache",
+              expiration: {
+                maxEntries: 20,
+                maxAgeSeconds: 60 * 5 // 5 minutes
+              },
+              networkTimeoutSeconds: 10,
+              cacheableResponse: {
+                statuses: [0, 200]
               }
             }
           },
