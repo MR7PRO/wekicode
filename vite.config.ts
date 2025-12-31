@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,svg,woff,woff2}"],
-        globIgnores: ["**/wekicode-logo*.png"],
+        globIgnores: [],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         runtimeCaching: [
           {
