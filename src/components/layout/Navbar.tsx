@@ -63,10 +63,10 @@ export function Navbar() {
             <img 
               src={wekicodeLogo} 
               alt="WekiCode Logo" 
-              className="w-10 h-10 object-contain group-hover:scale-110 transition-transform"
+              className="w-8 h-8 object-contain group-hover:scale-110 transition-transform"
             />
             <span className="text-xl font-bold italic transition-all duration-300 group-hover:drop-shadow-[0_0_15px_rgba(45,212,191,0.6)]">
-              <span className="text-foreground">Weki</span>
+              <span className="text-primary">Weki</span>
               <span className="text-amber-500">Code</span>
             </span>
           </Link>
