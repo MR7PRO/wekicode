@@ -25,8 +25,11 @@ export function HeroSection() {
 
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 animate-slide-up">
-            <span className="text-foreground">منصة </span>
-            <span className="text-gradient-primary">wekicode</span>
+            <span className="inline-block italic font-bold transition-all duration-300 hover:drop-shadow-[0_0_25px_rgba(45,212,191,0.7)] cursor-default">
+              <span className="text-foreground">Weki</span>
+              <span className="text-amber-500">Code</span>
+            </span>
+            <span className="text-foreground"> منصة</span>
             <br />
             <span className="text-foreground">لمستقبل المبرمجين</span>
           </h1>
