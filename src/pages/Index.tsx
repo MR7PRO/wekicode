@@ -1,7 +1,7 @@
 import { memo, lazy, Suspense } from "react";
-import { Navbar } from "@/components/layout/Navbar";
+import { ModernNavbar } from "@/components/layout/ModernNavbar";
 import { Footer } from "@/components/layout/Footer";
-import { HeroSection } from "@/components/home/HeroSection";
+import { ModernHeroSection } from "@/components/home/ModernHeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Lazy load below-the-fold sections
@@ -31,11 +31,11 @@ SectionSkeleton.displayName = "SectionSkeleton";
 
 const Index = memo(() => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <div className="min-h-screen bg-[hsl(222,47%,6%)] font-modern" style={{ direction: 'ltr' }}>
+      <ModernNavbar />
       <main>
         {/* Hero is loaded immediately for LCP */}
-        <HeroSection />
+        <ModernHeroSection />
         
         {/* Below-the-fold content is lazy loaded */}
         <Suspense fallback={<SectionSkeleton />}>
