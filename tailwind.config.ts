@@ -15,8 +15,7 @@ export default {
     extend: {
       fontFamily: {
         arabic: ["Cairo", "sans-serif"],
-        display: ["Space Grotesk", "Cairo", "sans-serif"],
-        modern: ["Space Grotesk", "Inter", "sans-serif"],
+        display: ["Cairo", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
