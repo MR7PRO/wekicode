@@ -1,6 +1,7 @@
-import { Code2, Heart, MapPin, Mail, Phone } from "lucide-react";
+import { Heart, MapPin, Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { forwardRef } from "react";
+import wekicodeLogo from "@/assets/wekicode-logo-optimized.webp";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
@@ -9,11 +10,20 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
-                <Code2 className="w-6 h-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-gradient-primary">wekicode</span>
+            <Link to="/" className="flex items-center gap-2 mb-4 group">
+              <img 
+                src={wekicodeLogo} 
+                alt="WekiCode Logo" 
+                className="w-10 h-10 object-contain group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-300"
+              />
+              <span className="text-xl font-normal transition-all duration-300">
+                <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
+                  Weki
+                </span>
+                <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(249,115,22,0.7)]">
+                  Code
+                </span>
+              </span>
             </Link>
             <p className="text-muted-foreground text-sm mb-4">
               منصة وحاضنة أعمال للمبرمجين والطلاب في فلسطين. نوفر بيئة عمل متكاملة ومجتمع داعم للإبداع والتطوير.
