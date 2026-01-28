@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
 
 const jobTypes = ["الكل", "عمل عن بُعد", "عقد", "مشروع واحد", "دوام جزئي"];
 
@@ -292,16 +293,9 @@ export default function Jobs() {
     return "غير محدد";
   };
 
-  // Generate diverse realistic avatars for companies/people
-  const getJobAvatar = (job: Job) => {
-    const seed = job.company || job.title;
-    const hash = Math.abs(seed.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0));
-    
-    // Mix between business-looking men and women portraits
-    const gender = hash % 2 === 0 ? 'men' : 'women';
-    const index = hash % 99;
-    
-    return `https://randomuser.me/api/portraits/${gender}/${index}.jpg`;
+  // Use local avatar placeholder for consistent loading
+  const getJobAvatar = () => {
+    return avatarPlaceholder;
   };
 
   return (
@@ -500,7 +494,7 @@ export default function Jobs() {
                       {/* Company Avatar */}
                       <div className="w-14 h-14 rounded-xl overflow-hidden bg-gradient-primary shrink-0 shadow-glow">
                         <img 
-                          src={getJobAvatar(job)} 
+                          src={getJobAvatar()} 
                           alt={job.company || 'شركة'}
                           className="w-full h-full object-cover"
                         />

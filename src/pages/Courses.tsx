@@ -29,6 +29,7 @@ import { toast } from "@/hooks/use-toast";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import coursePlaceholder from "@/assets/course-placeholder.jpg";
 
 const categories = ["الكل", "تطوير الويب", "تطوير الموبايل", "علم البيانات", "DevOps", "تصميم", "ذكاء اصطناعي"];
 
@@ -500,7 +501,7 @@ export default function Courses() {
                       {/* Thumbnail */}
                       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                         <img
-                          src={course.image_url || "/images/course-placeholder.jpg"}
+                          src={coursePlaceholder}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
