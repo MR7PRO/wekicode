@@ -1,7 +1,7 @@
 import { Heart, MapPin, Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { forwardRef } from "react";
-import wekicodeLogo from "@/assets/wekicode-logo-optimized.webp";
+import wekicodeLogo from "@/assets/wekicode-logo-new.png";
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   return (
@@ -14,9 +14,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <img 
                 src={wekicodeLogo} 
                 alt="WekiCode Logo" 
-                className="w-10 h-10 object-contain group-hover:scale-110 group-hover:drop-shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-300"
+                className="w-9 h-9 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"
               />
-              <span className="text-xl font-normal transition-all duration-300">
+              <span className="text-xl font-black transition-all duration-300">
                 <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
                   Weki
                 </span>
