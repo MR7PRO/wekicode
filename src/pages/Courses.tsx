@@ -501,10 +501,14 @@ export default function Courses() {
                       {/* Thumbnail */}
                       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                         <img
-                          src={coursePlaceholder}
+                          src={course.image_url || coursePlaceholder}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = coursePlaceholder;
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
                         
