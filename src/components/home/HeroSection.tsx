@@ -26,7 +26,7 @@ export function HeroSection() {
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 animate-slide-up">
             <span className="text-foreground">منصة </span>
-            <span className="inline-block font-normal transition-all duration-300 cursor-default group">
+            <span className="inline-block font-black transition-all duration-300 cursor-default group">
               <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_25px_rgba(59,130,246,0.7)]">
                 Weki
               </span>
