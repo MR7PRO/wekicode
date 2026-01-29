@@ -505,9 +505,13 @@ export default function Courses() {
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
+                          crossOrigin="anonymous"
+                          referrerPolicy="no-referrer"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            target.src = coursePlaceholder;
+                            if (target.src !== coursePlaceholder) {
+                              target.src = coursePlaceholder;
+                            }
                           }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
