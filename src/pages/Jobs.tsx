@@ -30,6 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
+import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 
 const jobTypes = ["الكل", "عمل عن بُعد", "عقد", "مشروع واحد", "دوام جزئي"];
 
@@ -293,10 +294,8 @@ export default function Jobs() {
     return "غير محدد";
   };
 
-  // Use local avatar placeholder for consistent loading
-  const getJobAvatar = () => {
-    return avatarPlaceholder;
-  };
+  // Stable, bundled avatars (different per job/user) so they work on any hosting.
+  const getJobAvatar = (job: Job) => getUserAvatarSrc(job.user_id);
 
   return (
     <div className="min-h-screen bg-background">
@@ -494,9 +493,14 @@ export default function Jobs() {
                       {/* Company Avatar */}
                       <div className="w-14 h-14 rounded-xl overflow-hidden bg-gradient-primary shrink-0 shadow-glow">
                         <img 
-                          src={getJobAvatar()} 
+                          src={getJobAvatar(job)} 
                           alt={job.company || 'شركة'}
                           className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            if (target.src !== avatarPlaceholder) target.src = avatarPlaceholder;
+                          }}
                         />
                       </div>
 
