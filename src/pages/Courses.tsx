@@ -30,6 +30,9 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import coursePlaceholder from "@/assets/course-placeholder.jpg";
+import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
+import { getUserAvatarSrc } from "@/lib/media/userAvatars";
+import { getCourseThumbnailById } from "@/lib/media/courseThumbnails";
 
 const categories = ["الكل", "تطوير الويب", "تطوير الموبايل", "علم البيانات", "DevOps", "تصميم", "ذكاء اصطناعي"];
 
@@ -501,7 +504,7 @@ export default function Courses() {
                       {/* Thumbnail */}
                       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                         <img
-                          src={course.image_url || coursePlaceholder}
+                          src={getCourseThumbnailById(course.id) ?? course.image_url ?? coursePlaceholder}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
@@ -568,8 +571,17 @@ export default function Courses() {
 
                         {/* Instructor */}
                         <div className="flex items-center gap-2 mb-4">
-                          <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-xs font-bold text-primary-foreground">
-                            {course.instructor?.charAt(0) || 'م'}
+                          <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-primary shrink-0">
+                            <img
+                              src={getUserAvatarSrc(course.user_id)}
+                              alt={course.instructor || "مدرب"}
+                              className="w-full h-full object-cover"
+                              loading="lazy"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                if (target.src !== avatarPlaceholder) target.src = avatarPlaceholder;
+                              }}
+                            />
                           </div>
                           <span className="text-sm text-muted-foreground">{course.instructor}</span>
                         </div>
