@@ -31,7 +31,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import coursePlaceholder from "@/assets/course-placeholder.jpg";
 import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
-import { getUserAvatarSrc } from "@/lib/media/userAvatars";
+import { getUserAvatarByName } from "@/lib/media/userAvatars";
 import { getCourseThumbnailById } from "@/lib/media/courseThumbnails";
 
 const categories = ["الكل", "تطوير الويب", "تطوير الموبايل", "علم البيانات", "DevOps", "تصميم", "ذكاء اصطناعي"];
@@ -573,7 +573,7 @@ export default function Courses() {
                         <div className="flex items-center gap-2 mb-4">
                           <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-primary shrink-0">
                             <img
-                              src={getUserAvatarSrc(course.user_id)}
+                              src={getUserAvatarByName(course.instructor, course.id)}
                               alt={course.instructor || "مدرب"}
                               className="w-full h-full object-cover"
                               loading="lazy"
