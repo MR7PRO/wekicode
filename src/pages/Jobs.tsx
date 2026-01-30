@@ -30,7 +30,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
-import { getUserAvatarSrc } from "@/lib/media/userAvatars";
+import { getUserAvatarSrc, getUserAvatarByName } from "@/lib/media/userAvatars";
 
 const jobTypes = ["الكل", "عمل عن بُعد", "عقد", "مشروع واحد", "دوام جزئي"];
 
@@ -294,8 +294,8 @@ export default function Jobs() {
     return "غير محدد";
   };
 
-  // Stable, bundled avatars (different per job/user) so they work on any hosting.
-  const getJobAvatar = (job: Job) => getUserAvatarSrc(job.user_id);
+  // Stable, bundled avatars (different per job) using company name + job id for variety
+  const getJobAvatar = (job: Job) => getUserAvatarByName(job.company, job.id);
 
   return (
     <div className="min-h-screen bg-background">
