@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserAvatarByName } from "@/lib/media/userAvatars";
 
 interface LeaderboardUser {
   id: string;
@@ -103,20 +104,9 @@ export default function Leaderboard() {
     return name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
   };
 
-  // Generate diverse realistic avatars - different for each person
+  // Bundled avatars - works on any hosting platform
   const getDemoAvatar = (name: string | null, userId: string) => {
-    // Create a hash from the name/userId to get consistent but varied results
-    const seed = name || userId;
-    const hash = Math.abs(seed.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0));
-    
-    // Determine gender-like index based on common Arabic name patterns
-    const femaleNames = ['سارة', 'فاطمة', 'نور', 'ليلى', 'هند', 'رنا', 'دينا', 'مريم'];
-    const isFemale = name && femaleNames.some(fn => name.includes(fn));
-    
-    const gender = isFemale ? 'women' : 'men';
-    const index = hash % 99;
-    
-    return `https://randomuser.me/api/portraits/${gender}/${index}.jpg`;
+    return getUserAvatarByName(name, userId);
   };
 
   const getRankIcon = (rank: number) => {
