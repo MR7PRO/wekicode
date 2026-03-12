@@ -35,10 +35,14 @@ import {
   Crown,
   Rocket
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { BadgeDisplay } from "@/components/badges/BadgeSystem";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { getUserAvatarSrc } from "@/lib/media/userAvatars";
+import { Camera, Loader2 as UploadLoader } from "lucide-react";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "الفواتير"];
 
@@ -130,7 +134,9 @@ const achievements = [
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("نظرة عامة");
-  const { profile, user } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { profile, user, refreshProfile } = useAuth();
 
   const userData = {
     name: profile?.full_name ?? "أحمد محمد",
@@ -157,6 +163,57 @@ export default function Profile() {
     },
     streak: 14,
     ranking: 23
+  };
+
+  const avatarSrc = profile?.avatar_url || getUserAvatarSrc(user?.id);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "يرجى اختيار صورة صالحة", variant: "destructive" });
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "حجم الصورة يجب أن يكون أقل من 2MB", variant: "destructive" });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+
+      // Remove old avatar if exists
+      await supabase.storage.from("avatars").remove([filePath]);
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      // Add cache-buster
+      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase.rpc("update_profile_info", {
+        p_avatar_url: avatarUrl,
+      });
+
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      toast({ title: "تم تحديث صورة الملف الشخصي بنجاح ✅" });
+    } catch (err: any) {
+      toast({ title: "فشل رفع الصورة", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
   };
 
   function getLevelRank(level: number): string {
@@ -205,14 +262,37 @@ export default function Profile() {
                   {/* Avatar with Level Badge */}
                   <div className="relative group">
                     <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center">
+                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
                         <img 
-                          src="https://randomuser.me/api/portraits/men/32.jpg" 
+                          src={avatarSrc}
                           alt={userData.name}
                           className="w-full h-full rounded-3xl object-cover"
                         />
                       </div>
                     </div>
+                    {/* Upload overlay */}
+                    {user && (
+                      <>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                        />
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                          className="absolute inset-0 rounded-3xl bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
+                        >
+                          {uploading ? (
+                            <UploadLoader className="w-8 h-8 text-white animate-spin" />
+                          ) : (
+                            <Camera className="w-8 h-8 text-white" />
+                          )}
+                        </button>
+                      </>
+                    )}
                     {/* Level Badge */}
                     <div className="absolute -bottom-3 -right-3 w-14 h-14 rounded-2xl bg-gradient-accent flex items-center justify-center shadow-accent">
                       <div className="text-center">
