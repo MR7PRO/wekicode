@@ -1,19 +1,27 @@
-import avatar1 from "@/assets/avatars/pro-1.jpg";
-import avatar2 from "@/assets/avatars/pro-2.jpg";
-import avatar3 from "@/assets/avatars/pro-3.jpg";
-import avatar4 from "@/assets/avatars/pro-4.jpg";
-import avatar5 from "@/assets/avatars/pro-5.jpg";
-import avatar6 from "@/assets/avatars/pro-6.jpg";
-import avatar7 from "@/assets/avatars/pro-7.jpg";
-import avatar8 from "@/assets/avatars/pro-8.jpg";
-import avatar9 from "@/assets/avatars/pro-9.jpg";
-import avatar10 from "@/assets/avatars/pro-10.jpg";
-import avatar11 from "@/assets/avatars/pro-11.jpg";
-import avatar12 from "@/assets/avatars/pro-12.jpg";
+// Bundled avatars from randomuser.me — downloaded locally for cross-platform reliability
+import ruM1 from "@/assets/avatars/ru-m1.jpg";
+import ruW1 from "@/assets/avatars/ru-w1.jpg";
+import ruM2 from "@/assets/avatars/ru-m2.jpg";
+import ruW2 from "@/assets/avatars/ru-w2.jpg";
+import ruM3 from "@/assets/avatars/ru-m3.jpg";
+import ruW3 from "@/assets/avatars/ru-w3.jpg";
+import ruM4 from "@/assets/avatars/ru-m4.jpg";
+import ruW4 from "@/assets/avatars/ru-w4.jpg";
+import ruM5 from "@/assets/avatars/ru-m5.jpg";
+import ruW5 from "@/assets/avatars/ru-w5.jpg";
+import ruM6 from "@/assets/avatars/ru-m6.jpg";
+import ruW6 from "@/assets/avatars/ru-w6.jpg";
+import ruM7 from "@/assets/avatars/ru-m7.jpg";
+import ruW7 from "@/assets/avatars/ru-w7.jpg";
+import ruM8 from "@/assets/avatars/ru-m8.jpg";
+import ruW8 from "@/assets/avatars/ru-w8.jpg";
 
+// 16 diverse, realistic avatars — alternating male/female for maximum variety
 const AVATARS = [
-  avatar1, avatar2, avatar3, avatar4, avatar5, avatar6,
-  avatar7, avatar8, avatar9, avatar10, avatar11, avatar12,
+  ruM1, ruW1, ruM2, ruW2,
+  ruM3, ruW3, ruM4, ruW4,
+  ruM5, ruW5, ruM6, ruW6,
+  ruM7, ruW7, ruM8, ruW8,
 ] as const;
 
 /**
@@ -38,7 +46,7 @@ export const getUserAvatarSrc = (seed?: string | null) => {
 
 /**
  * Returns a stable, bundled avatar URL based on name + secondary seed.
- * Uses name for variety to ensure different people get different avatars.
+ * Uses combined string for variety to ensure different people get different avatars.
  */
 export const getUserAvatarByName = (name?: string | null, secondarySeed?: string | null) => {
   const combinedSeed = `${name || ""}-${secondarySeed || ""}`.trim();
