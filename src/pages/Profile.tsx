@@ -35,10 +35,14 @@ import {
   Crown,
   Rocket
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { BadgeDisplay } from "@/components/badges/BadgeSystem";
 import { motion } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { getUserAvatarSrc } from "@/lib/media/userAvatars";
+import { Camera, Loader2 as UploadLoader } from "lucide-react";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "الفواتير"];
 
