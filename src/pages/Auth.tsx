@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, User, Loader2, Sparkles } from "lucide-react";
-import wekicodeLogo from "@/assets/wekicode-logo.png";
+import wekicodeLogo from "@/assets/wekicode-logo-new.png";
 import { z } from "zod";
 
 const emailSchema = z.string().email("يرجى إدخال بريد إلكتروني صحيح");
@@ -158,9 +158,16 @@ export default function Auth() {
             <img 
               src={wekicodeLogo} 
               alt="WekiCode Logo" 
-              className="w-16 h-16 object-contain group-hover:scale-110 transition-transform"
+              className="w-16 h-16 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"
             />
-            <span className="text-3xl font-bold text-gradient-primary">wekicode</span>
+            <span className="text-3xl font-black transition-all duration-300">
+              <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
+                Weki
+              </span>
+              <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(249,115,22,0.7)]">
+                Code
+              </span>
+            </span>
           </a>
         </div>
 
