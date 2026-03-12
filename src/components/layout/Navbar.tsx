@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import wekicodeLogo from "@/assets/wekicode-logo.png";
+import wekicodeLogo from "@/assets/wekicode-logo-new.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,13 +59,20 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center gap-2 group">
             <img 
               src={wekicodeLogo} 
               alt="WekiCode Logo" 
-              className="w-10 h-10 object-contain group-hover:scale-110 transition-transform"
+              className="w-9 h-9 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"
             />
-            <span className="text-2xl font-bold text-gradient-primary">wekicode</span>
+            <span className="text-xl font-black transition-all duration-300">
+              <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
+                Weki
+              </span>
+              <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(249,115,22,0.7)]">
+                Code
+              </span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
