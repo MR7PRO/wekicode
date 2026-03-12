@@ -134,7 +134,9 @@ const achievements = [
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState("نظرة عامة");
-  const { profile, user } = useAuth();
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { profile, user, refreshProfile } = useAuth();
 
   const userData = {
     name: profile?.full_name ?? "أحمد محمد",
