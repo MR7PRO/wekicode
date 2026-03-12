@@ -262,14 +262,37 @@ export default function Profile() {
                   {/* Avatar with Level Badge */}
                   <div className="relative group">
                     <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center">
+                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
                         <img 
-                          src="https://randomuser.me/api/portraits/men/32.jpg" 
+                          src={avatarSrc}
                           alt={userData.name}
                           className="w-full h-full rounded-3xl object-cover"
                         />
                       </div>
                     </div>
+                    {/* Upload overlay */}
+                    {user && (
+                      <>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                        />
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                          className="absolute inset-0 rounded-3xl bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer"
+                        >
+                          {uploading ? (
+                            <UploadLoader className="w-8 h-8 text-white animate-spin" />
+                          ) : (
+                            <Camera className="w-8 h-8 text-white" />
+                          )}
+                        </button>
+                      </>
+                    )}
                     {/* Level Badge */}
                     <div className="absolute -bottom-3 -right-3 w-14 h-14 rounded-2xl bg-gradient-accent flex items-center justify-center shadow-accent">
                       <div className="text-center">
