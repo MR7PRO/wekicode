@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, User, Loader2, Sparkles } from "lucide-react";
-import wekicodeLogo from "@/assets/wekicode-logo.png";
+import wekicodeLogo from "@/assets/wekicode-logo-new.png";
 import { z } from "zod";
 
 const emailSchema = z.string().email("يرجى إدخال بريد إلكتروني صحيح");
