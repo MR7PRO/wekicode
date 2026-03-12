@@ -165,7 +165,58 @@ export default function Profile() {
     ranking: 23
   };
 
-  function getLevelRank(level: number): string {
+  const avatarSrc = profile?.avatar_url || getUserAvatarSrc(user?.id);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "يرجى اختيار صورة صالحة", variant: "destructive" });
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "حجم الصورة يجب أن يكون أقل من 2MB", variant: "destructive" });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${ext}`;
+
+      // Remove old avatar if exists
+      await supabase.storage.from("avatars").remove([filePath]);
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      // Add cache-buster
+      const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+
+      const { error: updateError } = await supabase.rpc("update_profile_info", {
+        p_avatar_url: avatarUrl,
+      });
+
+      if (updateError) throw updateError;
+
+      await refreshProfile();
+      toast({ title: "تم تحديث صورة الملف الشخصي بنجاح ✅" });
+    } catch (err: any) {
+      toast({ title: "فشل رفع الصورة", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+
     if (level >= 10) return "أسطورة البرمجة";
     if (level >= 7) return "مبرمج محترف";
     if (level >= 5) return "مبرمج متميز";
