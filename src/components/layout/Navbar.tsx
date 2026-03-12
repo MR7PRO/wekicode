@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import wekicodeLogo from "@/assets/wekicode-logo-new.png";
+import wekicodeLogo from "@/assets/wekicode-logo.png";
 import {
   DropdownMenu,
   DropdownMenuContent,
