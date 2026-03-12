@@ -216,7 +216,7 @@ export default function Profile() {
     }
   };
 
-
+  function getLevelRank(level: number): string {
     if (level >= 10) return "أسطورة البرمجة";
     if (level >= 7) return "مبرمج محترف";
     if (level >= 5) return "مبرمج متميز";
