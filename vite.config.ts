@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.png", "robots.txt"],
+      includeAssets: ["favicon.png", "robots.txt", "pwa-icon-new.png"],
       manifest: {
         name: "wekicode - حاضنة أعمال للمبرمجين",
         short_name: "wekicode",
@@ -30,16 +30,16 @@ export default defineConfig(({ mode }) => ({
         lang: "ar",
         icons: [
           {
-            src: "/pwa-192x192.png",
+            src: "/pwa-icon-new.png",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
           },
           {
-            src: "/pwa-512x512.png",
+            src: "/pwa-icon-new.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any"
           }
         ],
         categories: ["education", "productivity", "business"],
