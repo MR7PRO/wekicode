@@ -15,13 +15,23 @@ import ruM7 from "@/assets/avatars/ru-m7.jpg";
 import ruW7 from "@/assets/avatars/ru-w7.jpg";
 import ruM8 from "@/assets/avatars/ru-m8.jpg";
 import ruW8 from "@/assets/avatars/ru-w8.jpg";
+import ruM9 from "@/assets/avatars/ru-m9.jpg";
+import ruW9 from "@/assets/avatars/ru-w9.jpg";
+import ruM10 from "@/assets/avatars/ru-m10.jpg";
+import ruW10 from "@/assets/avatars/ru-w10.jpg";
+import ruM11 from "@/assets/avatars/ru-m11.jpg";
+import ruW11 from "@/assets/avatars/ru-w11.jpg";
+import ruM12 from "@/assets/avatars/ru-m12.jpg";
+import ruW12 from "@/assets/avatars/ru-w12.jpg";
 
-// 16 diverse, realistic avatars — alternating male/female for maximum variety
+// 24 diverse, realistic avatars — alternating male/female for maximum variety
 const AVATARS = [
   ruM1, ruW1, ruM2, ruW2,
   ruM3, ruW3, ruM4, ruW4,
   ruM5, ruW5, ruM6, ruW6,
   ruM7, ruW7, ruM8, ruW8,
+  ruM9, ruW9, ruM10, ruW10,
+  ruM11, ruW11, ruM12, ruW12,
 ] as const;
 
 /**
