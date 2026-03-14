@@ -328,49 +328,70 @@ export type Database = {
           avatar_url: string | null
           badges: string[] | null
           bio: string | null
+          cover_url: string | null
           created_at: string
           current_streak: number | null
           full_name: string | null
+          github_url: string | null
           id: string
+          is_public: boolean | null
           last_checkin_date: string | null
           level: number | null
+          linkedin_url: string | null
+          location: string | null
           longest_streak: number | null
           points: number | null
           skills: string[] | null
+          twitter_url: string | null
           updated_at: string
           user_id: string
+          website_url: string | null
         }
         Insert: {
           avatar_url?: string | null
           badges?: string[] | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
           current_streak?: number | null
           full_name?: string | null
+          github_url?: string | null
           id?: string
+          is_public?: boolean | null
           last_checkin_date?: string | null
           level?: number | null
+          linkedin_url?: string | null
+          location?: string | null
           longest_streak?: number | null
           points?: number | null
           skills?: string[] | null
+          twitter_url?: string | null
           updated_at?: string
           user_id: string
+          website_url?: string | null
         }
         Update: {
           avatar_url?: string | null
           badges?: string[] | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
           current_streak?: number | null
           full_name?: string | null
+          github_url?: string | null
           id?: string
+          is_public?: boolean | null
           last_checkin_date?: string | null
           level?: number | null
+          linkedin_url?: string | null
+          location?: string | null
           longest_streak?: number | null
           points?: number | null
           skills?: string[] | null
+          twitter_url?: string | null
           updated_at?: string
           user_id?: string
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -603,15 +624,32 @@ export type Database = {
         Args: { question_uuid: string }
         Returns: undefined
       }
-      update_profile_info: {
-        Args: {
-          p_avatar_url?: string
-          p_bio?: string
-          p_full_name?: string
-          p_skills?: string[]
-        }
-        Returns: undefined
-      }
+      update_profile_info:
+        | {
+            Args: {
+              p_avatar_url?: string
+              p_bio?: string
+              p_full_name?: string
+              p_skills?: string[]
+            }
+            Returns: undefined
+          }
+        | {
+            Args: {
+              p_avatar_url?: string
+              p_bio?: string
+              p_cover_url?: string
+              p_full_name?: string
+              p_github_url?: string
+              p_is_public?: boolean
+              p_linkedin_url?: string
+              p_location?: string
+              p_skills?: string[]
+              p_twitter_url?: string
+              p_website_url?: string
+            }
+            Returns: undefined
+          }
     }
     Enums: {
       [_ in never]: never
