@@ -60,6 +60,7 @@ const App = () => (
                 <Route path="/install" element={<Install />} />
                 <Route path="/questions" element={<Questions />} />
                 <Route path="/questions/:id" element={<QuestionDetail />} />
+                <Route path="/u/:userId" element={<PublicProfile />} />
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
