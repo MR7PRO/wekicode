@@ -423,11 +423,11 @@ export default function Profile() {
 
             {activeTab === "الشارات" && (
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
                   <Award className="w-5 h-5 text-accent" />
                   شاراتي وإنجازاتي
                 </h3>
-                <BadgeDisplay badges={userData.badges as string[]} showAll />
+                <BadgeDisplay badges={userData.badges as string[]} showAll currentStreak={userData.streak} stats={{ answers: stats.answers, projects: stats.projects, courses: stats.courses, level: userData.level }} />
               </div>
             )}
 
