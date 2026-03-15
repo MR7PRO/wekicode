@@ -140,6 +140,12 @@ export function Navbar() {
                         ملفي الشخصي
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="cursor-pointer">
+                        <Settings className="w-4 h-4 ml-2" />
+                        الإعدادات
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
                       <LogOut className="w-4 h-4 ml-2" />
