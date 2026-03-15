@@ -12,7 +12,8 @@ import {
   LogOut,
   Loader2,
   CreditCard,
-  Trophy
+  Trophy,
+  Settings
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
