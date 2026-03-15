@@ -12,7 +12,8 @@ import {
   LogOut,
   Loader2,
   CreditCard,
-  Trophy
+  Trophy,
+  Settings
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -137,6 +138,12 @@ export function Navbar() {
                       <Link to="/profile" className="cursor-pointer">
                         <User className="w-4 h-4 ml-2" />
                         ملفي الشخصي
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="cursor-pointer">
+                        <Settings className="w-4 h-4 ml-2" />
+                        الإعدادات
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
