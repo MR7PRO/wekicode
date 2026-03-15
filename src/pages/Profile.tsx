@@ -415,7 +415,7 @@ export default function Profile() {
                       <Award className="w-5 h-5 text-accent" />
                       الشارات المكتسبة
                     </h3>
-                    <BadgeDisplay badges={userData.badges as string[]} showAll={false} />
+                    <BadgeDisplay badges={userData.badges as string[]} showAll={false} currentStreak={userData.streak} stats={{ answers: stats.answers, projects: stats.projects, courses: stats.courses, level: userData.level }} />
                   </div>
                 )}
               </div>
