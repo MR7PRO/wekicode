@@ -1,12 +1,13 @@
 import { Bell, Check, X, Award, Coins, Briefcase, MessageSquare, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, createContext, useContext, ReactNode, useCallback } from "react";
+import { useState, useEffect, createContext, useContext, ReactNode, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useAuth } from "@/contexts/AuthContext";
 
 export interface Notification {
   id: string;
@@ -30,32 +31,10 @@ interface NotificationContextType {
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
 export function NotificationProvider({ children }: { children: ReactNode }) {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "badge",
-      title: "شارة جديدة!",
-      message: "حصلت على شارة 'أول إجابة'",
-      timestamp: new Date(Date.now() - 1000 * 60 * 5),
-      read: false,
-    },
-    {
-      id: "2",
-      type: "points",
-      title: "نقاط جديدة",
-      message: "حصلت على +50 نقطة من إجابتك",
-      timestamp: new Date(Date.now() - 1000 * 60 * 30),
-      read: false,
-    },
-    {
-      id: "3",
-      type: "job",
-      title: "عرض عمل جديد",
-      message: "لديك عرض جديد على مشروع تطوير موقع",
-      timestamp: new Date(Date.now() - 1000 * 60 * 60),
-      read: true,
-    },
-  ]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { profile } = useAuth();
+  const prevPointsRef = useRef<number | null>(null);
+  const prevBadgesRef = useRef<string[] | null>(null);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -74,6 +53,37 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     audio.volume = 0.2;
     audio.play().catch(() => {});
   }, []);
+
+  // Watch for points changes
+  useEffect(() => {
+    if (!profile) return;
+    const currentPoints = (profile as any).points ?? 0;
+    const currentBadges: string[] = (profile as any).badges ?? [];
+
+    // Points change detection
+    if (prevPointsRef.current !== null && currentPoints > prevPointsRef.current) {
+      const diff = currentPoints - prevPointsRef.current;
+      addNotification({
+        type: "points",
+        title: "نقاط جديدة! 🎯",
+        message: `حصلت على +${diff} نقطة. رصيدك الحالي: ${currentPoints}`,
+      });
+    }
+    prevPointsRef.current = currentPoints;
+
+    // Badge change detection
+    if (prevBadgesRef.current !== null && currentBadges.length > prevBadgesRef.current.length) {
+      const newBadges = currentBadges.filter(b => !prevBadgesRef.current!.includes(b));
+      for (const badgeId of newBadges) {
+        addNotification({
+          type: "badge",
+          title: "شارة جديدة! 🏆",
+          message: `حصلت على شارة "${badgeId}"`,
+        });
+      }
+    }
+    prevBadgesRef.current = currentBadges;
+  }, [profile, addNotification]);
 
   const markAsRead = useCallback((id: string) => {
     setNotifications(prev =>
