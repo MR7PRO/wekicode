@@ -1,6 +1,13 @@
 import { Award, Star, Zap, Trophy, Target, Flame, Crown, Shield, Heart, Rocket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, forwardRef } from "react";
+import { Progress } from "@/components/ui/progress";
+
+export interface BadgeTier {
+  tier: number; // 1=I, 2=II, 3=III
+  requirement: number;
+  label: string; // I, II, III
+}
 
 export interface Badge {
   id: string;
@@ -11,6 +18,8 @@ export interface Badge {
   unlockedAt?: string;
   progress?: number;
   requirement: number;
+  tiers?: BadgeTier[];
+  category: "streak" | "answers" | "projects" | "learning" | "general";
 }
 
 export const badgeIcons = {
@@ -26,29 +35,63 @@ export const badgeIcons = {
   rocket: Rocket,
 };
 
+const tierLabels = ["I", "II", "III"];
+const tierColors: Record<number, string> = {
+  1: "from-amber-600/80 to-amber-800/80", // Bronze
+  2: "from-slate-300/80 to-slate-500/80",  // Silver
+  3: "from-yellow-300/80 to-amber-500/80", // Gold
+};
+
 // Streak badges
 export const streakBadges: Badge[] = [
-  { id: "streak_3", name: "بداية قوية", description: "سجل حضور 3 أيام متتالية", icon: "flame", color: "primary", requirement: 3 },
-  { id: "streak_7", name: "أسبوع كامل", description: "سجل حضور 7 أيام متتالية", icon: "flame", color: "accent", requirement: 7 },
-  { id: "streak_14", name: "المثابر", description: "سجل حضور 14 يوم متتالي", icon: "flame", color: "success", requirement: 14 },
-  { id: "streak_30", name: "البطل الشهري", description: "سجل حضور 30 يوم متتالي", icon: "trophy", color: "warning", requirement: 30 },
-  { id: "streak_60", name: "النجم الصاعد", description: "سجل حضور 60 يوم متتالي", icon: "star", color: "accent", requirement: 60 },
-  { id: "streak_90", name: "الأسطورة", description: "سجل حضور 90 يوم متتالي", icon: "crown", color: "warning", requirement: 90 },
-  { id: "streak_100", name: "المائة", description: "سجل حضور 100 يوم متتالي", icon: "award", color: "warning", requirement: 100 },
+  { id: "streak_3", name: "بداية قوية", description: "سجل حضور 3 أيام متتالية", icon: "flame", color: "primary", requirement: 3, category: "streak",
+    tiers: [{ tier: 1, requirement: 3, label: "I" }, { tier: 2, requirement: 7, label: "II" }, { tier: 3, requirement: 14, label: "III" }] },
+  { id: "streak_7", name: "أسبوع كامل", description: "سجل حضور 7 أيام متتالية", icon: "flame", color: "accent", requirement: 7, category: "streak",
+    tiers: [{ tier: 1, requirement: 7, label: "I" }, { tier: 2, requirement: 14, label: "II" }, { tier: 3, requirement: 30, label: "III" }] },
+  { id: "streak_14", name: "المثابر", description: "سجل حضور 14 يوم متتالي", icon: "flame", color: "success", requirement: 14, category: "streak" },
+  { id: "streak_30", name: "البطل الشهري", description: "سجل حضور 30 يوم متتالي", icon: "trophy", color: "warning", requirement: 30, category: "streak" },
+  { id: "streak_60", name: "النجم الصاعد", description: "سجل حضور 60 يوم متتالي", icon: "star", color: "accent", requirement: 60, category: "streak" },
+  { id: "streak_90", name: "الأسطورة", description: "سجل حضور 90 يوم متتالي", icon: "crown", color: "warning", requirement: 90, category: "streak" },
+  { id: "streak_100", name: "المائة", description: "سجل حضور 100 يوم متتالي", icon: "award", color: "warning", requirement: 100, category: "streak" },
 ];
 
 export const allBadges: Badge[] = [
-  { id: "first_answer", name: "أول إجابة", description: "أجب على أول سؤال", icon: "star", color: "primary", requirement: 1 },
-  { id: "helper", name: "المساعد", description: "أجب على 10 أسئلة", icon: "heart", color: "accent", requirement: 10 },
-  { id: "expert", name: "الخبير", description: "أجب على 50 سؤال", icon: "trophy", color: "success", requirement: 50 },
-  { id: "first_project", name: "أول مشروع", description: "أكمل أول مشروع", icon: "rocket", color: "primary", requirement: 1 },
-  { id: "freelancer", name: "المستقل", description: "أكمل 5 مشاريع", icon: "zap", color: "accent", requirement: 5 },
-  { id: "pro_freelancer", name: "المستقل المحترف", description: "أكمل 20 مشروع", icon: "crown", color: "warning", requirement: 20 },
-  { id: "learner", name: "المتعلم", description: "أكمل أول دورة", icon: "target", color: "primary", requirement: 1 },
-  { id: "scholar", name: "العالم", description: "أكمل 10 دورات", icon: "shield", color: "success", requirement: 10 },
+  { id: "first_answer", name: "أول إجابة", description: "أجب على أول سؤال", icon: "star", color: "primary", requirement: 1, category: "answers",
+    tiers: [{ tier: 1, requirement: 1, label: "I" }, { tier: 2, requirement: 5, label: "II" }, { tier: 3, requirement: 10, label: "III" }] },
+  { id: "helper", name: "المساعد", description: "أجب على 10 أسئلة", icon: "heart", color: "accent", requirement: 10, category: "answers",
+    tiers: [{ tier: 1, requirement: 10, label: "I" }, { tier: 2, requirement: 25, label: "II" }, { tier: 3, requirement: 50, label: "III" }] },
+  { id: "expert", name: "الخبير", description: "أجب على 50 سؤال", icon: "trophy", color: "success", requirement: 50, category: "answers",
+    tiers: [{ tier: 1, requirement: 50, label: "I" }, { tier: 2, requirement: 100, label: "II" }, { tier: 3, requirement: 200, label: "III" }] },
+  { id: "first_project", name: "أول مشروع", description: "أكمل أول مشروع", icon: "rocket", color: "primary", requirement: 1, category: "projects",
+    tiers: [{ tier: 1, requirement: 1, label: "I" }, { tier: 2, requirement: 3, label: "II" }, { tier: 3, requirement: 5, label: "III" }] },
+  { id: "freelancer", name: "المستقل", description: "أكمل 5 مشاريع", icon: "zap", color: "accent", requirement: 5, category: "projects",
+    tiers: [{ tier: 1, requirement: 5, label: "I" }, { tier: 2, requirement: 10, label: "II" }, { tier: 3, requirement: 20, label: "III" }] },
+  { id: "pro_freelancer", name: "المستقل المحترف", description: "أكمل 20 مشروع", icon: "crown", color: "warning", requirement: 20, category: "projects" },
+  { id: "learner", name: "المتعلم", description: "أكمل أول دورة", icon: "target", color: "primary", requirement: 1, category: "learning",
+    tiers: [{ tier: 1, requirement: 1, label: "I" }, { tier: 2, requirement: 3, label: "II" }, { tier: 3, requirement: 5, label: "III" }] },
+  { id: "scholar", name: "العالم", description: "أكمل 10 دورات", icon: "shield", color: "success", requirement: 10, category: "learning",
+    tiers: [{ tier: 1, requirement: 10, label: "I" }, { tier: 2, requirement: 20, label: "II" }, { tier: 3, requirement: 50, label: "III" }] },
   ...streakBadges,
-  { id: "legend", name: "الأسطورة", description: "اصل للمستوى 10", icon: "award", color: "warning", requirement: 10 },
+  { id: "legend", name: "الأسطورة", description: "اوصل للمستوى 10", icon: "award", color: "warning", requirement: 10, category: "general",
+    tiers: [{ tier: 1, requirement: 10, label: "I" }, { tier: 2, requirement: 20, label: "II" }, { tier: 3, requirement: 50, label: "III" }] },
 ];
+
+// Helper: get current tier for a badge based on progress
+export function getBadgeTier(badge: Badge, currentProgress: number): number {
+  if (!badge.tiers) return currentProgress >= badge.requirement ? 1 : 0;
+  let tier = 0;
+  for (const t of badge.tiers) {
+    if (currentProgress >= t.requirement) tier = t.tier;
+  }
+  return tier;
+}
+
+// Helper: get next tier requirement
+export function getNextTierRequirement(badge: Badge, currentTier: number): number | null {
+  if (!badge.tiers) return currentTier >= 1 ? null : badge.requirement;
+  const next = badge.tiers.find(t => t.tier === currentTier + 1);
+  return next ? next.requirement : null;
+}
 
 // Helper function to check earned streak badges
 export function getEarnedStreakBadges(currentStreak: number): string[] {
@@ -74,12 +117,9 @@ interface BadgeUnlockModalProps {
 export function BadgeUnlockModal({ badge, isOpen, onClose }: BadgeUnlockModalProps) {
   useEffect(() => {
     if (isOpen) {
-      // Play unlock sound
       const audio = new Audio("/badge-unlock.mp3");
       audio.volume = 0.3;
       audio.play().catch(() => {});
-      
-      // Auto close after 4 seconds
       const timer = setTimeout(onClose, 4000);
       return () => clearTimeout(timer);
     }
@@ -113,40 +153,20 @@ export function BadgeUnlockModal({ badge, isOpen, onClose }: BadgeUnlockModalPro
             className="glass rounded-3xl p-8 border-2 border-accent/50 text-center max-w-sm mx-4"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Confetti-like particles */}
             <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
               {[...Array(20)].map((_, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-2 h-2 rounded-full bg-accent"
-                  initial={{ 
-                    x: "50%", 
-                    y: "50%",
-                    scale: 0 
-                  }}
-                  animate={{ 
-                    x: `${Math.random() * 100}%`,
-                    y: `${Math.random() * 100}%`,
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0]
-                  }}
-                  transition={{ 
-                    duration: 1.5,
-                    delay: i * 0.05,
-                    ease: "easeOut"
-                  }}
+                  initial={{ x: "50%", y: "50%", scale: 0 }}
+                  animate={{ x: `${Math.random() * 100}%`, y: `${Math.random() * 100}%`, scale: [0, 1, 0], opacity: [0, 1, 0] }}
+                  transition={{ duration: 1.5, delay: i * 0.05, ease: "easeOut" }}
                 />
               ))}
             </div>
-
-            <motion.div
-              initial={{ y: -20 }}
-              animate={{ y: 0 }}
-              className="text-sm font-medium text-accent mb-4"
-            >
+            <motion.div initial={{ y: -20 }} animate={{ y: 0 }} className="text-sm font-medium text-accent mb-4">
               🎉 تهانينا!
             </motion.div>
-
             <motion.div
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
@@ -155,31 +175,15 @@ export function BadgeUnlockModal({ badge, isOpen, onClose }: BadgeUnlockModalPro
             >
               <Icon className="w-12 h-12" />
             </motion.div>
-
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-2xl font-bold text-foreground mb-2"
-            >
+            <motion.h3 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+              className="text-2xl font-bold text-foreground mb-2">
               {badge.name}
             </motion.h3>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-muted-foreground"
-            >
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-muted-foreground">
               {badge.description}
             </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-6 text-xs text-muted-foreground"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
+              className="mt-6 text-xs text-muted-foreground">
               اضغط للإغلاق
             </motion.div>
           </motion.div>
@@ -192,20 +196,41 @@ export function BadgeUnlockModal({ badge, isOpen, onClose }: BadgeUnlockModalPro
 interface BadgeDisplayProps {
   badges: string[];
   showAll?: boolean;
+  currentStreak?: number;
+  stats?: { answers: number; projects: number; courses: number; level: number };
 }
 
 export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
-  function BadgeDisplay({ badges, showAll = false }, ref) {
+  function BadgeDisplay({ badges, showAll = false, currentStreak = 0, stats }, ref) {
     const unlockedBadges = allBadges.filter(b => badges.includes(b.id));
     const lockedBadges = allBadges.filter(b => !badges.includes(b.id));
     
-    const displayBadges = showAll ? [...unlockedBadges, ...lockedBadges] : unlockedBadges.slice(0, 6);
+    const displayBadges = showAll ? allBadges : unlockedBadges.slice(0, 6);
+
+    // Calculate progress for each badge
+    const getProgress = (badge: Badge): number => {
+      if (badge.category === "streak") return currentStreak;
+      if (!stats) return badges.includes(badge.id) ? badge.requirement : 0;
+      switch (badge.category) {
+        case "answers": return stats.answers;
+        case "projects": return stats.projects;
+        case "learning": return stats.courses;
+        case "general": return stats.level;
+        default: return 0;
+      }
+    };
 
     return (
-      <div ref={ref} className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
+      <div ref={ref} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {displayBadges.map((badge) => {
           const Icon = badgeIcons[badge.icon];
           const isUnlocked = badges.includes(badge.id);
+          const progress = getProgress(badge);
+          const currentTier = getBadgeTier(badge, progress);
+          const nextReq = getNextTierRequirement(badge, currentTier);
+          const currentTierReq = badge.tiers?.[Math.max(currentTier - 1, 0)]?.requirement || badge.requirement;
+          const progressToNext = nextReq ? Math.min(((progress - (currentTier > 0 ? currentTierReq : 0)) / (nextReq - (currentTier > 0 ? currentTierReq : 0))) * 100, 100) : 100;
+          
           const colorClasses = {
             primary: "from-primary/20 to-primary/5 border-primary/30 text-primary",
             accent: "from-accent/20 to-accent/5 border-accent/30 text-accent",
@@ -218,23 +243,67 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
               key={badge.id}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              whileHover={{ scale: 1.05 }}
-              className={`relative p-3 rounded-xl border text-center transition-all cursor-pointer ${
+              whileHover={{ scale: 1.03 }}
+              className={`relative p-4 rounded-xl border text-center transition-all cursor-pointer ${
                 isUnlocked 
                   ? `bg-gradient-to-b ${colorClasses[badge.color]}` 
-                  : "bg-secondary/50 border-border/50 opacity-50 grayscale"
+                  : "bg-secondary/50 border-border/50"
               }`}
             >
-              <div className={`w-10 h-10 rounded-lg mx-auto mb-2 flex items-center justify-center ${
+              {/* Tier badge */}
+              {badge.tiers && currentTier > 0 && (
+                <div className={`absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-br ${tierColors[currentTier]} flex items-center justify-center border-2 border-background shadow-md z-10`}>
+                  <span className="text-[10px] font-black text-white">{tierLabels[currentTier - 1]}</span>
+                </div>
+              )}
+
+              <div className={`w-12 h-12 rounded-xl mx-auto mb-2 flex items-center justify-center ${
                 isUnlocked ? "bg-background/20" : "bg-secondary"
               }`}>
-                <Icon className={`w-5 h-5 ${isUnlocked ? "" : "text-muted-foreground"}`} />
+                <Icon className={`w-6 h-6 ${isUnlocked ? "" : "text-muted-foreground opacity-50"}`} />
               </div>
-              <div className={`text-xs font-medium truncate ${isUnlocked ? "" : "text-muted-foreground"}`}>
+              <div className={`text-xs font-bold truncate mb-1 ${isUnlocked ? "" : "text-muted-foreground"}`}>
                 {badge.name}
               </div>
-              {!isUnlocked && (
-                <div className="absolute inset-0 flex items-center justify-center">
+
+              {/* Progress bar */}
+              {showAll && (
+                <div className="mt-2 space-y-1">
+                  <Progress value={isUnlocked ? (nextReq ? progressToNext : 100) : Math.min((progress / badge.requirement) * 100, 100)} 
+                    className="h-1.5" />
+                  <div className="text-[10px] text-muted-foreground">
+                    {isUnlocked && !nextReq ? (
+                      <span className="text-success font-bold">مكتمل ✓</span>
+                    ) : (
+                      <span>{Math.min(progress, nextReq || badge.requirement)} / {nextReq || badge.requirement}</span>
+                    )}
+                  </div>
+                  {/* Tier dots */}
+                  {badge.tiers && (
+                    <div className="flex items-center justify-center gap-1 mt-1">
+                      {badge.tiers.map((t) => (
+                        <div key={t.tier} className={`w-4 h-4 rounded-full text-[8px] font-black flex items-center justify-center ${
+                          currentTier >= t.tier
+                            ? `bg-gradient-to-br ${tierColors[t.tier]} text-white`
+                            : "bg-secondary border border-border text-muted-foreground"
+                        }`}>
+                          {t.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Description on hover - only in showAll */}
+              {showAll && (
+                <div className="text-[10px] text-muted-foreground mt-1.5 line-clamp-2">
+                  {badge.description}
+                </div>
+              )}
+
+              {!isUnlocked && !showAll && (
+                <div className="absolute inset-0 flex items-center justify-center rounded-xl">
                   <div className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center">
                     <span className="text-xs">🔒</span>
                   </div>
