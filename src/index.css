@@ -33,6 +33,63 @@
 
 @layer base {
   :root {
+    --background: 0 0% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 187 85% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 35 100% 50%;
+    --accent-foreground: 222 47% 11%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 187 85% 45%;
+
+    --radius: 0.75rem;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(187 85% 45%), hsl(210 100% 55%));
+    --gradient-accent: linear-gradient(135deg, hsl(35 100% 50%), hsl(25 100% 45%));
+    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(160 84% 30%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 98%));
+    --gradient-hero: linear-gradient(180deg, hsl(0 0% 98%) 0%, hsl(210 20% 96%) 50%, hsl(0 0% 98%) 100%);
+
+    --shadow-glow: 0 0 30px hsl(187 85% 45% / 0.25);
+    --shadow-accent: 0 0 30px hsl(35 100% 50% / 0.25);
+    --shadow-card: 0 8px 32px hsl(222 47% 11% / 0.08);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 187 85% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 20% 96%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 187 85% 45%;
+  }
+
+  .dark {
     --background: 222 47% 6%;
     --foreground: 210 40% 98%;
 
@@ -61,8 +118,6 @@
     --input: 222 30% 14%;
     --ring: 187 85% 53%;
 
-    --radius: 0.75rem;
-
     --success: 142 76% 46%;
     --success-foreground: 210 40% 98%;
 
@@ -87,11 +142,6 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 222 30% 18%;
     --sidebar-ring: 187 85% 53%;
-  }
-
-  .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
   }
 }
 
@@ -216,20 +266,33 @@
   }
 }
 
-/* Scrollbar Styling */
+/* Scrollbar Styling - Light Mode */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(222 47% 8%);
+  background: hsl(210 20% 96%);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(222 30% 18%);
+  background: hsl(214 32% 80%);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
+  background: hsl(187 85% 45% / 0.4);
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: hsl(222 47% 8%);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(222 30% 18%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
   background: hsl(187 85% 53% / 0.5);
 }
