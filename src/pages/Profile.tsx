@@ -266,10 +266,12 @@ export default function Profile() {
 
                   <div className="flex flex-wrap gap-3">
                     <EditProfileDialog />
-                    <Button variant="outline">
-                      <Settings className="w-4 h-4" />
-                      الإعدادات
-                    </Button>
+                    <Link to="/settings">
+                      <Button variant="outline">
+                        <Settings className="w-4 h-4" />
+                        الإعدادات
+                      </Button>
+                    </Link>
                   </div>
                 </div>
 
