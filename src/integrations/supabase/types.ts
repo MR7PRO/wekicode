@@ -522,6 +522,50 @@ export type Database = {
         }
         Relationships: []
       }
+      user_challenge_progress: {
+        Row: {
+          challenge_id: string
+          completed_at: string | null
+          created_at: string
+          current_progress: number
+          id: string
+          is_completed: boolean
+          points_awarded: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_progress?: number
+          id?: string
+          is_completed?: boolean
+          points_awarded?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_progress?: number
+          id?: string
+          is_completed?: boolean
+          points_awarded?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_challenge_progress_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "weekly_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_favorites: {
         Row: {
           course_id: string | null
@@ -603,6 +647,51 @@ export type Database = {
           },
         ]
       }
+      weekly_challenges: {
+        Row: {
+          challenge_type: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          is_active: boolean
+          reward_badge: string | null
+          reward_points: number
+          target_count: number
+          title: string
+          week_end: string
+          week_start: string
+        }
+        Insert: {
+          challenge_type?: string
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          reward_badge?: string | null
+          reward_points?: number
+          target_count?: number
+          title: string
+          week_end?: string
+          week_start?: string
+        }
+        Update: {
+          challenge_type?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          reward_badge?: string | null
+          reward_points?: number
+          target_count?: number
+          title?: string
+          week_end?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -616,6 +705,7 @@ export type Database = {
         }
         Returns: Json
       }
+      complete_challenge: { Args: { p_challenge_id: string }; Returns: Json }
       increment_question_answers: {
         Args: { question_uuid: string }
         Returns: undefined
