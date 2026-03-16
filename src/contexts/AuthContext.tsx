@@ -13,6 +13,8 @@ interface Profile {
   level: number;
   points: number;
   badges: string[] | null;
+  current_streak: number | null;
+  longest_streak: number | null;
 }
 
 interface AuthContextType {
