@@ -312,6 +312,9 @@ export default function Rewards() {
           {/* Daily Check-in Calendar */}
           <DailyCheckinCalendar />
 
+          {/* Weekly Challenges */}
+          <WeeklyChallenges />
+
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-8">
             {categories.map((cat) => (
