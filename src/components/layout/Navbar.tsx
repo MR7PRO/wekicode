@@ -28,6 +28,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProgressWidget } from "./ProgressWidget";
 import { NotificationBell } from "@/components/notifications/NotificationSystem";
+import { MessagesBadge } from "@/components/messages/MessagesBadge";
 
 const navLinks = [
   { path: "/", label: "الرئيسية", icon: Code2 },
@@ -102,7 +103,8 @@ export function Navbar() {
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
-                {/* Notifications */}
+                {/* Messages & Notifications */}
+                <MessagesBadge />
                 <NotificationBell />
                 
                 {/* Progress Widget - Game-like level indicator */}
