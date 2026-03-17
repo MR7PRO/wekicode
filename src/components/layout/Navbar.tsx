@@ -103,7 +103,8 @@ export function Navbar() {
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
-                {/* Notifications */}
+                {/* Messages & Notifications */}
+                <MessagesBadge />
                 <NotificationBell />
                 
                 {/* Progress Widget - Game-like level indicator */}
