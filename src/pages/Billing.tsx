@@ -2,76 +2,324 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Button } from "@/components/ui/button";
 import { 
-  CreditCard, 
-  FileText, 
-  Calendar,
-  Check,
-  Download,
-  ExternalLink,
-  Wifi,
-  Zap,
-  Coffee,
-  MapPin,
-  Clock,
-  Phone,
-  Mail,
-  HelpCircle,
-  RefreshCw,
-  Building
+  CreditCard, FileText, Calendar, Check, Download, ExternalLink,
+  Wifi, Zap, Coffee, MapPin, Clock, Phone, Mail, HelpCircle,
+  RefreshCw, Building, Plus, Minus, Loader2, ShoppingCart, Users, FileTextIcon
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 
-const invoices = [
-  {
-    id: "INV-2024-001",
-    description: "فاتورة يناير 2024",
-    amount: "150 شيكل",
-    status: "مدفوع",
-    date: "٢٠٢٤/٠١/١٤",
-    dueDate: "٢٠٢٤/٠١/١٤",
-    paymentMethod: "نقداً",
-    services: [
-      "مكتب خاص لمدة شهر",
-      "كهرباء مستمرة 24/7",
-      "إنترنت فائق السرعة",
-      "قهوة ومشروبات مجانية",
-      "قاعة اجتماعات (5 ساعات)"
-    ]
-  },
-  {
-    id: "INV-2023-012",
-    description: "فاتورة ديسمبر 2023",
-    amount: "150 شيكل",
-    status: "مدفوع",
-    date: "٢٠٢٣/١٢/١٤",
-    dueDate: "٢٠٢٣/١٢/١٤",
-    paymentMethod: "نقداً",
-    services: [
-      "مكتب خاص لمدة شهر",
-      "كهرباء مستمرة 24/7",
-      "إنترنت فائق السرعة",
-      "قهوة ومشروبات مجانية"
-    ]
-  },
-  {
-    id: "INV-2023-011",
-    description: "فاتورة نوفمبر 2023",
-    amount: "120 شيكل",
-    status: "مدفوع",
-    date: "٢٠٢٣/١١/١٤",
-    dueDate: "٢٠٢٣/١١/١٤",
-    paymentMethod: "نقداً",
-    services: [
-      "مكتب مشترك لمدة شهر",
-      "كهرباء مستمرة 24/7",
-      "إنترنت فائق السرعة"
-    ]
-  },
-];
+interface WorkspaceService {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  icon: string;
+  is_addon: boolean;
+  is_active: boolean;
+}
+
+interface Subscription {
+  id: string;
+  plan_name: string;
+  price: number;
+  start_date: string;
+  end_date: string;
+  status: string;
+  auto_renew: boolean;
+  payment_method: string;
+}
+
+interface Invoice {
+  id: string;
+  invoice_number: string;
+  total_amount: number;
+  status: string;
+  issued_at: string;
+  due_date: string;
+  paid_at: string | null;
+  payment_method: string | null;
+  services: { service_title: string; unit_price: number; quantity: number }[];
+}
+
+const iconMap: Record<string, React.ComponentType<any>> = {
+  building: Building, users: Users, wifi: Wifi, zap: Zap,
+  coffee: Coffee, calendar: Calendar, "file-text": FileTextIcon,
+};
+
+function ServiceCustomizer({ 
+  services, 
+  onSubscribe 
+}: { 
+  services: WorkspaceService[];
+  onSubscribe: (planServices: { serviceId: string; title: string; price: number }[], total: number, planName: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [basePlan, setBasePlan] = useState<string | null>(null);
+
+  const basePlans = services.filter(s => !s.is_addon);
+  const addons = services.filter(s => s.is_addon);
+
+  const total = useMemo(() => {
+    let sum = 0;
+    selected.forEach(id => {
+      const svc = services.find(s => s.id === id);
+      if (svc) sum += svc.price;
+    });
+    return sum;
+  }, [selected, services]);
+
+  const toggleService = (id: string, isBase: boolean) => {
+    const next = new Set(selected);
+    if (isBase) {
+      // Only one base plan
+      basePlans.forEach(bp => next.delete(bp.id));
+      next.add(id);
+      setBasePlan(id);
+    } else {
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+    }
+    setSelected(next);
+  };
+
+  const handleSubmit = () => {
+    if (!basePlan) {
+      toast({ title: "يرجى اختيار خطة أساسية", variant: "destructive" });
+      return;
+    }
+    const items = Array.from(selected).map(id => {
+      const svc = services.find(s => s.id === id)!;
+      return { serviceId: svc.id, title: svc.title, price: svc.price };
+    });
+    const base = services.find(s => s.id === basePlan);
+    onSubscribe(items, total, base?.title ?? "اشتراك مخصص");
+    setOpen(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="hero" size="sm">
+          <ShoppingCart className="w-4 h-4" />
+          اشتراك جديد
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>تخصيص اشتراكك</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-6">
+          {/* Base plans */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">اختر الخطة الأساسية</h3>
+            <div className="grid grid-cols-2 gap-3">
+              {basePlans.map(plan => {
+                const Icon = iconMap[plan.icon] ?? Building;
+                const isSelected = selected.has(plan.id);
+                return (
+                  <button
+                    key={plan.id}
+                    onClick={() => toggleService(plan.id, true)}
+                    className={`p-4 rounded-xl border-2 transition-all text-center ${
+                      isSelected
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
+                    }`}
+                  >
+                    <Icon className={`w-6 h-6 mx-auto mb-2 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                    <div className="font-bold text-foreground text-sm">{plan.title}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{plan.description}</div>
+                    <div className="text-lg font-black text-primary mt-2">{plan.price} شيكل</div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Addons */}
+          <div>
+            <h3 className="font-bold text-foreground mb-3">خدمات إضافية</h3>
+            <div className="space-y-2">
+              {addons.map(addon => {
+                const Icon = iconMap[addon.icon] ?? Zap;
+                const isSelected = selected.has(addon.id);
+                return (
+                  <button
+                    key={addon.id}
+                    onClick={() => toggleService(addon.id, false)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${
+                      isSelected
+                        ? "border-primary bg-primary/5"
+                        : "border-border/50 hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                        isSelected ? "bg-primary/20 text-primary" : "bg-secondary text-muted-foreground"
+                      }`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium text-foreground">{addon.title}</div>
+                        <div className="text-xs text-muted-foreground">{addon.description}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-foreground">{addon.price} شيكل</span>
+                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                        isSelected ? "bg-primary border-primary" : "border-muted-foreground"
+                      }`}>
+                        {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter className="flex items-center justify-between border-t border-border pt-4 mt-4">
+          <div>
+            <span className="text-sm text-muted-foreground">الإجمالي الشهري:</span>
+            <span className="text-2xl font-black text-primary mr-2">{total} شيكل</span>
+          </div>
+          <Button onClick={handleSubmit} disabled={!basePlan}>
+            تأكيد الاشتراك
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function Billing() {
-  const [activeSubscription] = useState(true);
-  const [daysRemaining] = useState(8);
+  const { user } = useAuth();
+  const [services, setServices] = useState<WorkspaceService[]>([]);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    if (!user) { setLoading(false); return; }
+
+    const [svcRes, subRes, invRes] = await Promise.all([
+      supabase.from("workspace_services").select("*").eq("is_active", true).order("price"),
+      supabase.from("workspace_subscriptions").select("*").eq("user_id", user.id).eq("status", "active").order("created_at", { ascending: false }).limit(1),
+      supabase.from("invoices").select("*").eq("user_id", user.id).order("issued_at", { ascending: false }),
+    ]);
+
+    setServices((svcRes.data as WorkspaceService[]) ?? []);
+    
+    const activeSub = (subRes.data as Subscription[])?.[0] ?? null;
+    setSubscription(activeSub);
+
+    // Fetch invoice services for each invoice
+    const invData = (invRes.data ?? []) as any[];
+    const enriched: Invoice[] = await Promise.all(
+      invData.map(async (inv) => {
+        const { data: svcItems } = await supabase
+          .from("invoice_services")
+          .select("service_title, unit_price, quantity")
+          .eq("invoice_id", inv.id);
+        return { ...inv, services: svcItems ?? [] } as Invoice;
+      })
+    );
+    setInvoices(enriched);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchData(); }, [user]);
+
+  const daysRemaining = subscription 
+    ? Math.max(0, Math.ceil((new Date(subscription.end_date).getTime() - Date.now()) / 86400000))
+    : 0;
+
+  const totalPaid = invoices.filter(i => i.status === "paid").reduce((s, i) => s + i.total_amount, 0);
+  const paidCount = invoices.filter(i => i.status === "paid").length;
+
+  const handleSubscribe = async (
+    planServices: { serviceId: string; title: string; price: number }[],
+    total: number,
+    planName: string
+  ) => {
+    if (!user) return;
+
+    const startDate = new Date().toISOString().split("T")[0];
+    const endDate = new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0];
+
+    // Create subscription
+    const { data: sub, error: subErr } = await supabase
+      .from("workspace_subscriptions")
+      .insert({ user_id: user.id, plan_name: planName, price: total, start_date: startDate, end_date: endDate })
+      .select("id")
+      .single();
+
+    if (subErr || !sub) {
+      toast({ title: "حدث خطأ في إنشاء الاشتراك", variant: "destructive" });
+      return;
+    }
+
+    // Create invoice
+    const invoiceNum = `INV-${new Date().getFullYear()}-${String(invoices.length + 1).padStart(3, "0")}`;
+    const { data: inv, error: invErr } = await supabase
+      .from("invoices")
+      .insert({
+        user_id: user.id,
+        subscription_id: sub.id,
+        invoice_number: invoiceNum,
+        total_amount: total,
+        status: "pending",
+        due_date: startDate,
+      })
+      .select("id")
+      .single();
+
+    if (invErr || !inv) {
+      toast({ title: "حدث خطأ في إنشاء الفاتورة", variant: "destructive" });
+      return;
+    }
+
+    // Add invoice line items
+    const lineItems = planServices.map(s => ({
+      invoice_id: inv.id,
+      service_id: s.serviceId,
+      service_title: s.title,
+      unit_price: s.price,
+      quantity: 1,
+    }));
+
+    await supabase.from("invoice_services").insert(lineItems);
+
+    toast({ title: "تم إنشاء الاشتراك والفاتورة بنجاح! 🎉" });
+    fetchData();
+  };
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-24 flex justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -107,45 +355,56 @@ export default function Billing() {
                       <div>
                         <h2 className="text-xl font-bold text-foreground">الاشتراك الحالي</h2>
                         <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                          activeSubscription 
+                          subscription 
                             ? "bg-success/10 text-success" 
-                            : "bg-destructive/10 text-destructive"
+                            : "bg-muted text-muted-foreground"
                         }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${activeSubscription ? "bg-success" : "bg-destructive"}`} />
-                          {activeSubscription ? "نشط" : "غير نشط"}
+                          <span className={`w-1.5 h-1.5 rounded-full ${subscription ? "bg-success" : "bg-muted-foreground"}`} />
+                          {subscription ? "نشط" : "لا يوجد اشتراك"}
                         </span>
                       </div>
                     </div>
+                    <ServiceCustomizer services={services} onSubscribe={handleSubscribe} />
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="p-5 rounded-xl bg-secondary/50 border border-border/30">
-                      <h3 className="text-lg font-bold text-foreground mb-2">الباقة الشهرية المميزة</h3>
-                      <div className="text-3xl font-black text-gradient-primary mb-2">150 شيكل<span className="text-base font-normal text-muted-foreground">/شهر</span></div>
-                      <p className="text-sm text-muted-foreground mb-4">من ١٤ يناير ٢٠٢٤ إلى ١٤ فبراير ٢٠٢٤</p>
-                      
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="w-4 h-4 text-warning" />
-                        <span className="text-warning font-medium">متبقي {daysRemaining} أيام</span>
+                  {subscription ? (
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="p-5 rounded-xl bg-secondary/50 border border-border/30">
+                        <h3 className="text-lg font-bold text-foreground mb-2">{subscription.plan_name}</h3>
+                        <div className="text-3xl font-black text-primary mb-2">
+                          {subscription.price} شيكل
+                          <span className="text-base font-normal text-muted-foreground">/شهر</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-4">
+                          من {formatDate(subscription.start_date)} إلى {formatDate(subscription.end_date)}
+                        </p>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Clock className="w-4 h-4 text-warning" />
+                          <span className="text-warning font-medium">متبقي {daysRemaining} يوم</span>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="p-5 rounded-xl bg-secondary/50 border border-border/30">
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-muted-foreground">التجديد التلقائي</span>
-                        <span className="px-3 py-1 rounded-full bg-success/10 text-success text-sm font-medium">مفعل</span>
-                      </div>
-                      <div className="flex gap-3">
-                        <Button variant="hero" size="sm" className="flex-1">
-                          <RefreshCw className="w-4 h-4" />
-                          تجديد الاشتراك
-                        </Button>
-                        <Button variant="outline" size="sm" className="flex-1">
-                          تعديل الباقة
-                        </Button>
+                      <div className="p-5 rounded-xl bg-secondary/50 border border-border/30">
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-muted-foreground">التجديد التلقائي</span>
+                          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            subscription.auto_renew ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"
+                          }`}>
+                            {subscription.auto_renew ? "مفعل" : "معطل"}
+                          </span>
+                        </div>
+                        <div className="text-sm text-muted-foreground mb-3">
+                          طريقة الدفع: {subscription.payment_method === "cash" ? "نقداً" : subscription.payment_method}
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <CreditCard className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
+                      <p className="text-muted-foreground mb-2">لا يوجد اشتراك نشط حالياً</p>
+                      <p className="text-sm text-muted-foreground">اضغط على "اشتراك جديد" لاختيار خطة مناسبة</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -154,80 +413,87 @@ export default function Billing() {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
                     <FileText className="w-6 h-6 text-primary" />
-                    الفواتير الأخيرة
+                    الفواتير
                   </h2>
-                  <Button variant="ghost" size="sm">
-                    عرض جميع الفواتير
-                  </Button>
+                  <span className="text-sm text-muted-foreground">{invoices.length} فاتورة</span>
                 </div>
 
-                <div className="space-y-4">
-                  {invoices.map((invoice) => (
-                    <div key={invoice.id} className="p-5 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors border border-border/30">
-                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="font-mono text-sm text-muted-foreground">{invoice.id}</span>
-                            <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                              invoice.status === "مدفوع" 
-                                ? "bg-success/10 text-success" 
-                                : "bg-warning/10 text-warning"
-                            }`}>
-                              {invoice.status}
-                            </span>
+                {invoices.length === 0 ? (
+                  <div className="text-center py-10">
+                    <FileText className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
+                    <p className="text-muted-foreground">لا توجد فواتير بعد</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <AnimatePresence>
+                      {invoices.map((invoice, i) => (
+                        <motion.div
+                          key={invoice.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: i * 0.05 }}
+                          className="p-5 rounded-xl bg-secondary/30 hover:bg-secondary/50 transition-colors border border-border/30"
+                        >
+                          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                            <div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="font-mono text-sm text-muted-foreground">{invoice.invoice_number}</span>
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                  invoice.status === "paid"
+                                    ? "bg-success/10 text-success"
+                                    : invoice.status === "overdue"
+                                    ? "bg-destructive/10 text-destructive"
+                                    : "bg-warning/10 text-warning"
+                                }`}>
+                                  {invoice.status === "paid" ? "مدفوع" : invoice.status === "overdue" ? "متأخر" : "معلق"}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                                <span>تاريخ الإصدار: {formatDate(invoice.issued_at)}</span>
+                                <span>استحقاق الدفع: {formatDate(invoice.due_date)}</span>
+                              </div>
+                            </div>
+                            <div className="text-left md:text-right">
+                              <div className="text-2xl font-bold text-primary mb-1">{invoice.total_amount} شيكل</div>
+                              <div className="text-sm text-muted-foreground">
+                                {invoice.payment_method === "cash" ? "نقداً" : invoice.payment_method ?? "-"}
+                              </div>
+                            </div>
                           </div>
-                          <h3 className="text-lg font-bold text-foreground mb-1">{invoice.description}</h3>
-                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                            <span>تاريخ الإصدار: {invoice.date}</span>
-                            <span>استحقاق الدفع: {invoice.dueDate}</span>
-                          </div>
-                        </div>
-                        <div className="text-left md:text-right">
-                          <div className="text-2xl font-bold text-gradient-accent mb-1">{invoice.amount}</div>
-                          <div className="text-sm text-muted-foreground">طريقة الدفع: {invoice.paymentMethod}</div>
-                        </div>
-                      </div>
 
-                      <div className="mb-4">
-                        <h4 className="text-sm font-medium text-foreground mb-2">الخدمات المشمولة:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {invoice.services.map((service, idx) => (
-                            <span key={idx} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 text-primary text-xs">
-                              <Check className="w-3 h-3" />
-                              {service}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 pt-3 border-t border-border/30">
-                        <Button variant="ghost" size="sm">
-                          <ExternalLink className="w-4 h-4" />
-                          عرض التفاصيل
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Download className="w-4 h-4" />
-                          تحميل PDF
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                          {invoice.services.length > 0 && (
+                            <div className="mb-3">
+                              <h4 className="text-sm font-medium text-foreground mb-2">الخدمات المشمولة:</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {invoice.services.map((svc, idx) => (
+                                  <span key={idx} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 text-primary text-xs">
+                                    <Check className="w-3 h-3" />
+                                    {svc.service_title} ({svc.unit_price} شيكل)
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
               </div>
 
               {/* Payment Summary */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="glass rounded-xl p-5 border-border/50 text-center">
-                  <div className="text-3xl font-black text-gradient-accent mb-1">420</div>
+                  <div className="text-3xl font-black text-primary mb-1">{totalPaid}</div>
                   <div className="text-sm text-muted-foreground">إجمالي المدفوعات (شيكل)</div>
                 </div>
                 <div className="glass rounded-xl p-5 border-border/50 text-center">
-                  <div className="text-3xl font-black text-gradient-primary mb-1">3</div>
-                  <div className="text-sm text-muted-foreground">عدد الفواتير المدفوعة</div>
+                  <div className="text-3xl font-black text-primary mb-1">{paidCount}</div>
+                  <div className="text-sm text-muted-foreground">فواتير مدفوعة</div>
                 </div>
                 <div className="glass rounded-xl p-5 border-border/50 text-center">
-                  <div className="text-3xl font-black text-gradient-primary mb-1">5</div>
-                  <div className="text-sm text-muted-foreground">شهور عضوية</div>
+                  <div className="text-3xl font-black text-primary mb-1">{invoices.length}</div>
+                  <div className="text-sm text-muted-foreground">إجمالي الفواتير</div>
                 </div>
               </div>
             </div>
@@ -268,33 +534,20 @@ export default function Billing() {
                     </span>
                   </div>
 
-                  <h4 className="text-sm font-medium text-foreground mb-3">المرافق والخدمات:</h4>
+                  <h4 className="text-sm font-medium text-foreground mb-3">الخدمات المتاحة:</h4>
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Zap className="w-4 h-4 text-primary" />
-                        <span className="text-foreground">مكاتب مجهزة بالكامل</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Wifi className="w-4 h-4 text-primary" />
-                        <span className="text-foreground">إنترنت فائق السرعة 100MB</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Coffee className="w-4 h-4 text-accent" />
-                        <span className="text-foreground">قهوة ومشروبات مجانية</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Calendar className="w-4 h-4 text-warning" />
-                        <span className="text-foreground">قاعات اجتماعات</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">10 شيكل/ساعة</span>
-                    </div>
+                    {services.map(svc => {
+                      const Icon = iconMap[svc.icon] ?? Zap;
+                      return (
+                        <div key={svc.id} className="flex items-center justify-between p-2 rounded-lg bg-secondary/50">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Icon className="w-4 h-4 text-primary" />
+                            <span className="text-foreground">{svc.title}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{svc.price} شيكل</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
