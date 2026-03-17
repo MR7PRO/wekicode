@@ -28,6 +28,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProgressWidget } from "./ProgressWidget";
 import { NotificationBell } from "@/components/notifications/NotificationSystem";
+import { MessagesBadge } from "@/components/messages/MessagesBadge";
 
 const navLinks = [
   { path: "/", label: "الرئيسية", icon: Code2 },
