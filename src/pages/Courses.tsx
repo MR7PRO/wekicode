@@ -19,7 +19,8 @@ import {
   Heart,
   HeartOff,
   Send,
-  Loader2
+  Loader2,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -552,6 +553,15 @@ export default function Courses() {
                   </div>
                 </div>
               </div>
+              {(levelFilter !== "all" || priceFilter !== "all" || sortBy !== "popular" || selectedCategory !== "الكل" || searchQuery) && (
+                <button
+                  onClick={() => { setLevelFilter("all"); setPriceFilter("all"); setSortBy("popular"); setSelectedCategory("الكل"); setSearchQuery(""); }}
+                  className="mt-3 px-4 py-1.5 rounded-lg text-xs font-medium bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all flex items-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  إعادة تعيين الفلاتر
+                </button>
+              )}
             </div>
           )}
 
@@ -579,6 +589,12 @@ export default function Courses() {
             </div>
           ) : (
             <>
+              {/* Results Counter */}
+              {filteredCourses.length !== courses.length && (
+                <div className="text-sm text-muted-foreground mb-4">
+                  عرض <span className="font-bold text-foreground">{filteredCourses.length}</span> من <span className="font-bold text-foreground">{courses.length}</span> نتيجة
+                </div>
+              )}
               {/* Courses Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredCourses.map((course) => {

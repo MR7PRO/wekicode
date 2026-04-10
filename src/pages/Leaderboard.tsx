@@ -216,6 +216,19 @@ export default function Leaderboard() {
                   </button>
                 ))}
               </div>
+              {(levelFilter !== "all" || searchQuery) && (
+                <button
+                  onClick={() => { setLevelFilter("all"); setSearchQuery(""); }}
+                  className="mt-3 px-4 py-1.5 rounded-lg text-xs font-medium bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all flex items-center gap-1"
+                >
+                  إعادة تعيين الفلاتر
+                </button>
+              )}
+            </div>
+          )}
+          {filteredUsers.length !== users.length && (
+            <div className="text-sm text-muted-foreground mb-4">
+              عرض <span className="font-bold text-foreground">{filteredUsers.length}</span> من <span className="font-bold text-foreground">{users.length}</span> مستخدم
             </div>
           )}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
