@@ -9,7 +9,9 @@ import {
   Users,
   Coins,
   Award,
-  Loader2
+  Loader2,
+  Search,
+  Filter
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -51,6 +53,9 @@ export default function Leaderboard() {
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRank, setUserRank] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -135,8 +140,17 @@ export default function Leaderboard() {
     }
   };
 
-  const topThree = users.slice(0, 3);
-  const restOfUsers = users.slice(3);
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = !searchQuery || (u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesLevel = levelFilter === "all" ||
+      (levelFilter === "beginner" && u.level <= 3) ||
+      (levelFilter === "intermediate" && u.level >= 4 && u.level <= 7) ||
+      (levelFilter === "advanced" && u.level >= 8);
+    return matchesSearch && matchesLevel;
+  });
+
+  const topThree = filteredUsers.slice(0, 3);
+  const restOfUsers = filteredUsers.slice(3);
 
   return (
     <div className="min-h-screen bg-background">
@@ -156,7 +170,54 @@ export default function Leaderboard() {
             </p>
           </div>
 
-          {/* Stats */}
+          {/* Search & Filter */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <div className="flex-1 relative">
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="ابحث عن مستخدم..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full h-12 pr-12 pl-4 rounded-xl bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+            </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-6 h-12 rounded-xl border font-medium transition-all ${
+                showFilters ? "bg-primary text-primary-foreground border-primary" : "bg-secondary text-secondary-foreground border-border hover:bg-secondary/80"
+              }`}
+            >
+              <Filter className="w-5 h-5" />
+              فلترة
+            </button>
+          </div>
+
+          {showFilters && (
+            <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
+              <label className="text-sm font-medium text-foreground mb-2 block">المستوى</label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { value: "all", label: "الكل" },
+                  { value: "beginner", label: "مبتدئ (1-3)" },
+                  { value: "intermediate", label: "متوسط (4-7)" },
+                  { value: "advanced", label: "متقدم (8+)" },
+                ].map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setLevelFilter(opt.value)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      levelFilter === opt.value
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="glass rounded-xl p-4 border-border/50">
               <Users className="w-6 h-6 text-primary mb-2" />
@@ -287,7 +348,7 @@ export default function Leaderboard() {
                 </div>
                 
                 <div className="divide-y divide-border/50">
-                  {users.map((u, index) => {
+                  {filteredUsers.map((u, index) => {
                     const rank = index + 1;
                     const isCurrentUser = user && u.user_id === user.id;
                     
@@ -336,7 +397,7 @@ export default function Leaderboard() {
                   })}
                 </div>
 
-                {users.length === 0 && (
+                {filteredUsers.length === 0 && (
                   <div className="text-center py-12 text-muted-foreground">
                     <Trophy className="w-12 h-12 mx-auto mb-4 opacity-50" />
                     <p>لا يوجد مستخدمين بعد</p>

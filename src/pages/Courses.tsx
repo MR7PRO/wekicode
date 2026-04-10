@@ -70,6 +70,10 @@ export default function Courses() {
   const [favoriteCourses, setFavoriteCourses] = useState<string[]>([]);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [priceFilter, setPriceFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("popular");
   
   // New course form
   const [newCourse, setNewCourse] = useState({
@@ -140,7 +144,18 @@ export default function Courses() {
     const matchesCategory = selectedCategory === "الكل" || c.category === selectedCategory;
     const matchesSearch = c.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           c.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesLevel = levelFilter === "all" || c.level === levelFilter;
+    const matchesPrice = priceFilter === "all" ||
+      (priceFilter === "free" && c.is_free) ||
+      (priceFilter === "paid" && !c.is_free);
+    return matchesCategory && matchesSearch && matchesLevel && matchesPrice;
+  }).sort((a, b) => {
+    if (sortBy === "popular") return (b.students_count || 0) - (a.students_count || 0);
+    if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
+    if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sortBy === "price_low") return (a.price || 0) - (b.price || 0);
+    if (sortBy === "price_high") return (b.price || 0) - (a.price || 0);
+    return 0;
   });
 
   const handleEnroll = async (course: Course) => {
@@ -457,11 +472,88 @@ export default function Courses() {
                 className="w-full h-12 pr-12 pl-4 rounded-xl bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
-            <Button variant="outline" size="lg">
+            <Button variant={showFilters ? "default" : "outline"} size="lg" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="w-5 h-5" />
               فلترة
             </Button>
           </div>
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">المستوى</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "all", label: "الكل" },
+                      { value: "مبتدئ", label: "مبتدئ" },
+                      { value: "متوسط", label: "متوسط" },
+                      { value: "متقدم", label: "متقدم" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setLevelFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          levelFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">السعر</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "all", label: "الكل" },
+                      { value: "free", label: "مجاني" },
+                      { value: "paid", label: "مدفوع" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setPriceFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          priceFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">ترتيب حسب</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "popular", label: "الأكثر شعبية" },
+                      { value: "rating", label: "الأعلى تقييماً" },
+                      { value: "newest", label: "الأحدث" },
+                      { value: "price_low", label: "الأقل سعراً" },
+                      { value: "price_high", label: "الأعلى سعراً" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSortBy(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          sortBy === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-8">

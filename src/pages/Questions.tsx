@@ -170,6 +170,9 @@ export default function Questions() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [stats, setStats] = useState({ total: 0, answers: 0, solved: 0 });
+  const [showFilters, setShowFilters] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("newest");
   
   const [newQuestion, setNewQuestion] = useState({
     title: "",
@@ -241,7 +244,17 @@ export default function Questions() {
     const matchesCategory = selectedCategory === "الكل" || q.tags?.includes(selectedCategory);
     const matchesSearch = q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           q.content.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesStatus = statusFilter === "all" ||
+      (statusFilter === "solved" && q.is_solved) ||
+      (statusFilter === "unsolved" && !q.is_solved);
+    return matchesCategory && matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sortBy === "oldest") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    if (sortBy === "votes") return (b.votes || 0) - (a.votes || 0);
+    if (sortBy === "views") return (b.views || 0) - (a.views || 0);
+    if (sortBy === "answers") return (b.answers_count || 0) - (a.answers_count || 0);
+    return 0;
   });
 
   const handleAddQuestion = async () => {
@@ -468,11 +481,65 @@ export default function Questions() {
                 className="w-full h-12 pr-12 pl-4 rounded-xl bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
-            <Button variant="outline" size="lg">
+            <Button variant={showFilters ? "default" : "outline"} size="lg" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="w-5 h-5" />
               فلترة
             </Button>
           </div>
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">الحالة</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "all", label: "الكل" },
+                      { value: "solved", label: "محلولة ✓" },
+                      { value: "unsolved", label: "غير محلولة" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setStatusFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          statusFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">ترتيب حسب</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "newest", label: "الأحدث" },
+                      { value: "oldest", label: "الأقدم" },
+                      { value: "votes", label: "الأكثر تصويتاً" },
+                      { value: "views", label: "الأكثر مشاهدة" },
+                      { value: "answers", label: "الأكثر إجابات" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSortBy(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          sortBy === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-8">
