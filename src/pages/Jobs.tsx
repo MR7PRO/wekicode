@@ -61,6 +61,9 @@ export default function Jobs() {
   const [isApplyDialogOpen, setIsApplyDialogOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [budgetFilter, setBudgetFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("newest");
   
   // New job form
   const [newJob, setNewJob] = useState({
@@ -136,7 +139,18 @@ export default function Jobs() {
     const matchesSearch = j.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           j.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           (j.skills && j.skills.some(s => s.toLowerCase().includes(searchQuery.toLowerCase())));
-    return matchesType && matchesSearch;
+    const matchesBudget = budgetFilter === "all" ||
+      (budgetFilter === "low" && (j.budget_max ?? 0) <= 100) ||
+      (budgetFilter === "mid" && (j.budget_min ?? 0) >= 100 && (j.budget_max ?? Infinity) <= 500) ||
+      (budgetFilter === "high" && (j.budget_min ?? 0) >= 500);
+    return matchesType && matchesSearch && matchesBudget;
+  }).sort((a, b) => {
+    if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sortBy === "oldest") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    if (sortBy === "budget_high") return (b.budget_max ?? 0) - (a.budget_max ?? 0);
+    if (sortBy === "budget_low") return (a.budget_min ?? 0) - (b.budget_min ?? 0);
+    if (sortBy === "applications") return (b.applications_count ?? 0) - (a.applications_count ?? 0);
+    return 0;
   });
 
   const handlePostJob = async () => {
@@ -438,10 +452,66 @@ export default function Jobs() {
                 className="w-full h-12 pr-12 pl-4 rounded-xl bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
-            <Button variant="outline" size="lg">
+            <Button variant={showFilters ? "default" : "outline"} size="lg" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="w-5 h-5" />
               فلترة
             </Button>
+          </div>
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">الميزانية</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "all", label: "الكل" },
+                      { value: "low", label: "أقل من $100" },
+                      { value: "mid", label: "$100 - $500" },
+                      { value: "high", label: "أكثر من $500" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setBudgetFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          budgetFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">ترتيب حسب</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "newest", label: "الأحدث" },
+                      { value: "oldest", label: "الأقدم" },
+                      { value: "budget_high", label: "الأعلى ميزانية" },
+                      { value: "budget_low", label: "الأقل ميزانية" },
+                      { value: "applications", label: "الأكثر تقديماً" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSortBy(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          sortBy === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
           </div>
 
           {/* Job Types */}

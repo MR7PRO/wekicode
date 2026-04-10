@@ -170,6 +170,9 @@ export default function Questions() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [stats, setStats] = useState({ total: 0, answers: 0, solved: 0 });
+  const [showFilters, setShowFilters] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("newest");
   
   const [newQuestion, setNewQuestion] = useState({
     title: "",
@@ -241,7 +244,17 @@ export default function Questions() {
     const matchesCategory = selectedCategory === "الكل" || q.tags?.includes(selectedCategory);
     const matchesSearch = q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           q.content.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    const matchesStatus = statusFilter === "all" ||
+      (statusFilter === "solved" && q.is_solved) ||
+      (statusFilter === "unsolved" && !q.is_solved);
+    return matchesCategory && matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    if (sortBy === "oldest") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+    if (sortBy === "votes") return (b.votes || 0) - (a.votes || 0);
+    if (sortBy === "views") return (b.views || 0) - (a.views || 0);
+    if (sortBy === "answers") return (b.answers_count || 0) - (a.answers_count || 0);
+    return 0;
   });
 
   const handleAddQuestion = async () => {
