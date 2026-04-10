@@ -19,7 +19,8 @@ import {
   Heart,
   HeartOff,
   Send,
-  Loader2
+  Loader2,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";

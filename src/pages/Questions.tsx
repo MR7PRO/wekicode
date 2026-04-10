@@ -15,7 +15,8 @@ import {
   TrendingUp,
   ThumbsDown,
   Send,
-  Loader2
+  Loader2,
+  X
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
