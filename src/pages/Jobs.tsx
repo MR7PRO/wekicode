@@ -511,8 +511,7 @@ export default function Jobs() {
                 </div>
               </div>
             </div>
-          )
-          </div>
+          )}
 
           {/* Job Types */}
           <div className="flex flex-wrap gap-2 mb-8">

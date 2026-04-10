@@ -553,8 +553,7 @@ export default function Courses() {
                 </div>
               </div>
             </div>
-          )
-          </div>
+          )}
 
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-8">
