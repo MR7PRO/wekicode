@@ -9,7 +9,9 @@ import {
   Users,
   Coins,
   Award,
-  Loader2
+  Loader2,
+  Search,
+  Filter
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
