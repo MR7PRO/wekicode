@@ -538,6 +538,15 @@ export default function Questions() {
                   </div>
                 </div>
               </div>
+              {(statusFilter !== "all" || sortBy !== "newest" || selectedCategory !== "الكل" || searchQuery) && (
+                <button
+                  onClick={() => { setStatusFilter("all"); setSortBy("newest"); setSelectedCategory("الكل"); setSearchQuery(""); }}
+                  className="mt-3 px-4 py-1.5 rounded-lg text-xs font-medium bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all flex items-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  إعادة تعيين الفلاتر
+                </button>
+              )}
             </div>
           )}
 
@@ -565,6 +574,12 @@ export default function Questions() {
             </div>
           ) : (
             <>
+              {/* Results Counter */}
+              {filteredQuestions.length !== questions.length && (
+                <div className="text-sm text-muted-foreground mb-4">
+                  عرض <span className="font-bold text-foreground">{filteredQuestions.length}</span> من <span className="font-bold text-foreground">{questions.length}</span> نتيجة
+                </div>
+              )}
               {/* Questions List */}
               <div className="space-y-4">
                 {filteredQuestions.map((question) => (
