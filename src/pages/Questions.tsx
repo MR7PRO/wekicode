@@ -481,10 +481,65 @@ export default function Questions() {
                 className="w-full h-12 pr-12 pl-4 rounded-xl bg-secondary border border-border focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
-            <Button variant="outline" size="lg">
+            <Button variant={showFilters ? "default" : "outline"} size="lg" onClick={() => setShowFilters(!showFilters)}>
               <Filter className="w-5 h-5" />
               فلترة
             </Button>
+          </div>
+
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">الحالة</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "all", label: "الكل" },
+                      { value: "solved", label: "محلولة ✓" },
+                      { value: "unsolved", label: "غير محلولة" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setStatusFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          statusFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">ترتيب حسب</label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "newest", label: "الأحدث" },
+                      { value: "oldest", label: "الأقدم" },
+                      { value: "votes", label: "الأكثر تصويتاً" },
+                      { value: "views", label: "الأكثر مشاهدة" },
+                      { value: "answers", label: "الأكثر إجابات" },
+                    ].map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSortBy(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          sortBy === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           </div>
 
           {/* Categories */}
