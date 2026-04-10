@@ -540,7 +540,6 @@ export default function Questions() {
               </div>
             </div>
           )}
-          </div>
 
           {/* Categories */}
           <div className="flex flex-wrap gap-2 mb-8">
