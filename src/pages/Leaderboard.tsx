@@ -53,6 +53,9 @@ export default function Leaderboard() {
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRank, setUserRank] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     fetchLeaderboard();
@@ -137,8 +140,17 @@ export default function Leaderboard() {
     }
   };
 
-  const topThree = users.slice(0, 3);
-  const restOfUsers = users.slice(3);
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = !searchQuery || (u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesLevel = levelFilter === "all" ||
+      (levelFilter === "beginner" && u.level <= 3) ||
+      (levelFilter === "intermediate" && u.level >= 4 && u.level <= 7) ||
+      (levelFilter === "advanced" && u.level >= 8);
+    return matchesSearch && matchesLevel;
+  });
+
+  const topThree = filteredUsers.slice(0, 3);
+  const restOfUsers = filteredUsers.slice(3);
 
   return (
     <div className="min-h-screen bg-background">
