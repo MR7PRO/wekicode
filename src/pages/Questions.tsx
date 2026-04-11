@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
   HelpCircle, 
@@ -715,6 +716,7 @@ export default function Questions() {
       </main>
 
       <Footer />
+      <BottomNav />
     </div>
   );
 }

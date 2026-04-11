@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
   Briefcase, 
@@ -733,6 +734,7 @@ export default function Jobs() {
       </Dialog>
 
       <Footer />
+      <BottomNav />
     </div>
   );
 }
