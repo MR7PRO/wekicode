@@ -1066,6 +1066,10 @@ export type Database = {
         Args: { article_uuid: string }
         Returns: undefined
       }
+      increment_article_views: {
+        Args: { article_uuid: string }
+        Returns: undefined
+      }
       increment_question_answers: {
         Args: { question_uuid: string }
         Returns: undefined
