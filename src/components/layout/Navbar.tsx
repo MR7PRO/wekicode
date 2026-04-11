@@ -13,7 +13,8 @@ import {
   Loader2,
   CreditCard,
   Trophy,
-  Settings
+  Settings,
+  FileText
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,6 +34,7 @@ import { MessagesBadge } from "@/components/messages/MessagesBadge";
 const navLinks = [
   { path: "/", label: "الرئيسية", icon: Code2 },
   { path: "/questions", label: "الأسئلة", icon: HelpCircle },
+  { path: "/articles", label: "المقالات", icon: FileText },
   { path: "/jobs", label: "الوظائف", icon: Briefcase },
   { path: "/courses", label: "التعليم", icon: BookOpen },
   { path: "/leaderboard", label: "المتصدرين", icon: Trophy },

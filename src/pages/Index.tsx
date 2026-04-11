@@ -1,6 +1,7 @@
 import { memo, lazy, Suspense } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -58,6 +59,7 @@ const Index = memo(() => {
         </Suspense>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 });

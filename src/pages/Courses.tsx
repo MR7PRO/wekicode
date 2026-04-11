@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
   BookOpen, 
@@ -320,7 +321,7 @@ export default function Courses() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -769,6 +770,7 @@ export default function Courses() {
       </main>
 
       <Footer />
+      <BottomNav />
     </div>
   );
 }

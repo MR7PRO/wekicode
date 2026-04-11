@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
   HelpCircle, 
@@ -357,7 +358,7 @@ export default function Questions() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -715,6 +716,7 @@ export default function Questions() {
       </main>
 
       <Footer />
+      <BottomNav />
     </div>
   );
 }

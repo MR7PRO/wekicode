@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { 
   Briefcase, 
@@ -312,7 +313,7 @@ export default function Jobs() {
   const getJobAvatar = (job: Job) => getUserAvatarByName(job.company, job.id);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
       
       <main className="pt-24 pb-16">
@@ -733,6 +734,7 @@ export default function Jobs() {
       </Dialog>
 
       <Footer />
+      <BottomNav />
     </div>
   );
 }

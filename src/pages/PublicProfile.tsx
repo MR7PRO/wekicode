@@ -1,21 +1,31 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useFollows } from "@/hooks/useFollows";
+import { useMessages } from "@/hooks/useMessages";
 import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { motion } from "framer-motion";
 import { 
   MapPin, Calendar, Globe, Github, Linkedin, Twitter, Code2, Flame, Trophy, 
-  Medal, Star, Zap, Crown, Coins, Award, Lock, Loader2
+  Medal, Star, Zap, Crown, Coins, Award, Lock, Loader2, MessageSquare, UserPlus, UserCheck, Users
 } from "lucide-react";
 import { BadgeDisplay } from "@/components/badges/BadgeSystem";
+import { toast } from "@/hooks/use-toast";
 
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const { isFollowing, followersCount, followingCount, toggleFollow, loading: followLoading } = useFollows(userId);
+  const { getOrCreateConversation } = useMessages();
 
   useEffect(() => {
     if (userId) fetchProfile();
@@ -37,6 +47,17 @@ export default function PublicProfile() {
       setProfile(data);
     }
     setLoading(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!user) return navigate("/auth");
+    if (!userId || user.id === userId) return;
+    const convId = await getOrCreateConversation(userId);
+    if (convId) {
+      navigate(`/messages?conversation=${convId}`);
+    } else {
+      toast({ title: "خطأ", description: "فشل بدء المحادثة", variant: "destructive" });
+    }
   };
 
   function getLevelRank(level: number): string {
@@ -81,9 +102,10 @@ export default function PublicProfile() {
 
   const LevelIcon = getLevelIcon(profile.level || 1);
   const avatarSrc = profile.avatar_url || getUserAvatarSrc(profile.user_id);
+  const isOwnProfile = user?.id === userId;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -111,11 +133,32 @@ export default function PublicProfile() {
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl font-black text-foreground">{profile.full_name || "مستخدم"}</h1>
-                    <span className="px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
-                      {getLevelRank(profile.level || 1)}
-                    </span>
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-3">
+                      <h1 className="text-3xl font-black text-foreground">{profile.full_name || "مستخدم"}</h1>
+                      <span className="px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
+                        {getLevelRank(profile.level || 1)}
+                      </span>
+                    </div>
+
+                    {/* Action buttons */}
+                    {!isOwnProfile && (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant={isFollowing ? "outline" : "default"}
+                          size="sm"
+                          onClick={toggleFollow}
+                          disabled={followLoading}
+                        >
+                          {isFollowing ? <UserCheck className="w-4 h-4 ml-1" /> : <UserPlus className="w-4 h-4 ml-1" />}
+                          {isFollowing ? "متابَع" : "متابعة"}
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleSendMessage}>
+                          <MessageSquare className="w-4 h-4 ml-1" />
+                          إرسال رسالة
+                        </Button>
+                      </div>
+                    )}
                   </div>
 
                   {profile.bio && <p className="text-foreground/80 mb-4 text-lg">{profile.bio}</p>}
@@ -128,6 +171,12 @@ export default function PublicProfile() {
                         <Globe className="w-4 h-4" />{profile.website_url.replace(/^https?:\/\//, "")}
                       </a>
                     )}
+                    <span className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      <span className="font-bold text-foreground">{followersCount}</span> متابع
+                      <span className="mx-1">·</span>
+                      <span className="font-bold text-foreground">{followingCount}</span> يتابع
+                    </span>
                   </div>
 
                   {/* Social */}
@@ -181,6 +230,7 @@ export default function PublicProfile() {
         </div>
       </main>
       <Footer />
+      <BottomNav />
     </div>
   );
 }
