@@ -313,7 +313,7 @@ export default function Jobs() {
   const getJobAvatar = (job: Job) => getUserAvatarByName(job.company, job.id);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
       
       <main className="pt-24 pb-16">
