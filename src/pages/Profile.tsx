@@ -19,6 +19,8 @@ import { ActivityGraph } from "@/components/profile/ActivityGraph";
 import { PointsLedger } from "@/components/profile/PointsLedger";
 import { CoverUpload } from "@/components/profile/CoverUpload";
 import { Link } from "react-router-dom";
+import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
+import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "النقاط", "الفواتير"];
 
