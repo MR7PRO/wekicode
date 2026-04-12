@@ -21,9 +21,11 @@ import {
   HeartOff,
   Send,
   Loader2,
-  X
+  X,
+  Brain
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { QuizPlayer } from "@/components/quiz/QuizPlayer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -62,6 +64,12 @@ interface Enrollment {
   completed_lessons: number[];
 }
 
+interface CourseQuiz {
+  id: string;
+  course_id: string;
+  title: string;
+}
+
 export default function Courses() {
   const { user, profile, refreshProfile } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("الكل");
@@ -76,6 +84,8 @@ export default function Courses() {
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("popular");
+  const [quizzes, setQuizzes] = useState<CourseQuiz[]>([]);
+  const [activeQuiz, setActiveQuiz] = useState<{ id: string; title: string } | null>(null);
   
   // New course form
   const [newCourse, setNewCourse] = useState({
@@ -90,11 +100,17 @@ export default function Courses() {
 
   useEffect(() => {
     fetchCourses();
+    fetchQuizzes();
     if (user) {
       fetchEnrollments();
       fetchFavorites();
     }
   }, [user]);
+
+  const fetchQuizzes = async () => {
+    const { data } = await supabase.from("course_quizzes").select("*");
+    if (data) setQuizzes(data as CourseQuiz[]);
+  };
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -319,6 +335,24 @@ export default function Courses() {
   const getEnrollment = (courseId: string) => {
     return enrollments.find(e => e.course_id === courseId);
   };
+
+  if (activeQuiz) {
+    return (
+      <div className="min-h-screen bg-background pb-20 md:pb-0">
+        <Navbar />
+        <main className="pt-24 pb-16">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <QuizPlayer
+              quizId={activeQuiz.id}
+              quizTitle={activeQuiz.title}
+              onClose={() => setActiveQuiz(null)}
+            />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
@@ -752,6 +786,23 @@ export default function Courses() {
                             </>
                           )}
                         </Button>
+
+                        {/* Quiz Button */}
+                        {(() => {
+                          const quiz = quizzes.find(q => q.course_id === course.id);
+                          if (!quiz) return null;
+                          return (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 border-accent/50 text-accent hover:bg-accent/10"
+                              onClick={() => setActiveQuiz({ id: quiz.id, title: quiz.title })}
+                            >
+                              <Brain className="w-4 h-4" />
+                              اختبر معلوماتك
+                            </Button>
+                          );
+                        })()}
                       </div>
                     </div>
                   );

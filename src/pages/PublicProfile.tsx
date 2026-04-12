@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { BadgeDisplay } from "@/components/badges/BadgeSystem";
 import { toast } from "@/hooks/use-toast";
+import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
+import { getLevelPerk } from "@/lib/levelPerks";
 
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
@@ -122,11 +124,13 @@ export default function PublicProfile() {
 
             <div className="glass border-border/30 p-8 -mt-16 mx-4 rounded-2xl">
               <div className="flex flex-col md:flex-row gap-6">
-                {/* Avatar */}
+                {/* Avatar with level frame */}
                 <div className="relative -mt-20">
-                  <div className="w-32 h-32 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                    <img src={avatarSrc} alt={profile.full_name} className="w-full h-full rounded-3xl object-cover bg-card" />
-                  </div>
+                  <LevelAvatarFrame level={profile.level || 1}>
+                    <div className="w-32 h-32 rounded-3xl bg-gradient-primary p-1">
+                      <img src={avatarSrc} alt={profile.full_name} className="w-full h-full rounded-3xl object-cover bg-card" />
+                    </div>
+                  </LevelAvatarFrame>
                   <div className="absolute -bottom-2 -right-2 w-12 h-12 rounded-xl bg-gradient-accent flex items-center justify-center">
                     <LevelIcon className="w-5 h-5 text-accent-foreground" />
                   </div>
@@ -135,10 +139,8 @@ export default function PublicProfile() {
                 <div className="flex-1">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-2">
                     <div className="flex items-center gap-3">
-                      <h1 className="text-3xl font-black text-foreground">{profile.full_name || "مستخدم"}</h1>
-                      <span className="px-3 py-1 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
-                        {getLevelRank(profile.level || 1)}
-                      </span>
+                      <StyledUsername name={profile.full_name || "مستخدم"} level={profile.level || 1} className="text-3xl" />
+                      <LevelBadge level={profile.level || 1} points={profile.points || 0} />
                     </div>
 
                     {/* Action buttons */}

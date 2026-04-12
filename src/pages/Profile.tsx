@@ -19,6 +19,8 @@ import { ActivityGraph } from "@/components/profile/ActivityGraph";
 import { PointsLedger } from "@/components/profile/PointsLedger";
 import { CoverUpload } from "@/components/profile/CoverUpload";
 import { Link } from "react-router-dom";
+import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
+import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "النقاط", "الفواتير"];
 
@@ -171,11 +173,13 @@ export default function Profile() {
                 {/* Left - Avatar */}
                 <div className="flex flex-col items-center lg:items-start gap-6">
                   <div className="relative group -mt-20">
-                    <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
-                        <img src={avatarSrc} alt={userData.name} className="w-full h-full rounded-3xl object-cover" />
+                    <LevelAvatarFrame level={userData.level}>
+                      <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1">
+                        <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
+                          <img src={avatarSrc} alt={userData.name} className="w-full h-full rounded-3xl object-cover" />
+                        </div>
                       </div>
-                    </div>
+                    </LevelAvatarFrame>
                     {user && (
                       <>
                         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
@@ -216,10 +220,8 @@ export default function Profile() {
                 {/* Middle - Info */}
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <h1 className="text-3xl md:text-4xl font-black text-foreground">{userData.name}</h1>
-                    <span className="px-4 py-1.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
-                      {userData.rank}
-                    </span>
+                    <StyledUsername name={userData.name} level={userData.level} className="text-3xl md:text-4xl" />
+                    <LevelBadge level={userData.level} points={userData.points} />
                   </div>
                   
                   <p className="text-muted-foreground mb-2">{userData.username}</p>
