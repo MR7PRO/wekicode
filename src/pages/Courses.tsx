@@ -100,11 +100,17 @@ export default function Courses() {
 
   useEffect(() => {
     fetchCourses();
+    fetchQuizzes();
     if (user) {
       fetchEnrollments();
       fetchFavorites();
     }
   }, [user]);
+
+  const fetchQuizzes = async () => {
+    const { data } = await supabase.from("course_quizzes").select("*");
+    if (data) setQuizzes(data as CourseQuiz[]);
+  };
 
   const fetchCourses = async () => {
     setLoading(true);
