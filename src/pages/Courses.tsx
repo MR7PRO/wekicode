@@ -336,6 +336,24 @@ export default function Courses() {
     return enrollments.find(e => e.course_id === courseId);
   };
 
+  if (activeQuiz) {
+    return (
+      <div className="min-h-screen bg-background pb-20 md:pb-0">
+        <Navbar />
+        <main className="pt-24 pb-16">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <QuizPlayer
+              quizId={activeQuiz.id}
+              quizTitle={activeQuiz.title}
+              onClose={() => setActiveQuiz(null)}
+            />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
