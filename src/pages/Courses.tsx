@@ -64,6 +64,12 @@ interface Enrollment {
   completed_lessons: number[];
 }
 
+interface CourseQuiz {
+  id: string;
+  course_id: string;
+  title: string;
+}
+
 export default function Courses() {
   const { user, profile, refreshProfile } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState("الكل");
@@ -78,6 +84,8 @@ export default function Courses() {
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [priceFilter, setPriceFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("popular");
+  const [quizzes, setQuizzes] = useState<CourseQuiz[]>([]);
+  const [activeQuiz, setActiveQuiz] = useState<{ id: string; title: string } | null>(null);
   
   // New course form
   const [newCourse, setNewCourse] = useState({
