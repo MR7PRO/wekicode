@@ -786,6 +786,23 @@ export default function Courses() {
                             </>
                           )}
                         </Button>
+
+                        {/* Quiz Button */}
+                        {(() => {
+                          const quiz = quizzes.find(q => q.course_id === course.id);
+                          if (!quiz) return null;
+                          return (
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 border-accent/50 text-accent hover:bg-accent/10"
+                              onClick={() => setActiveQuiz({ id: quiz.id, title: quiz.title })}
+                            >
+                              <Brain className="w-4 h-4" />
+                              اختبر معلوماتك
+                            </Button>
+                          );
+                        })()}
                       </div>
                     </div>
                   );
