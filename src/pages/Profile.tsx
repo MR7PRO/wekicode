@@ -173,11 +173,13 @@ export default function Profile() {
                 {/* Left - Avatar */}
                 <div className="flex flex-col items-center lg:items-start gap-6">
                   <div className="relative group -mt-20">
-                    <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                      <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
-                        <img src={avatarSrc} alt={userData.name} className="w-full h-full rounded-3xl object-cover" />
+                    <LevelAvatarFrame level={userData.level}>
+                      <div className="w-36 h-36 rounded-3xl bg-gradient-primary p-1">
+                        <div className="w-full h-full rounded-3xl bg-card flex items-center justify-center overflow-hidden">
+                          <img src={avatarSrc} alt={userData.name} className="w-full h-full rounded-3xl object-cover" />
+                        </div>
                       </div>
-                    </div>
+                    </LevelAvatarFrame>
                     {user && (
                       <>
                         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
