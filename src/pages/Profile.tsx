@@ -220,10 +220,8 @@ export default function Profile() {
                 {/* Middle - Info */}
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-3 mb-3">
-                    <h1 className="text-3xl md:text-4xl font-black text-foreground">{userData.name}</h1>
-                    <span className="px-4 py-1.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-bold">
-                      {userData.rank}
-                    </span>
+                    <StyledUsername name={userData.name} level={userData.level} className="text-3xl md:text-4xl" />
+                    <LevelBadge level={userData.level} points={userData.points} />
                   </div>
                   
                   <p className="text-muted-foreground mb-2">{userData.username}</p>
