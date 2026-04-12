@@ -141,7 +141,6 @@ export default function PublicProfile() {
                     <div className="flex items-center gap-3">
                       <StyledUsername name={profile.full_name || "مستخدم"} level={profile.level || 1} className="text-3xl" />
                       <LevelBadge level={profile.level || 1} points={profile.points || 0} />
-                      </span>
                     </div>
 
                     {/* Action buttons */}
