@@ -18,6 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarByName } from "@/lib/media/userAvatars";
+import { LevelBadge, StyledUsername } from "@/components/levels/LevelBadge";
 
 interface LeaderboardUser {
   id: string;
@@ -387,15 +388,14 @@ export default function Leaderboard() {
 
                         {/* Name & Level */}
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-foreground truncate">
-                            {u.full_name || "مستخدم"}
-                            {isCurrentUser && <span className="text-primary mr-2">(أنت)</span>}
+                          <div className="font-medium truncate flex items-center gap-2">
+                            <StyledUsername name={u.full_name || "مستخدم"} level={u.level} />
+                            {isCurrentUser && <span className="text-primary text-sm">(أنت)</span>}
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Star className="w-3 h-3" />
-                            المستوى {u.level}
+                          <div className="flex items-center gap-2 text-sm">
+                            <LevelBadge level={u.level} points={u.points} size="sm" />
                             {u.badges && u.badges.length > 0 && (
-                              <span className="text-xs">• {u.badges.length} شارة</span>
+                              <span className="text-xs text-muted-foreground">• {u.badges.length} شارة</span>
                             )}
                           </div>
                         </div>
