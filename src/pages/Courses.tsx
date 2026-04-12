@@ -21,9 +21,11 @@ import {
   HeartOff,
   Send,
   Loader2,
-  X
+  X,
+  Brain
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { QuizPlayer } from "@/components/quiz/QuizPlayer";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
