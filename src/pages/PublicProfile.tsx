@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { BadgeDisplay } from "@/components/badges/BadgeSystem";
 import { toast } from "@/hooks/use-toast";
+import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
+import { getLevelPerk } from "@/lib/levelPerks";
 
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
