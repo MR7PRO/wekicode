@@ -653,7 +653,7 @@ export default function Questions() {
                         {/* Meta */}
                         <div className="flex flex-wrap items-center justify-between gap-4">
                           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
+                            <Link to={`/u/${question.user_id}`} className="flex items-center gap-2 hover:text-primary transition-colors">
                               {question.author?.avatar_url ? (
                                 <img 
                                   src={question.author.avatar_url} 
@@ -666,7 +666,7 @@ export default function Questions() {
                                 </div>
                               )}
                               <span>{question.author?.full_name || 'مستخدم'}</span>
-                            </div>
+                            </Link>
                             <div className="flex items-center gap-1">
                               <MessageSquare className="w-4 h-4" />
                               <span>{question.answers_count} إجابة</span>
