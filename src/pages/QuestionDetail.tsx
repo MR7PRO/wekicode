@@ -482,16 +482,17 @@ export default function QuestionDetail() {
 
                 {/* Meta */}
                 <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
-                  <div className="flex items-center gap-3">
+                  <Link to={`/u/${question.user_id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                     <div className="w-10 h-10 rounded-full bg-gradient-primary flex items-center justify-center text-lg font-bold text-primary-foreground">
                       {question.author?.full_name?.charAt(0) || 'م'}
                     </div>
                     <div>
-                      <div className="font-medium text-foreground">{question.author?.full_name || 'مستخدم'}</div>
+                      <div className="font-medium text-foreground hover:text-primary transition-colors">{question.author?.full_name || 'مستخدم'}</div>
                       <div className="text-sm text-muted-foreground">
                         {formatDistanceToNow(new Date(question.created_at), { locale: ar, addSuffix: true })}
                       </div>
                     </div>
+                  </Link>
                   </div>
 
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -571,16 +572,17 @@ export default function QuestionDetail() {
 
                       {/* Meta */}
                       <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border">
-                        <div className="flex items-center gap-3">
+                        <Link to={`/u/${answer.user_id}`} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
                           <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-sm font-bold text-accent-foreground">
                             {answer.author?.full_name?.charAt(0) || 'م'}
                           </div>
                           <div>
-                            <div className="font-medium text-foreground text-sm">{answer.author?.full_name || 'مستخدم'}</div>
+                            <div className="font-medium text-foreground text-sm hover:text-primary transition-colors">{answer.author?.full_name || 'مستخدم'}</div>
                             <div className="text-xs text-muted-foreground">
                               {formatDistanceToNow(new Date(answer.created_at), { locale: ar, addSuffix: true })}
                             </div>
                           </div>
+                        </Link>
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -611,7 +613,7 @@ export default function QuestionDetail() {
                         <div className="mt-4 pt-4 border-t border-border/50 space-y-3">
                           {answer.comments.map((comment) => (
                             <div key={comment.id} className="flex gap-2 text-sm">
-                              <span className="font-medium text-primary">{comment.author?.full_name}:</span>
+                              <Link to={`/u/${comment.user_id}`} className="font-medium text-primary hover:underline">{comment.author?.full_name}:</Link>
                               <span className="text-muted-foreground">{comment.content}</span>
                               <span className="text-muted-foreground/50">
                                 – {formatDistanceToNow(new Date(comment.created_at), { locale: ar, addSuffix: true })}

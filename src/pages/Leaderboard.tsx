@@ -14,6 +14,7 @@ import {
   Filter
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -272,7 +273,7 @@ export default function Leaderboard() {
               {topThree.length >= 3 && (
                 <div className="flex items-end justify-center gap-4 mb-12">
                   {/* Second Place */}
-                  <div className="flex flex-col items-center">
+                  <Link to={`/u/${topThree[1].user_id}`} className="flex flex-col items-center hover:scale-105 transition-transform">
                     <Avatar className="w-16 h-16 border-4 border-gray-400 mb-2">
                       <AvatarImage src={topThree[1].avatar_url || getDemoAvatar(topThree[1].full_name, topThree[1].user_id)} />
                       <AvatarFallback className="bg-gray-400 text-white text-xl">
@@ -285,10 +286,10 @@ export default function Leaderboard() {
                       <div className="text-accent font-bold">{topThree[1].points.toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground">المستوى {topThree[1].level}</div>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* First Place */}
-                  <div className="flex flex-col items-center -mt-8">
+                  <Link to={`/u/${topThree[0].user_id}`} className="flex flex-col items-center -mt-8 hover:scale-105 transition-transform">
                     <Crown className="w-10 h-10 text-yellow-500 mb-2 animate-pulse" />
                     <Avatar className="w-20 h-20 border-4 border-yellow-500 mb-2">
                       <AvatarImage src={topThree[0].avatar_url || getDemoAvatar(topThree[0].full_name, topThree[0].user_id)} />
@@ -301,10 +302,10 @@ export default function Leaderboard() {
                       <div className="text-accent text-xl font-bold">{topThree[0].points.toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground">المستوى {topThree[0].level}</div>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Third Place */}
-                  <div className="flex flex-col items-center">
+                  <Link to={`/u/${topThree[2].user_id}`} className="flex flex-col items-center hover:scale-105 transition-transform">
                     <Avatar className="w-14 h-14 border-4 border-amber-600 mb-2">
                       <AvatarImage src={topThree[2].avatar_url || getDemoAvatar(topThree[2].full_name, topThree[2].user_id)} />
                       <AvatarFallback className="bg-amber-600 text-white text-lg">
@@ -317,7 +318,7 @@ export default function Leaderboard() {
                       <div className="text-accent font-bold text-sm">{topThree[2].points.toLocaleString()}</div>
                       <div className="text-xs text-muted-foreground">المستوى {topThree[2].level}</div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               )}
 
@@ -367,7 +368,8 @@ export default function Leaderboard() {
                     const isCurrentUser = user && u.user_id === user.id;
                     
                     return (
-                      <div 
+                      <Link 
+                        to={`/u/${u.user_id}`}
                         key={u.id} 
                         className={`flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors ${
                           isCurrentUser ? "bg-primary/5 border-r-4 border-r-primary" : ""
@@ -405,7 +407,7 @@ export default function Leaderboard() {
                           <Coins className="w-5 h-5 text-accent" />
                           <span className="text-lg font-bold text-gradient-accent">{u.points.toLocaleString()}</span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>
