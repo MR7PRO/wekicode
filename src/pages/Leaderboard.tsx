@@ -368,7 +368,8 @@ export default function Leaderboard() {
                     const isCurrentUser = user && u.user_id === user.id;
                     
                     return (
-                      <div 
+                      <Link 
+                        to={`/u/${u.user_id}`}
                         key={u.id} 
                         className={`flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors ${
                           isCurrentUser ? "bg-primary/5 border-r-4 border-r-primary" : ""
@@ -406,7 +407,7 @@ export default function Leaderboard() {
                           <Coins className="w-5 h-5 text-accent" />
                           <span className="text-lg font-bold text-gradient-accent">{u.points.toLocaleString()}</span>
                         </div>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>
