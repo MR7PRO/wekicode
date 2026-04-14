@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -713,7 +714,7 @@ export default function Courses() {
                         </p>
 
                         {/* Instructor */}
-                        <div className="flex items-center gap-2 mb-4">
+                        <Link to={`/u/${course.user_id}`} className="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity" onClick={e => e.stopPropagation()}>
                           <div className="w-8 h-8 rounded-full overflow-hidden bg-gradient-primary shrink-0">
                             <img
                               src={getUserAvatarByName(course.instructor, course.id)}
@@ -726,8 +727,8 @@ export default function Courses() {
                               }}
                             />
                           </div>
-                          <span className="text-sm text-muted-foreground">{course.instructor}</span>
-                        </div>
+                          <span className="text-sm text-muted-foreground hover:text-primary transition-colors">{course.instructor}</span>
+                        </Link>
 
                         {/* Progress (if enrolled) */}
                         {isEnrolled && enrollment && (
