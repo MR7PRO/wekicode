@@ -1158,24 +1158,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      admin_update_profile: {
-        Args: {
-          p_badges?: string[]
-          p_bio?: string
-          p_current_streak?: number
-          p_github_url?: string
-          p_is_public?: boolean
-          p_level?: number
-          p_linkedin_url?: string
-          p_location?: string
-          p_longest_streak?: number
-          p_points?: number
-          p_skills?: string[]
-          p_twitter_url?: string
-          p_user_id: string
-        }
-        Returns: undefined
-      }
       check_ai_chat_rate_limit: {
         Args: {
           p_max_requests?: number

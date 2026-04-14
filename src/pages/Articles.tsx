@@ -216,9 +216,9 @@ export default function Articles() {
                           </h2>
                           <p className="text-muted-foreground text-sm line-clamp-2 mt-1">{article.content}</p>
                           <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
+                            <Link to={`/u/${article.user_id}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1 hover:text-primary transition-colors">
                               <User className="w-3 h-3" />{article.author?.full_name || "مستخدم"}
-                            </span>
+                            </Link>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
                               {formatDistanceToNow(new Date(article.created_at), { addSuffix: true, locale: ar })}
