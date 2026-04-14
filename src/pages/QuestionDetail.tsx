@@ -493,7 +493,6 @@ export default function QuestionDetail() {
                       </div>
                     </div>
                   </Link>
-                  </div>
 
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
@@ -583,7 +582,6 @@ export default function QuestionDetail() {
                             </div>
                           </div>
                         </Link>
-                        </div>
 
                         <div className="flex items-center gap-2">
                           {user && question.user_id === user.id && !answer.is_accepted && (
