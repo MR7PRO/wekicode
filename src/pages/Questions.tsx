@@ -64,9 +64,9 @@ const demoQuestions: Question[] = [
     answers_count: 8,
     views: 234,
     is_solved: true,
-    user_id: 'demo-user-1',
+    user_id: 'accd141b-a6e9-4f48-867c-01a0d1e9623a',
     created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'محمد العلي', avatar_url: 'https://randomuser.me/api/portraits/men/32.jpg' }
+    author: { full_name: 'احمد اسعد', avatar_url: null }
   },
   {
     id: 'demo-q2',
@@ -77,9 +77,9 @@ const demoQuestions: Question[] = [
     answers_count: 12,
     views: 456,
     is_solved: true,
-    user_id: 'demo-user-2',
+    user_id: '0b4ff60f-0c64-4ef9-b749-049539941898',
     created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'سارة أحمد', avatar_url: 'https://randomuser.me/api/portraits/women/44.jpg' }
+    author: { full_name: 'خالد اسعد', avatar_url: null }
   },
   {
     id: 'demo-q3',
@@ -90,9 +90,9 @@ const demoQuestions: Question[] = [
     answers_count: 5,
     views: 178,
     is_solved: false,
-    user_id: 'demo-user-3',
+    user_id: '8809d810-7568-4bf1-a13e-1c7c766442bc',
     created_at: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'أحمد الخطيب', avatar_url: 'https://randomuser.me/api/portraits/men/67.jpg' }
+    author: { full_name: 'محمد اسماعيل', avatar_url: null }
   },
   {
     id: 'demo-q4',
@@ -103,9 +103,9 @@ const demoQuestions: Question[] = [
     answers_count: 7,
     views: 289,
     is_solved: true,
-    user_id: 'demo-user-4',
+    user_id: '2d4eeb92-8fab-4b38-be86-5fb601f3118b',
     created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'نور الهدى', avatar_url: 'https://randomuser.me/api/portraits/women/22.jpg' }
+    author: { full_name: 'محمود عالم', avatar_url: null }
   },
   {
     id: 'demo-q5',
@@ -116,9 +116,9 @@ const demoQuestions: Question[] = [
     answers_count: 15,
     views: 612,
     is_solved: true,
-    user_id: 'demo-user-5',
+    user_id: 'd3f0c9b5-e95b-474e-a0b1-e20d06ae950f',
     created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'ليلى حسين', avatar_url: 'https://randomuser.me/api/portraits/women/89.jpg' }
+    author: { full_name: 'محمود سعيد', avatar_url: null }
   },
   {
     id: 'demo-q6',
@@ -129,9 +129,9 @@ const demoQuestions: Question[] = [
     answers_count: 6,
     views: 198,
     is_solved: false,
-    user_id: 'demo-user-6',
+    user_id: '3b0ad300-98f8-4984-9fe6-6ff1372399b7',
     created_at: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'عمر فاروق', avatar_url: 'https://randomuser.me/api/portraits/men/45.jpg' }
+    author: { full_name: 'حسام الخالدي', avatar_url: null }
   },
   {
     id: 'demo-q7',
@@ -142,9 +142,9 @@ const demoQuestions: Question[] = [
     answers_count: 21,
     views: 834,
     is_solved: true,
-    user_id: 'demo-user-7',
+    user_id: '02818ce2-3bbd-4b24-a9f5-99544d2ae0ac',
     created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'فاطمة الزهراء', avatar_url: 'https://randomuser.me/api/portraits/women/56.jpg' }
+    author: { full_name: 'مازن كندا', avatar_url: null }
   },
   {
     id: 'demo-q8',
@@ -155,9 +155,9 @@ const demoQuestions: Question[] = [
     answers_count: 4,
     views: 145,
     is_solved: false,
-    user_id: 'demo-user-8',
+    user_id: '9d0929d3-2861-46ab-a314-540da12f549a',
     created_at: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-    author: { full_name: 'خالد المنصور', avatar_url: 'https://randomuser.me/api/portraits/men/78.jpg' }
+    author: { full_name: 'ايهم الهور', avatar_url: null }
   },
 ];
 
