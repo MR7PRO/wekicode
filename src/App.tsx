@@ -27,6 +27,7 @@ const Messages = lazy(() => import("./pages/Messages"));
 const Articles = lazy(() => import("./pages/Articles"));
 const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const Developers = lazy(() => import("./pages/Developers"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
 
@@ -70,6 +71,7 @@ const App = () => (
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/articles" element={<Articles />} />
                 <Route path="/articles/:id" element={<ArticleDetail />} />
+                <Route path="/developers" element={<Developers />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/rewards" element={<Rewards />} />
