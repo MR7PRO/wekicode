@@ -74,7 +74,7 @@ export function ProgressWidget() {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">للمستوى التالي</span>
-              <span className="font-medium text-foreground">{pointsToNextLevel - points} نقطة</span>
+              <span className="font-medium text-foreground">{Math.max(0, nextLevelPoints - points)} نقطة</span>
             </div>
           </div>
 
