@@ -13,10 +13,14 @@ export function ProgressWidget() {
 
   const level = profile.level ?? 1;
   const points = profile.points ?? 0;
-  const pointsToNextLevel = level * 200;
-  const currentLevelPoints = (level - 1) * 200;
-  const progressInLevel = points - currentLevelPoints;
-  const progressPercentage = Math.min((progressInLevel / 200) * 100, 100);
+  
+  // Level thresholds matching the actual leveling system
+  const LEVEL_THRESHOLDS = [0, 0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500, 7500, 10000];
+  const currentLevelPoints = LEVEL_THRESHOLDS[Math.min(level, LEVEL_THRESHOLDS.length - 1)] || 0;
+  const nextLevelPoints = LEVEL_THRESHOLDS[Math.min(level + 1, LEVEL_THRESHOLDS.length - 1)] || (currentLevelPoints + 2000);
+  const pointsNeeded = nextLevelPoints - currentLevelPoints;
+  const progressInLevel = Math.max(0, points - currentLevelPoints);
+  const progressPercentage = pointsNeeded > 0 ? Math.min((progressInLevel / pointsNeeded) * 100, 100) : 100;
 
   return (
     <Tooltip>
