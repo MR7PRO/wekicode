@@ -80,7 +80,7 @@ export function ProgressWidget() {
 
           <div>
             <div className="flex justify-between text-xs mb-1">
-              <span>{progressInLevel} / 200</span>
+              <span>{progressInLevel} / {pointsNeeded}</span>
               <span>{Math.round(progressPercentage)}%</span>
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
