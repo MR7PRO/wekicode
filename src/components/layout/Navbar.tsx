@@ -7,6 +7,7 @@ import {
   BookOpen, 
   Gift, 
   User, 
+  Users,
   Menu,
   X,
   LogOut,
