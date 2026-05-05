@@ -692,8 +692,10 @@ export default function Courses() {
 
                         {/* Favorite Button */}
                         <button
-                          onClick={() => toggleFavorite(course.id)}
-                          className="absolute top-3 left-3 p-2 rounded-full bg-background/80 hover:bg-background transition-colors"
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); e.preventDefault(); toggleFavorite(course.id); }}
+                          aria-label={isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+                          className="absolute top-3 left-3 z-20 p-2 rounded-full bg-background/80 hover:bg-background transition-colors cursor-pointer"
                         >
                           {isFavorite ? (
                             <Heart className="w-4 h-4 text-destructive fill-destructive" />
@@ -704,7 +706,7 @@ export default function Courses() {
 
                         {/* Play Button */}
                         {isEnrolled && (
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                             <button className="w-14 h-14 rounded-full bg-primary flex items-center justify-center shadow-glow">
                               <Play className="w-6 h-6 text-primary-foreground ml-1" />
                             </button>
