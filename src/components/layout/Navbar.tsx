@@ -65,7 +65,7 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group ml-6 shrink-0">
             <img 
               src={wekicodeLogo} 
               alt="WekiCode Logo" 
@@ -82,7 +82,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1 mr-auto pr-4">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.path;
