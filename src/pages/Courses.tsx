@@ -87,6 +87,7 @@ export default function Courses() {
   const [sortBy, setSortBy] = useState<string>("popular");
   const [quizzes, setQuizzes] = useState<CourseQuiz[]>([]);
   const [activeQuiz, setActiveQuiz] = useState<{ id: string; title: string } | null>(null);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
   
   // New course form
   const [newCourse, setNewCourse] = useState({
@@ -167,7 +168,8 @@ export default function Courses() {
     const matchesPrice = priceFilter === "all" ||
       (priceFilter === "free" && c.is_free) ||
       (priceFilter === "paid" && !c.is_free);
-    return matchesCategory && matchesSearch && matchesLevel && matchesPrice;
+    const matchesFavorites = !showOnlyFavorites || favoriteCourses.includes(c.id);
+    return matchesCategory && matchesSearch && matchesLevel && matchesPrice && matchesFavorites;
   }).sort((a, b) => {
     if (sortBy === "popular") return (b.students_count || 0) - (a.students_count || 0);
     if (sortBy === "rating") return (b.rating || 0) - (a.rating || 0);
@@ -616,6 +618,19 @@ export default function Courses() {
                 {cat}
               </button>
             ))}
+            {user && (
+              <button
+                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ms-auto ${
+                  showOnlyFavorites
+                    ? "bg-destructive text-destructive-foreground shadow-glow"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${showOnlyFavorites ? "fill-current" : ""}`} />
+                المفضلة {favoriteCourses.length > 0 && `(${favoriteCourses.length})`}
+              </button>
+            )}
           </div>
 
           {/* Loading State */}
