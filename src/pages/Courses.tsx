@@ -618,6 +618,19 @@ export default function Courses() {
                 {cat}
               </button>
             ))}
+            {user && (
+              <button
+                onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ms-auto ${
+                  showOnlyFavorites
+                    ? "bg-destructive text-destructive-foreground shadow-glow"
+                    : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                }`}
+              >
+                <Heart className={`w-4 h-4 ${showOnlyFavorites ? "fill-current" : ""}`} />
+                المفضلة {favoriteCourses.length > 0 && `(${favoriteCourses.length})`}
+              </button>
+            )}
           </div>
 
           {/* Loading State */}
