@@ -21,6 +21,7 @@ import { CoverUpload } from "@/components/profile/CoverUpload";
 import { Link } from "react-router-dom";
 import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
 import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
+import { computeLevelInfo } from "@/lib/leveling";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "النقاط", "الفواتير"];
 
@@ -132,11 +133,11 @@ export default function Profile() {
     return Zap;
   }
 
+  const levelInfo = computeLevelInfo(userData.points, userData.level);
+  // Keep userData.level in sync with derived level so all downstream UI agrees.
+  userData.level = levelInfo.level;
   const LevelIcon = getLevelIcon(userData.level);
-  const pointsToNextLevel = userData.level * 200;
-  const currentLevelPoints = (userData.level - 1) * 200;
-  const progressInLevel = userData.points - currentLevelPoints;
-  const progressPercentage = Math.min((progressInLevel / 200) * 100, 100);
+  const { progressPercentage, remainingToNext, isMaxLevel } = levelInfo;
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, { class: string; label: string }> = {
@@ -292,14 +293,18 @@ export default function Profile() {
                     <div className="mb-3">
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-muted-foreground">المستوى {userData.level}</span>
-                        <span className="text-primary font-medium">المستوى {userData.level + 1}</span>
+                        <span className="text-primary font-medium">
+                          {isMaxLevel ? "أعلى مستوى" : `المستوى ${userData.level + 1}`}
+                        </span>
                       </div>
                       <div className="h-3 bg-secondary rounded-full overflow-hidden">
                         <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercentage}%` }}
                           transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-accent rounded-full" />
                       </div>
                       <div className="text-xs text-muted-foreground mt-2 text-center">
-                        {Math.max(pointsToNextLevel - userData.points, 0)} نقطة للمستوى التالي
+                        {isMaxLevel
+                          ? "لقد وصلت إلى أعلى مستوى 🏆"
+                          : `${remainingToNext.toLocaleString()} نقطة للمستوى التالي`}
                       </div>
                     </div>
                   </div>
