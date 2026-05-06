@@ -1155,7 +1155,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      quiz_questions_public: {
+        Row: {
+          id: string | null
+          options: Json | null
+          points: number | null
+          question_text: string | null
+          quiz_id: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          id?: string | null
+          options?: Json | null
+          points?: number | null
+          question_text?: string | null
+          quiz_id?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          id?: string | null
+          options?: Json | null
+          points?: number | null
+          question_text?: string | null
+          quiz_id?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "course_quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       check_ai_chat_rate_limit: {
@@ -1182,6 +1216,10 @@ export type Database = {
       increment_question_views: {
         Args: { question_uuid: string }
         Returns: undefined
+      }
+      submit_quiz_attempt: {
+        Args: { p_answers: Json; p_quiz_id: string }
+        Returns: Json
       }
       update_profile_info:
         | {
