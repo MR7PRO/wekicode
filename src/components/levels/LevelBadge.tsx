@@ -1,6 +1,7 @@
 import { getLevelPerk, getNextLevelPerk, LevelPerk } from "@/lib/levelPerks";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
+import { computeLevelInfo } from "@/lib/leveling";
 import { Crown } from "lucide-react";
 
 interface LevelBadgeProps {
@@ -29,9 +30,8 @@ export function LevelBadge({ level, points, showTooltip = true, size = "md" }: L
 
   if (!showTooltip) return badge;
 
-  const pointsToNextLevel = nextPerk ? nextPerk.level * 200 : null;
-  const currentPoints = points ?? 0;
-  const progressToNext = pointsToNextLevel ? Math.min((currentPoints / pointsToNextLevel) * 100, 100) : 100;
+  const info = computeLevelInfo(points ?? 0, level);
+  const progressToNext = info.progressPercentage;
 
   return (
     <Tooltip>
