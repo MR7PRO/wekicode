@@ -59,6 +59,11 @@ export function WeeklyChallenges() {
     setChallenges(challengeData || []);
 
     if (user && challengeData?.length) {
+      // Refresh progress server-side (secure) for each active challenge
+      await Promise.all(
+        challengeData.map(c => supabase.rpc('refresh_challenge_progress', { p_challenge_id: c.id }))
+      );
+
       const { data: progressData } = await supabase
         .from('user_challenge_progress')
         .select('*')
@@ -69,46 +74,6 @@ export function WeeklyChallenges() {
       progressData?.forEach(p => {
         progressMap[p.challenge_id] = p;
       });
-
-      // Auto-calculate progress from real data
-      for (const challenge of challengeData) {
-        if (!progressMap[challenge.id]) {
-          const realProgress = await calculateProgress(challenge);
-          // Upsert progress
-          const { data: upserted } = await supabase
-            .from('user_challenge_progress')
-            .upsert({
-              user_id: user.id,
-              challenge_id: challenge.id,
-              current_progress: realProgress,
-              is_completed: realProgress >= challenge.target_count,
-            }, { onConflict: 'user_id,challenge_id' })
-            .select()
-            .single();
-          
-          if (upserted) {
-            progressMap[challenge.id] = upserted;
-          }
-        } else {
-          // Update progress from real data
-          const realProgress = await calculateProgress(challenge);
-          if (realProgress !== progressMap[challenge.id].current_progress) {
-            await supabase
-              .from('user_challenge_progress')
-              .update({ 
-                current_progress: realProgress,
-                is_completed: realProgress >= challenge.target_count 
-              })
-              .eq('user_id', user.id)
-              .eq('challenge_id', challenge.id);
-            progressMap[challenge.id] = {
-              ...progressMap[challenge.id],
-              current_progress: realProgress,
-              is_completed: realProgress >= challenge.target_count,
-            };
-          }
-        }
-      }
 
       setProgress(progressMap);
     }
