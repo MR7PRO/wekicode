@@ -1,13 +1,22 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// CORS headers - allow any origin for deployment flexibility
+// CORS headers - whitelist trusted origins; do not reflect arbitrary origins with credentials.
+const ALLOWED_ORIGINS = [
+  "https://wekicode.lovable.app",
+  "https://id-preview--a699ad31-eba0-4c1b-ae9b-fe12b2562e4e.lovable.app",
+  "http://localhost:5173",
+  "http://localhost:8080",
+];
+
 const getCorsHeaders = (origin: string | null) => {
+  const allowOrigin =
+    origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    "Access-Control-Allow-Origin": origin || "*",
+    "Access-Control-Allow-Origin": allowOrigin,
+    "Vary": "Origin",
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Credentials": "true",
   };
 };
 
