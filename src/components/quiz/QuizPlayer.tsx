@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle, XCircle, Trophy, Loader2, ArrowLeft, Sparkles } from "lucide-react";
+import { CheckCircle, Trophy, Loader2, ArrowLeft, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface QuizQuestion {
