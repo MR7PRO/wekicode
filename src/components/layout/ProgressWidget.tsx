@@ -11,16 +11,33 @@ export function ProgressWidget() {
 
   if (!user || !profile) return null;
 
-  const level = profile.level ?? 1;
   const points = profile.points ?? 0;
-  
-  // Level thresholds matching the actual leveling system
+
+  // Level thresholds: index = level, value = min points required to reach that level
   const LEVEL_THRESHOLDS = [0, 0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500, 7500, 10000];
-  const currentLevelPoints = LEVEL_THRESHOLDS[Math.min(level, LEVEL_THRESHOLDS.length - 1)] || 0;
-  const nextLevelPoints = LEVEL_THRESHOLDS[Math.min(level + 1, LEVEL_THRESHOLDS.length - 1)] || (currentLevelPoints + 2000);
-  const pointsNeeded = nextLevelPoints - currentLevelPoints;
-  const progressInLevel = Math.max(0, points - currentLevelPoints);
-  const progressPercentage = pointsNeeded > 0 ? Math.min((progressInLevel / pointsNeeded) * 100, 100) : 100;
+  const MAX_LEVEL = LEVEL_THRESHOLDS.length - 1;
+
+  // Derive level from actual points so the bar always reflects reality,
+  // even if the stored profile.level lags behind.
+  let derivedLevel = 1;
+  for (let i = 1; i <= MAX_LEVEL; i++) {
+    if (points >= LEVEL_THRESHOLDS[i]) derivedLevel = i;
+  }
+  const level = Math.max(profile.level ?? 1, derivedLevel);
+
+  const isMaxLevel = level >= MAX_LEVEL;
+  const currentLevelPoints = LEVEL_THRESHOLDS[Math.min(level, MAX_LEVEL)];
+  const nextLevelPoints = isMaxLevel
+    ? currentLevelPoints
+    : LEVEL_THRESHOLDS[level + 1];
+  const pointsNeeded = Math.max(0, nextLevelPoints - currentLevelPoints);
+  const progressInLevel = Math.max(0, Math.min(points - currentLevelPoints, pointsNeeded));
+  const remainingToNext = Math.max(0, nextLevelPoints - points);
+  const progressPercentage = isMaxLevel
+    ? 100
+    : pointsNeeded > 0
+      ? Math.min((progressInLevel / pointsNeeded) * 100, 100)
+      : 0;
 
   return (
     <Tooltip>
@@ -74,13 +91,19 @@ export function ProgressWidget() {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">للمستوى التالي</span>
-              <span className="font-medium text-foreground">{Math.max(0, nextLevelPoints - points)} نقطة</span>
+              <span className="font-medium text-foreground">
+                {isMaxLevel ? "أعلى مستوى" : `${remainingToNext.toLocaleString()} نقطة`}
+              </span>
             </div>
           </div>
 
           <div>
             <div className="flex justify-between text-xs mb-1">
-              <span>{progressInLevel} / {pointsNeeded}</span>
+              <span>
+                {isMaxLevel
+                  ? `${points.toLocaleString()} نقطة`
+                  : `${progressInLevel.toLocaleString()} / ${pointsNeeded.toLocaleString()}`}
+              </span>
               <span>{Math.round(progressPercentage)}%</span>
             </div>
             <div className="h-2 bg-secondary rounded-full overflow-hidden">
