@@ -1,5 +1,6 @@
 import { Coins, TrendingUp, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { computeLevelInfo } from "@/lib/leveling";
 import {
   Tooltip,
   TooltipContent,
@@ -11,33 +12,15 @@ export function ProgressWidget() {
 
   if (!user || !profile) return null;
 
-  const points = profile.points ?? 0;
-
-  // Level thresholds: index = level, value = min points required to reach that level
-  const LEVEL_THRESHOLDS = [0, 0, 100, 300, 600, 1000, 1500, 2200, 3000, 4000, 5500, 7500, 10000];
-  const MAX_LEVEL = LEVEL_THRESHOLDS.length - 1;
-
-  // Derive level from actual points so the bar always reflects reality,
-  // even if the stored profile.level lags behind.
-  let derivedLevel = 1;
-  for (let i = 1; i <= MAX_LEVEL; i++) {
-    if (points >= LEVEL_THRESHOLDS[i]) derivedLevel = i;
-  }
-  const level = Math.max(profile.level ?? 1, derivedLevel);
-
-  const isMaxLevel = level >= MAX_LEVEL;
-  const currentLevelPoints = LEVEL_THRESHOLDS[Math.min(level, MAX_LEVEL)];
-  const nextLevelPoints = isMaxLevel
-    ? currentLevelPoints
-    : LEVEL_THRESHOLDS[level + 1];
-  const pointsNeeded = Math.max(0, nextLevelPoints - currentLevelPoints);
-  const progressInLevel = Math.max(0, Math.min(points - currentLevelPoints, pointsNeeded));
-  const remainingToNext = Math.max(0, nextLevelPoints - points);
-  const progressPercentage = isMaxLevel
-    ? 100
-    : pointsNeeded > 0
-      ? Math.min((progressInLevel / pointsNeeded) * 100, 100)
-      : 0;
+  const {
+    level,
+    points,
+    isMaxLevel,
+    pointsNeeded,
+    progressInLevel,
+    remainingToNext,
+    progressPercentage,
+  } = computeLevelInfo(profile.points ?? 0, profile.level);
 
   return (
     <Tooltip>
