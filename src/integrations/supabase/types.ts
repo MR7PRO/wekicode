@@ -1217,6 +1217,10 @@ export type Database = {
         Args: { question_uuid: string }
         Returns: undefined
       }
+      refresh_challenge_progress: {
+        Args: { p_challenge_id: string }
+        Returns: Json
+      }
       submit_quiz_attempt: {
         Args: { p_answers: Json; p_quiz_id: string }
         Returns: Json
