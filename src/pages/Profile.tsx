@@ -21,6 +21,7 @@ import { CoverUpload } from "@/components/profile/CoverUpload";
 import { Link } from "react-router-dom";
 import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
 import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
+import { computeLevelInfo } from "@/lib/leveling";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "النقاط", "الفواتير"];
 
@@ -132,11 +133,11 @@ export default function Profile() {
     return Zap;
   }
 
+  const levelInfo = computeLevelInfo(userData.points, userData.level);
+  // Keep userData.level in sync with derived level so all downstream UI agrees.
+  userData.level = levelInfo.level;
   const LevelIcon = getLevelIcon(userData.level);
-  const pointsToNextLevel = userData.level * 200;
-  const currentLevelPoints = (userData.level - 1) * 200;
-  const progressInLevel = userData.points - currentLevelPoints;
-  const progressPercentage = Math.min((progressInLevel / 200) * 100, 100);
+  const { progressPercentage, remainingToNext, isMaxLevel } = levelInfo;
 
   const getStatusBadge = (status: string) => {
     const map: Record<string, { class: string; label: string }> = {
