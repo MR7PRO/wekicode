@@ -293,14 +293,18 @@ export default function Profile() {
                     <div className="mb-3">
                       <div className="flex justify-between text-sm mb-2">
                         <span className="text-muted-foreground">المستوى {userData.level}</span>
-                        <span className="text-primary font-medium">المستوى {userData.level + 1}</span>
+                        <span className="text-primary font-medium">
+                          {isMaxLevel ? "أعلى مستوى" : `المستوى ${userData.level + 1}`}
+                        </span>
                       </div>
                       <div className="h-3 bg-secondary rounded-full overflow-hidden">
                         <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercentage}%` }}
                           transition={{ duration: 1, ease: "easeOut" }} className="h-full bg-gradient-accent rounded-full" />
                       </div>
                       <div className="text-xs text-muted-foreground mt-2 text-center">
-                        {Math.max(pointsToNextLevel - userData.points, 0)} نقطة للمستوى التالي
+                        {isMaxLevel
+                          ? "لقد وصلت إلى أعلى مستوى 🏆"
+                          : `${remainingToNext.toLocaleString()} نقطة للمستوى التالي`}
                       </div>
                     </div>
                   </div>
