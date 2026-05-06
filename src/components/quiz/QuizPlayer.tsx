@@ -12,7 +12,6 @@ interface QuizQuestion {
   id: string;
   question_text: string;
   options: string[];
-  correct_answer: number;
   points: number;
   sort_order: number;
 }
@@ -35,6 +34,9 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
   const [loading, setLoading] = useState(true);
   const [alreadyTaken, setAlreadyTaken] = useState(false);
   const [previousScore, setPreviousScore] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [revealedCorrect, setRevealedCorrect] = useState<number | null>(null);
 
   useEffect(() => {
     fetchQuiz();
@@ -44,7 +46,7 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
     setLoading(true);
     const [questionsRes, attemptRes] = await Promise.all([
       supabase
-        .from("quiz_questions")
+        .from("quiz_questions_public" as any)
         .select("*")
         .eq("quiz_id", quizId)
         .order("sort_order"),
@@ -79,12 +81,7 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
     if (isAnswered) return;
     setSelectedAnswer(index);
     setIsAnswered(true);
-
-    const correct = questions[currentIndex].correct_answer;
-    if (index === correct) {
-      setScore((s) => s + 1);
-      setTotalPoints((p) => p + questions[currentIndex].points);
-    }
+    setAnswers((prev) => ({ ...prev, [questions[currentIndex].id]: index }));
   };
 
   const handleNext = () => {
@@ -92,33 +89,42 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
       setCurrentIndex((i) => i + 1);
       setSelectedAnswer(null);
       setIsAnswered(false);
+      setRevealedCorrect(null);
     } else {
       submitQuiz();
     }
   };
 
   const submitQuiz = async () => {
-    setFinished(true);
-    if (!user || alreadyTaken) return;
-
-    const finalScore = score;
-    const finalPoints = totalPoints;
-
-    const { error } = await supabase.from("quiz_attempts").insert({
-      user_id: user.id,
-      quiz_id: quizId,
-      score: finalScore,
-      total_questions: questions.length,
-      points_earned: finalPoints,
-    });
-
-    if (!error) {
-      await refreshProfile();
-      toast({
-        title: `🎉 أحسنت! حصلت على ${finalPoints} نقطة`,
-        description: `نتيجتك: ${finalScore}/${questions.length}`,
-      });
+    if (!user || alreadyTaken) {
+      setFinished(true);
+      return;
     }
+    setSubmitting(true);
+    const { data, error } = await supabase.rpc("submit_quiz_attempt" as any, {
+      p_quiz_id: quizId,
+      p_answers: answers,
+    });
+    setSubmitting(false);
+    setFinished(true);
+
+    const result = data as { success?: boolean; score?: number; total?: number; points_earned?: number; error?: string } | null;
+    if (error || !result?.success) {
+      toast({
+        title: "تعذر إرسال الاختبار",
+        description: result?.error === "Already taken" ? "سبق أن أكملت هذا الاختبار" : "حاول مرة أخرى",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setScore(result.score ?? 0);
+    setTotalPoints(result.points_earned ?? 0);
+    await refreshProfile();
+    toast({
+      title: `🎉 أحسنت! حصلت على ${result.points_earned} نقطة`,
+      description: `نتيجتك: ${result.score}/${result.total}`,
+    });
   };
 
   if (loading) {
