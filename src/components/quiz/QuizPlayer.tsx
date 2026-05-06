@@ -242,10 +242,8 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
                 let extraClass = "hover:border-primary/50 cursor-pointer";
 
                 if (isAnswered) {
-                  if (idx === q.correct_answer) {
-                    extraClass = "border-green-500 bg-green-500/10 text-green-600";
-                  } else if (idx === selectedAnswer && idx !== q.correct_answer) {
-                    extraClass = "border-destructive bg-destructive/10 text-destructive";
+                  if (idx === selectedAnswer) {
+                    extraClass = "border-primary bg-primary/10";
                   } else {
                     extraClass = "opacity-50";
                   }
@@ -265,11 +263,8 @@ export function QuizPlayer({ quizId, quizTitle, onClose }: QuizPlayerProps) {
                         {String.fromCharCode(1571 + idx)}
                       </span>
                       <span className="flex-1">{option}</span>
-                      {isAnswered && idx === q.correct_answer && (
-                        <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                      )}
-                      {isAnswered && idx === selectedAnswer && idx !== q.correct_answer && (
-                        <XCircle className="w-5 h-5 text-destructive shrink-0" />
+                      {isAnswered && idx === selectedAnswer && (
+                        <CheckCircle className="w-5 h-5 text-primary shrink-0" />
                       )}
                     </div>
                   </button>
