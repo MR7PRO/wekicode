@@ -82,7 +82,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-0.5 ms-6 me-4">
+          <div className="hidden md:flex items-center gap-1 ms-8">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.path;
@@ -91,10 +91,10 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={`px-2.5 ${isActive ? "shadow-glow" : ""}`}
+                    className={isActive ? "shadow-glow" : ""}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="text-[13px]">{link.label}</span>
+                    {link.label}
                   </Button>
                 </Link>
               );
