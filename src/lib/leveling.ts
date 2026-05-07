@@ -24,11 +24,14 @@ export interface LevelInfo {
 export function computeLevelInfo(points: number, storedLevel?: number | null): LevelInfo {
   const safePoints = Math.max(0, Math.floor(points ?? 0));
 
+  // Always derive level from actual points so the bar stays in sync with the
+  // displayed points value. A stale storedLevel would otherwise desync the bar.
   let derivedLevel = 1;
   for (let i = 1; i <= MAX_LEVEL; i++) {
     if (safePoints >= LEVEL_THRESHOLDS[i]) derivedLevel = i;
   }
-  const level = Math.min(MAX_LEVEL, Math.max(storedLevel ?? 1, derivedLevel));
+  void storedLevel; // intentionally ignored to keep a single source of truth
+  const level = Math.min(MAX_LEVEL, derivedLevel);
 
   const isMaxLevel = level >= MAX_LEVEL;
   const currentLevelPoints = LEVEL_THRESHOLDS[level];
