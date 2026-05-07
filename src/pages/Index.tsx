@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 // Lazy load below-the-fold sections
 const PartnersSection = lazy(() => import("@/components/home/PartnersSection").then(m => ({ default: m.PartnersSection })));
 const FeaturesSection = lazy(() => import("@/components/home/FeaturesSection").then(m => ({ default: m.FeaturesSection })));
+const PlatformHighlights = lazy(() => import("@/components/home/PlatformHighlights").then(m => ({ default: m.PlatformHighlights })));
 const PointsSection = lazy(() => import("@/components/home/PointsSection").then(m => ({ default: m.PointsSection })));
 const RolesSection = lazy(() => import("@/components/home/RolesSection").then(m => ({ default: m.RolesSection })));
 const WorkspaceSection = lazy(() => import("@/components/home/WorkspaceSection").then(m => ({ default: m.WorkspaceSection })));
@@ -44,6 +45,9 @@ const Index = memo(() => {
         </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <FeaturesSection />
+        </Suspense>
+        <Suspense fallback={<SectionSkeleton />}>
+          <PlatformHighlights />
         </Suspense>
         <Suspense fallback={<SectionSkeleton />}>
           <PointsSection />
