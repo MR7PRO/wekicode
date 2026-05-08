@@ -117,7 +117,7 @@ export function Navbar() {
                 {/* User dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full me-2">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full ms-2">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={profile?.avatar_url ?? undefined} />
                         <AvatarFallback className="bg-primary text-primary-foreground">
