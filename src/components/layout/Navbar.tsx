@@ -95,7 +95,7 @@ export function Navbar() {
                     className={`px-2 ${isActive ? "shadow-glow" : ""}`}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="hidden xl:inline text-xs">{link.label}</span>
+                    <span className="hidden 2xl:inline text-xs">{link.label}</span>
                   </Button>
                 </Link>
               );
