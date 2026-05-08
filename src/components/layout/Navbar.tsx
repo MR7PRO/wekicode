@@ -102,17 +102,17 @@ export function Navbar() {
           </div>
 
           {/* Progress Widget & Auth */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3 me-3">
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
                 {/* Messages & Notifications */}
-                <MessagesBadge />
-                <NotificationBell />
+                <div className="me-1"><MessagesBadge /></div>
+                <div className="me-1"><NotificationBell /></div>
                 
                 {/* Progress Widget - Game-like level indicator */}
-                <ProgressWidget />
+                <div className="me-1"><ProgressWidget /></div>
 
                 {/* User dropdown */}
                 <DropdownMenu>
