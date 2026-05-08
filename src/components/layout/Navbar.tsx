@@ -102,22 +102,22 @@ export function Navbar() {
           </div>
 
           {/* Progress Widget & Auth */}
-          <div className="hidden md:flex items-center gap-3 me-3">
+          <div className="hidden md:flex items-center gap-3">
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
                 {/* Messages & Notifications */}
-                <div className="me-1"><MessagesBadge /></div>
-                <div className="me-1"><NotificationBell /></div>
+                <MessagesBadge />
+                <NotificationBell />
                 
                 {/* Progress Widget - Game-like level indicator */}
-                <div className="me-1"><ProgressWidget /></div>
+                <ProgressWidget />
 
                 {/* User dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full ms-4">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full me-2">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={profile?.avatar_url ?? undefined} />
                         <AvatarFallback className="bg-primary text-primary-foreground">
