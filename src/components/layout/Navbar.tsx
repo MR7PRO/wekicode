@@ -62,7 +62,7 @@ export function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-      <div className="container mx-auto px-4">
+      <div className="w-full px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
@@ -82,7 +82,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1 ms-8">
+          <div className="hidden md:flex items-center gap-0.5 ms-2">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = location.pathname === link.path;
@@ -91,10 +91,11 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={isActive ? "shadow-glow" : ""}
+                    title={link.label}
+                    className={`px-2 ${isActive ? "shadow-glow" : ""}`}
                   >
                     <Icon className="w-4 h-4" />
-                    {link.label}
+                    <span className="hidden 2xl:inline text-xs">{link.label}</span>
                   </Button>
                 </Link>
               );
@@ -102,22 +103,22 @@ export function Navbar() {
           </div>
 
           {/* Progress Widget & Auth */}
-          <div className="hidden md:flex items-center gap-3 me-3">
+          <div className="hidden md:flex items-center gap-3">
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
                 {/* Messages & Notifications */}
-                <div className="me-1"><MessagesBadge /></div>
-                <div className="me-1"><NotificationBell /></div>
+                <MessagesBadge />
+                <NotificationBell />
                 
                 {/* Progress Widget - Game-like level indicator */}
-                <div className="me-1"><ProgressWidget /></div>
+                <ProgressWidget />
 
                 {/* User dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full ms-4">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={profile?.avatar_url ?? undefined} />
                         <AvatarFallback className="bg-primary text-primary-foreground">
