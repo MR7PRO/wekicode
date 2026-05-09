@@ -31,6 +31,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProgressWidget } from "./ProgressWidget";
 import { NotificationBell } from "@/components/notifications/NotificationSystem";
 import { MessagesBadge } from "@/components/messages/MessagesBadge";
+import { GlobalSearch } from "./GlobalSearch";
+import { QuickCreate } from "./QuickCreate";
 
 const navLinks = [
   { path: "/", label: "الرئيسية", icon: Code2 },
@@ -107,6 +109,10 @@ export function Navbar() {
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
+                {/* Global search */}
+                <GlobalSearch />
+                {/* Quick create */}
+                <QuickCreate />
                 {/* Messages & Notifications */}
                 <MessagesBadge />
                 <NotificationBell />
@@ -161,11 +167,14 @@ export function Navbar() {
                 </DropdownMenu>
               </>
             ) : (
-              <Link to="/auth">
-                <Button variant="hero" size="sm">
-                  تسجيل الدخول
-                </Button>
-              </Link>
+              <>
+                <GlobalSearch />
+                <Link to="/auth">
+                  <Button variant="hero" size="sm">
+                    تسجيل الدخول
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
 
