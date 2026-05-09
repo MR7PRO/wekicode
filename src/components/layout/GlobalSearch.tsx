@@ -22,7 +22,11 @@ interface Results {
 
 const empty: Results = { questions: [], articles: [], jobs: [], profiles: [] };
 
-export function GlobalSearch() {
+interface GlobalSearchProps {
+  variant?: "button" | "inline";
+}
+
+export function GlobalSearch({ variant = "button" }: GlobalSearchProps) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -78,8 +82,21 @@ export function GlobalSearch() {
   const totalCount =
     results.questions.length + results.articles.length + results.jobs.length + results.profiles.length;
 
-  return (
-    <>
+  const trigger =
+    variant === "inline" ? (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="w-full flex items-center gap-3 h-9 px-4 rounded-full bg-secondary/60 hover:bg-secondary border border-border/50 text-start text-sm text-muted-foreground transition-colors"
+        aria-label="بحث عام"
+      >
+        <Search className="w-4 h-4 shrink-0" />
+        <span className="flex-1 truncate">ابحث في الأسئلة، المقالات، الوظائف، المبرمجين…</span>
+        <kbd className="hidden md:inline-flex pointer-events-none h-5 select-none items-center gap-1 rounded border bg-background/80 px-1.5 font-mono text-[10px] font-medium">
+          ⌘K
+        </kbd>
+      </button>
+    ) : (
       <Button
         variant="ghost"
         size="sm"
@@ -88,11 +105,13 @@ export function GlobalSearch() {
         aria-label="بحث عام"
       >
         <Search className="w-4 h-4" />
-        <span className="hidden lg:inline text-xs">ابحث في المنصة…</span>
-        <kbd className="hidden lg:inline-flex pointer-events-none h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-          ⌘K
-        </kbd>
+        <span>بحث</span>
       </Button>
+    );
+
+  return (
+    <>
+      {trigger}
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput

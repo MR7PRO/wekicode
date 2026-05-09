@@ -1,21 +1,21 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { 
-  Code2, 
-  HelpCircle, 
-  Briefcase, 
-  BookOpen, 
-  Gift, 
-  User, 
-  Users,
+import {
   Menu,
   X,
   LogOut,
   Loader2,
-  CreditCard,
-  Trophy,
+  User,
   Settings,
-  FileText
+  Code2,
+  HelpCircle,
+  FileText,
+  Briefcase,
+  BookOpen,
+  Users,
+  Trophy,
+  Gift,
+  CreditCard,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,43 +59,42 @@ export function Navbar() {
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
-    return name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
+    return name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
   };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+      <div className="container mx-auto px-3">
+        {/* Top row */}
+        <div className="flex items-center justify-between gap-3 h-14">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <img 
-              src={wekicodeLogo} 
-              alt="WekiCode Logo" 
-              className="w-9 h-9 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"
+            <img
+              src={wekicodeLogo}
+              alt="WekiCode"
+              className="w-8 h-8 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 transition-all duration-300"
             />
-            <span className="text-xl font-black transition-all duration-300">
-              <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
+            <span className="text-lg font-black">
+              <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent">
                 Weki
               </span>
-              <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(249,115,22,0.7)]">
+              <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent">
                 Code
               </span>
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1 ms-8">
+          {/* Desktop Nav links - text only, compact */}
+          <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
             {navLinks.map((link) => {
-              const Icon = link.icon;
               const isActive = location.pathname === link.path;
               return (
                 <Link key={link.path} to={link.path}>
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={isActive ? "shadow-glow" : ""}
+                    className={`h-8 px-2.5 text-xs font-medium ${isActive ? "shadow-glow" : ""}`}
                   >
-                    <Icon className="w-4 h-4" />
                     {link.label}
                   </Button>
                 </Link>
@@ -103,30 +102,22 @@ export function Navbar() {
             })}
           </div>
 
-          {/* Progress Widget & Auth */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Right side: actions */}
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
-                {/* Global search */}
-                <GlobalSearch />
-                {/* Quick create */}
                 <QuickCreate />
-                {/* Messages & Notifications */}
                 <MessagesBadge />
                 <NotificationBell />
-                
-                {/* Progress Widget - Game-like level indicator */}
                 <ProgressWidget />
-
-                {/* User dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full me-2">
-                      <Avatar className="h-10 w-10">
+                    <Button variant="ghost" className="relative h-9 w-9 rounded-full ms-1">
+                      <Avatar className="h-9 w-9">
                         <AvatarImage src={profile?.avatar_url ?? undefined} />
-                        <AvatarFallback className="bg-primary text-primary-foreground">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                           {getInitials(profile?.full_name)}
                         </AvatarFallback>
                       </Avatar>
@@ -167,39 +158,43 @@ export function Navbar() {
                 </DropdownMenu>
               </>
             ) : (
-              <>
-                <GlobalSearch />
-                <Link to="/auth">
-                  <Button variant="hero" size="sm">
-                    تسجيل الدخول
-                  </Button>
-                </Link>
-              </>
+              <Link to="/auth">
+                <Button variant="hero" size="sm">
+                  تسجيل الدخول
+                </Button>
+              </Link>
             )}
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-foreground"
+            className="lg:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label="القائمة"
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
+        {/* Sub-bar: Global search (desktop) */}
+        <div className="hidden lg:block pb-1.5">
+          <div className="max-w-2xl mx-auto">
+            <GlobalSearch variant="inline" />
+          </div>
+        </div>
+
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-border/50 animate-slide-up">
+          <div className="lg:hidden py-4 border-t border-border/50 animate-slide-up">
+            <div className="mb-3">
+              <GlobalSearch variant="inline" />
+            </div>
             <div className="flex flex-col gap-2">
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = location.pathname === link.path;
                 return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                  >
+                  <Link key={link.path} to={link.path} onClick={() => setIsOpen(false)}>
                     <Button
                       variant={isActive ? "default" : "ghost"}
                       className="w-full justify-start"
@@ -211,9 +206,9 @@ export function Navbar() {
                 );
               })}
               <div className="flex items-center justify-between pt-4 border-t border-border/50">
-              {user ? (
-                <>
-                  <ProgressWidget />
+                {user ? (
+                  <>
+                    <ProgressWidget />
                     <div className="flex items-center gap-2">
                       <Link to="/profile" onClick={() => setIsOpen(false)}>
                         <Button variant="ghost" size="sm">

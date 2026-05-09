@@ -113,11 +113,14 @@ export function FeaturesSection() {
                   </p>
 
                   {/* Stats & CTA */}
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-xs font-medium px-3 py-1 rounded-full bg-secondary text-secondary-foreground">
                       {feature.stats}
                     </span>
-                    <ArrowLeft className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:-translate-x-1 transition-all" />
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
+                      اكتشف
+                      <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    </span>
                   </div>
                 </div>
               </Link>

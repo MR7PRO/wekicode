@@ -15,12 +15,13 @@ export function QuickCreate() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          size="icon"
+          size="sm"
           variant="outline"
-          className="h-9 w-9 rounded-full border-primary/40 hover:bg-primary/10"
+          className="gap-1.5 border-primary/40 hover:bg-primary/10"
           aria-label="إنشاء سريع"
         >
           <Plus className="w-4 h-4 text-primary" />
+          <span>إنشاء</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
