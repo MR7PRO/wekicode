@@ -2,7 +2,7 @@ import { Coins, HelpCircle, CheckCircle, BookOpen, Star, TrendingUp, ArrowLeft }
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { getLevelInfo } from "@/lib/leveling";
+import { computeLevelInfo } from "@/lib/leveling";
 
 const earnMethods = [
   { icon: HelpCircle, label: "أجب على سؤال", points: "+10", color: "primary" },
@@ -14,18 +14,12 @@ const earnMethods = [
 export function PointsSection() {
   const { user, profile } = useAuth();
   const points = profile?.points ?? 0;
-  let levelLabel = "المستوى 1";
-  let progressLabel = "0 / 100";
-  let progressPercent = 0;
-
-  try {
-    const info = getLevelInfo(points);
-    levelLabel = `المستوى ${info.level}`;
-    progressPercent = Math.round(info.progressPercent ?? 0);
-    progressLabel = `${info.pointsIntoLevel ?? 0} / ${info.pointsForNextLevel ?? "—"}`;
-  } catch {
-    // fallback already set
-  }
+  const info = computeLevelInfo(points, profile?.level);
+  const levelLabel = `المستوى ${info.level}`;
+  const progressLabel = info.isMaxLevel
+    ? "اكتمل"
+    : `${info.progressInLevel} / ${info.pointsNeeded}`;
+  const progressPercent = Math.round(info.progressPercentage);
 
   const displayPoints = user ? points : 1250;
   const ctaHref = user ? "/profile" : "/auth";
