@@ -177,8 +177,8 @@ export function Navbar() {
         </div>
 
         {/* Sub-bar: Global search (desktop) */}
-        <div className="hidden lg:block pb-2">
-          <div className="max-w-3xl mx-auto">
+        <div className="hidden lg:block pb-1.5">
+          <div className="max-w-2xl mx-auto">
             <GlobalSearch variant="inline" />
           </div>
         </div>

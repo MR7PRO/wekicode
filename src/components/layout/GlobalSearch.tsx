@@ -87,7 +87,7 @@ export function GlobalSearch({ variant = "button" }: GlobalSearchProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="w-full flex items-center gap-3 h-10 px-4 rounded-full bg-secondary/60 hover:bg-secondary border border-border/50 text-start text-sm text-muted-foreground transition-colors"
+        className="w-full flex items-center gap-3 h-9 px-4 rounded-full bg-secondary/60 hover:bg-secondary border border-border/50 text-start text-sm text-muted-foreground transition-colors"
         aria-label="بحث عام"
       >
         <Search className="w-4 h-4 shrink-0" />
