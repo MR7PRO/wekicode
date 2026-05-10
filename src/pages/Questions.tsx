@@ -20,7 +20,7 @@ import {
   X
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
 const categories = [
   "الكل", "JavaScript", "Python", "React", "Node.js", "قواعد البيانات", "DevOps", "TypeScript", "CSS", "أخرى"
@@ -164,8 +165,10 @@ const demoQuestions: Question[] = [
 export default function Questions() {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  const [selectedCategory, setSelectedCategory] = useState("الكل");
+  const initialTag = searchParams.get("tag") || "الكل";
+  const [selectedCategory, setSelectedCategory] = useState(initialTag);
   const [searchQuery, setSearchQuery] = useState("");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,6 +189,18 @@ export default function Questions() {
   useEffect(() => {
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    const t = searchParams.get("tag");
+    if (t && t !== selectedCategory) setSelectedCategory(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const setCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    if (cat === "الكل") { searchParams.delete("tag"); setSearchParams(searchParams, { replace: true }); }
+    else { searchParams.set("tag", cat); setSearchParams(searchParams, { replace: true }); }
+  };
 
   const fetchQuestions = async () => {
     setLoading(true);
