@@ -18,6 +18,8 @@ import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 import { ActivityGraph } from "@/components/profile/ActivityGraph";
 import { PointsLedger } from "@/components/profile/PointsLedger";
 import { CoverUpload } from "@/components/profile/CoverUpload";
+import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
+import { UpcomingAchievements } from "@/components/profile/UpcomingAchievements";
 import { Link } from "react-router-dom";
 import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
 import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
@@ -275,6 +277,7 @@ export default function Profile() {
                         الإعدادات
                       </Button>
                     </Link>
+                    {user && <ShareProfileButton userId={user.id} />}
                   </div>
                 </div>
 
@@ -356,6 +359,14 @@ export default function Profile() {
               <div className="space-y-8">
                 {/* Activity Graph */}
                 <ActivityGraph />
+
+                {/* Upcoming Achievements */}
+                <UpcomingAchievements
+                  badges={userData.badges as string[]}
+                  currentStreak={userData.streak}
+                  stats={{ answers: stats.answers, projects: stats.projects, courses: stats.courses, level: userData.level }}
+                  points={userData.points}
+                />
 
                 <div className="grid lg:grid-cols-3 gap-6">
                   {/* Skills */}

@@ -1,7 +1,8 @@
 import { Award, Star, Zap, Trophy, Target, Flame, Crown, Shield, Heart, Rocket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, forwardRef } from "react";
+import { useEffect, forwardRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export interface BadgeTier {
   tier: number; // 1=I, 2=II, 3=III
@@ -222,6 +223,7 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
 
     return (
       <div ref={ref} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <BadgeDialogHost badges={badges} currentStreak={currentStreak} stats={stats} />
         {displayBadges.map((badge) => {
           const Icon = badgeIcons[badge.icon];
           const isUnlocked = badges.includes(badge.id);
@@ -244,6 +246,7 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.03 }}
+              onClick={() => window.dispatchEvent(new CustomEvent("badge:open", { detail: badge.id }))}
               className={`relative p-4 rounded-xl border text-center transition-all cursor-pointer ${
                 isUnlocked 
                   ? `bg-gradient-to-b ${colorClasses[badge.color]}` 
@@ -318,3 +321,84 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
 );
 
 BadgeDisplay.displayName = "BadgeDisplay";
+
+function BadgeDialogHost({ badges, currentStreak = 0, stats }: { badges: string[]; currentStreak?: number; stats?: { answers: number; projects: number; courses: number; level: number } }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const id = (e as CustomEvent<string>).detail;
+      setOpenId(id);
+    };
+    window.addEventListener("badge:open", handler);
+    return () => window.removeEventListener("badge:open", handler);
+  }, []);
+
+  const badge = allBadges.find(b => b.id === openId) || null;
+  if (!badge) return <Dialog open={false} onOpenChange={() => setOpenId(null)}><DialogContent /></Dialog>;
+
+  const Icon = badgeIcons[badge.icon];
+  const isUnlocked = badges.includes(badge.id);
+  const progress = (() => {
+    if (badge.category === "streak") return currentStreak;
+    if (!stats) return isUnlocked ? badge.requirement : 0;
+    switch (badge.category) {
+      case "answers": return stats.answers;
+      case "projects": return stats.projects;
+      case "learning": return stats.courses;
+      case "general": return stats.level;
+      default: return 0;
+    }
+  })();
+  const currentTier = getBadgeTier(badge, progress);
+  const nextReq = getNextTierRequirement(badge, currentTier);
+
+  const colorMap: Record<string, string> = {
+    primary: "from-primary to-primary/60 text-primary-foreground",
+    accent: "from-accent to-accent/60 text-accent-foreground",
+    success: "from-success to-success/60 text-success-foreground",
+    warning: "from-warning to-warning/60 text-warning-foreground",
+  };
+
+  return (
+    <Dialog open={!!openId} onOpenChange={(o) => !o && setOpenId(null)}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${colorMap[badge.color]} mx-auto flex items-center justify-center mb-3`}>
+            <Icon className="w-8 h-8" />
+          </div>
+          <DialogTitle className="text-center text-xl">{badge.name}</DialogTitle>
+          <DialogDescription className="text-center">{badge.description}</DialogDescription>
+        </DialogHeader>
+        <div className="space-y-3 mt-2">
+          <div className="text-sm font-bold text-foreground">شروط الحصول عليها:</div>
+          {badge.tiers ? (
+            <ul className="space-y-2">
+              {badge.tiers.map(t => {
+                const reached = currentTier >= t.tier;
+                return (
+                  <li key={t.tier} className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${reached ? "bg-success/10 text-success" : "bg-secondary text-muted-foreground"}`}>
+                    <span>المستوى {t.label}</span>
+                    <span className="font-bold">{t.requirement.toLocaleString()} {reached ? "✓" : ""}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <div className="rounded-lg bg-secondary px-3 py-2 text-sm">
+              يتطلب الوصول إلى <strong className="text-foreground">{badge.requirement}</strong>
+            </div>
+          )}
+          <div className="pt-2">
+            <Progress value={Math.min((progress / (nextReq || badge.requirement)) * 100, 100)} className="h-2" />
+            <div className="text-xs text-muted-foreground mt-1.5 text-end">
+              {Math.min(progress, nextReq || badge.requirement).toLocaleString()} / {(nextReq || badge.requirement).toLocaleString()}
+            </div>
+          </div>
+          {isUnlocked && !nextReq && (
+            <div className="text-center text-success font-bold">🎉 مكتمل بالكامل</div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}

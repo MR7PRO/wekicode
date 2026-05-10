@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FileText, Plus, Search, ThumbsUp, MessageSquare, Eye, Clock, User, X, Filter, Tag
@@ -18,6 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
 interface Article {
   id: string;
@@ -34,10 +36,11 @@ interface Article {
 
 export default function Articles() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [tagFilter, setTagFilter] = useState("");
+  const [tagFilter, setTagFilter] = useState(searchParams.get("tag") ?? "");
   const [sortBy, setSortBy] = useState("newest");
   const [showCreate, setShowCreate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -48,6 +51,18 @@ export default function Articles() {
   useEffect(() => {
     fetchArticles();
   }, []);
+
+  useEffect(() => {
+    const t = searchParams.get("tag") ?? "";
+    if (t !== tagFilter) setTagFilter(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const setTag = (t: string) => {
+    setTagFilter(t);
+    if (!t) { searchParams.delete("tag"); setSearchParams(searchParams, { replace: true }); }
+    else { searchParams.set("tag", t); setSearchParams(searchParams, { replace: true }); }
+  };
 
   const fetchArticles = async () => {
     const { data } = await supabase
@@ -168,7 +183,7 @@ export default function Articles() {
               <div className="flex flex-wrap gap-2">
                 <Tag className="w-4 h-4 text-muted-foreground mt-1" />
                 {allTags.slice(0, 15).map(tag => (
-                  <Button key={tag} variant={tagFilter === tag ? "default" : "ghost"} size="sm" className="text-xs" onClick={() => setTagFilter(tagFilter === tag ? "" : tag)}>
+                  <Button key={tag} variant={tagFilter === tag ? "default" : "ghost"} size="sm" className="text-xs" onClick={() => setTag(tagFilter === tag ? "" : tag)}>
                     {tag}
                   </Button>
                 ))}
@@ -177,7 +192,7 @@ export default function Articles() {
             {hasFilters && (
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">عرض {filtered.length} من {articles.length} مقالة</span>
-                <Button variant="ghost" size="sm" onClick={resetFilters}><X className="w-4 h-4 ml-1" />إعادة تعيين</Button>
+                <Button variant="ghost" size="sm" onClick={() => { resetFilters(); searchParams.delete("tag"); setSearchParams(searchParams, { replace: true }); }}><X className="w-4 h-4 ml-1" />إعادة تعيين</Button>
               </div>
             )}
           </div>
@@ -229,9 +244,21 @@ export default function Articles() {
                           </div>
                           {article.tags?.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
-                              {article.tags.map(t => <span key={t} className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs">{t}</span>)}
+                              {article.tags.map(t => (
+                                <button
+                                  key={t}
+                                  type="button"
+                                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setTag(t); }}
+                                  className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs hover:bg-primary/20 transition"
+                                >
+                                  {t}
+                                </button>
+                              ))}
                             </div>
                           )}
+                        </div>
+                        <div onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="shrink-0">
+                          <BookmarkButton itemId={article.id} itemType="article" variant="icon" />
                         </div>
                       </div>
                     </div>

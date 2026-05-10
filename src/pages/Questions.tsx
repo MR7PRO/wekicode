@@ -20,7 +20,7 @@ import {
   X
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +29,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
 const categories = [
   "الكل", "JavaScript", "Python", "React", "Node.js", "قواعد البيانات", "DevOps", "TypeScript", "CSS", "أخرى"
@@ -164,8 +165,10 @@ const demoQuestions: Question[] = [
 export default function Questions() {
   const navigate = useNavigate();
   const { user, refreshProfile } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  const [selectedCategory, setSelectedCategory] = useState("الكل");
+  const initialTag = searchParams.get("tag") || "الكل";
+  const [selectedCategory, setSelectedCategory] = useState(initialTag);
   const [searchQuery, setSearchQuery] = useState("");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,6 +189,18 @@ export default function Questions() {
   useEffect(() => {
     fetchQuestions();
   }, []);
+
+  useEffect(() => {
+    const t = searchParams.get("tag");
+    if (t && t !== selectedCategory) setSelectedCategory(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  const setCategory = (cat: string) => {
+    setSelectedCategory(cat);
+    if (cat === "الكل") { searchParams.delete("tag"); setSearchParams(searchParams, { replace: true }); }
+    else { searchParams.set("tag", cat); setSearchParams(searchParams, { replace: true }); }
+  };
 
   const fetchQuestions = async () => {
     setLoading(true);
@@ -243,7 +258,7 @@ export default function Questions() {
   };
 
   const filteredQuestions = questions.filter(q => {
-    const matchesCategory = selectedCategory === "الكل" || q.tags?.includes(selectedCategory);
+    const matchesCategory = selectedCategory === "الكل" || (q.tags || []).some(t => t.toLowerCase() === selectedCategory.toLowerCase());
     const matchesSearch = q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           q.content.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" ||
@@ -557,7 +572,7 @@ export default function Questions() {
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => setCategory(cat)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   selectedCategory === cat
                     ? "bg-primary text-primary-foreground shadow-glow"
@@ -641,12 +656,14 @@ export default function Questions() {
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-4">
                           {question.tags?.slice(0, 4).map((tag) => (
-                            <span
+                            <button
                               key={tag}
-                              className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs"
+                              type="button"
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCategory(tag); }}
+                              className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs hover:bg-primary/20 hover:text-primary transition"
                             >
                               {tag}
-                            </span>
+                            </button>
                           ))}
                         </div>
 
@@ -686,11 +703,14 @@ export default function Questions() {
                               سؤال تجريبي
                             </Button>
                           ) : (
-                            <Link to={`/questions/${question.id}`}>
-                              <Button variant="outline" size="sm">
-                                عرض التفاصيل
-                              </Button>
-                            </Link>
+                            <div className="flex items-center gap-2">
+                              <BookmarkButton itemId={question.id} itemType="question" variant="icon" />
+                              <Link to={`/questions/${question.id}`}>
+                                <Button variant="outline" size="sm">
+                                  عرض التفاصيل
+                                </Button>
+                              </Link>
+                            </div>
                           )}
                         </div>
                       </div>

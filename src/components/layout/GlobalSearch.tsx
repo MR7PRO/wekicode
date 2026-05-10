@@ -23,7 +23,7 @@ interface Results {
 const empty: Results = { questions: [], articles: [], jobs: [], profiles: [] };
 
 interface GlobalSearchProps {
-  variant?: "button" | "inline";
+  variant?: "button" | "inline" | "icon";
 }
 
 export function GlobalSearch({ variant = "button" }: GlobalSearchProps) {
@@ -83,7 +83,18 @@ export function GlobalSearch({ variant = "button" }: GlobalSearchProps) {
     results.questions.length + results.articles.length + results.jobs.length + results.profiles.length;
 
   const trigger =
-    variant === "inline" ? (
+    variant === "icon" ? (
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setOpen(true)}
+        className="h-9 w-9 text-muted-foreground hover:text-foreground"
+        aria-label="بحث عام"
+        title="بحث (⌘K)"
+      >
+        <Search className="w-5 h-5" />
+      </Button>
+    ) : variant === "inline" ? (
       <button
         type="button"
         onClick={() => setOpen(true)}

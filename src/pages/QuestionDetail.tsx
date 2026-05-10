@@ -24,6 +24,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
 interface Question {
   id: string;
@@ -80,6 +81,7 @@ export default function QuestionDetail() {
   const [commentingOn, setCommentingOn] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [userVotes, setUserVotes] = useState<Record<string, number>>({});
+  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -91,6 +93,19 @@ export default function QuestionDetail() {
       incrementViews();
     }
   }, [id, user]);
+
+  useEffect(() => {
+    if (!question?.tags?.length) return;
+    (async () => {
+      const { data } = await supabase
+        .from("questions")
+        .select("id,title")
+        .neq("id", question.id)
+        .overlaps("tags", question.tags)
+        .limit(5);
+      setSimilar((data ?? []) as any);
+    })();
+  }, [question?.id, question?.tags?.join(",")]);
 
   const fetchQuestion = async () => {
     const { data, error } = await supabase
@@ -471,12 +486,13 @@ export default function QuestionDetail() {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   {question.tags?.map((tag) => (
-                    <span
+                    <Link
                       key={tag}
-                      className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm"
+                      to={`/questions?tag=${encodeURIComponent(tag)}`}
+                      className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm hover:bg-primary/20 transition"
                     >
                       {tag}
-                    </span>
+                    </Link>
                   ))}
                 </div>
 
@@ -503,6 +519,7 @@ export default function QuestionDetail() {
                       <MessageSquare className="w-4 h-4" />
                       <span>{question.answers_count} إجابة</span>
                     </div>
+                    <BookmarkButton itemId={question.id} itemType="question" variant="icon" />
                   </div>
                 </div>
               </div>
@@ -684,6 +701,20 @@ export default function QuestionDetail() {
               </Button>
             </div>
           </div>
+
+          {/* Similar Questions */}
+          {similar.length > 0 && (
+            <div className="glass rounded-2xl p-6 border-border/50 mt-8">
+              <h3 className="text-lg font-bold text-foreground mb-4">أسئلة مشابهة</h3>
+              <div className="space-y-2">
+                {similar.map(s => (
+                  <Link key={s.id} to={`/questions/${s.id}`} className="block p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition text-sm font-medium text-foreground hover:text-primary">
+                    {s.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

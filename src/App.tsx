@@ -26,6 +26,7 @@ const Settings = lazy(() => import("./pages/Settings"));
 const Messages = lazy(() => import("./pages/Messages"));
 const Articles = lazy(() => import("./pages/Articles"));
 const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
+const Bookmarks = lazy(() => import("./pages/Bookmarks"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Developers = lazy(() => import("./pages/Developers"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
@@ -79,6 +80,7 @@ const App = () => (
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/messages" element={<Messages />} />
+                  <Route path="/bookmarks" element={<Bookmarks />} />
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

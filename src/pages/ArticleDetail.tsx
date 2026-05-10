@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ export default function ArticleDetail() {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [similar, setSimilar] = useState<{ id: string; title: string }[]>([]);
 
   useEffect(() => {
     if (id) {
@@ -32,6 +34,14 @@ export default function ArticleDetail() {
       incrementViews();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!article?.tags?.length) return;
+    (async () => {
+      const { data } = await supabase.from("articles").select("id,title").neq("id", article.id).overlaps("tags", article.tags).limit(5);
+      setSimilar((data ?? []) as any);
+    })();
+  }, [article?.id]);
 
   const fetchArticle = async () => {
     const { data: art } = await supabase.from("articles").select("*").eq("id", id!).single();
@@ -134,7 +144,9 @@ export default function ArticleDetail() {
 
             {article.tags?.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-6">
-                {article.tags.map((t: string) => <span key={t} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">{t}</span>)}
+                {article.tags.map((t: string) => (
+                  <Link key={t} to={`/articles?tag=${encodeURIComponent(t)}`} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm hover:bg-primary/20 transition">{t}</Link>
+                ))}
               </div>
             )}
 
@@ -151,8 +163,20 @@ export default function ArticleDetail() {
               <Button variant={userVote === -1 ? "destructive" : "outline"} size="sm" onClick={() => handleVote(-1)}>
                 <ThumbsDown className="w-4 h-4" />
               </Button>
+              <div className="ms-auto"><BookmarkButton itemId={article.id} itemType="article" /></div>
             </div>
           </motion.article>
+
+          {similar.length > 0 && (
+            <div className="glass rounded-2xl p-6 mt-8">
+              <h3 className="text-lg font-bold text-foreground mb-4">مقالات مشابهة</h3>
+              <div className="space-y-2">
+                {similar.map(s => (
+                  <Link key={s.id} to={`/articles/${s.id}`} className="block p-3 rounded-lg bg-secondary/50 hover:bg-secondary transition text-sm font-medium text-foreground hover:text-primary">{s.title}</Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Comments */}
           <div className="mt-8">

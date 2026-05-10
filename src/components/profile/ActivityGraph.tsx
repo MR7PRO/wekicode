@@ -3,6 +3,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+
+const arDate = (iso: string) => {
+  try { return new Date(iso).toLocaleDateString("ar-EG", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); }
+  catch { return iso; }
+};
 
 interface DayActivity {
   date: string;
@@ -101,26 +107,35 @@ export function ActivityGraph() {
 
       {/* Grid - 13 weeks x 7 days */}
       <div className="flex gap-[3px] overflow-x-auto pb-2" dir="ltr">
-        {Array.from({ length: 13 }, (_, weekIdx) => (
-          <div key={weekIdx} className="flex flex-col gap-[3px]">
-            {Array.from({ length: 7 }, (_, dayIdx) => {
-              const idx = weekIdx * 7 + dayIdx;
-              const activity = activities[idx];
-              if (!activity) return <div key={dayIdx} className="w-3 h-3" />;
-              
-              return (
-                <motion.div
-                  key={dayIdx}
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: idx * 0.003 }}
-                  className={`w-3 h-3 rounded-[2px] ${getColor(activity.count)} transition-colors cursor-pointer`}
-                  title={`${activity.date}: ${activity.count} نشاط`}
-                />
-              );
-            })}
-          </div>
-        ))}
+        <TooltipProvider delayDuration={100}>
+          {Array.from({ length: 13 }, (_, weekIdx) => (
+            <div key={weekIdx} className="flex flex-col gap-[3px]">
+              {Array.from({ length: 7 }, (_, dayIdx) => {
+                const idx = weekIdx * 7 + dayIdx;
+                const activity = activities[idx];
+                if (!activity) return <div key={dayIdx} className="w-3 h-3" />;
+                return (
+                  <Tooltip key={dayIdx}>
+                    <TooltipTrigger asChild>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: idx * 0.003 }}
+                        className={`w-3 h-3 rounded-[2px] ${getColor(activity.count)} transition-colors cursor-pointer hover:ring-2 hover:ring-primary/50`}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      <div className="font-bold">{arDate(activity.date)}</div>
+                      <div className="text-muted-foreground">
+                        {activity.count === 0 ? "لا يوجد نشاط" : `${activity.count} نشاط`}
+                      </div>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          ))}
+        </TooltipProvider>
       </div>
 
       {/* Legend */}
