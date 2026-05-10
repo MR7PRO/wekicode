@@ -66,7 +66,7 @@ export function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border/50">
       <div className="container mx-auto px-3">
         {/* Top row */}
-        <div className="flex items-center justify-between gap-3 h-14">
+        <div className="flex items-center justify-between gap-3 h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
             <img
@@ -84,8 +84,8 @@ export function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Nav links - text only, compact */}
-          <div className="hidden lg:flex items-center gap-0.5 flex-1 justify-center">
+          {/* Desktop Nav links - text only */}
+          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -93,7 +93,7 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={`h-8 px-2.5 text-xs font-medium ${isActive ? "shadow-glow" : ""}`}
+                    className={`h-9 px-3 text-sm font-semibold ${isActive ? "shadow-glow" : ""}`}
                   >
                     {link.label}
                   </Button>
@@ -108,6 +108,7 @@ export function Navbar() {
               <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
+                <GlobalSearch variant="icon" />
                 <QuickCreate />
                 <MessagesBadge />
                 <NotificationBell />
@@ -158,11 +159,14 @@ export function Navbar() {
                 </DropdownMenu>
               </>
             ) : (
-              <Link to="/auth">
-                <Button variant="hero" size="sm">
-                  تسجيل الدخول
-                </Button>
-              </Link>
+              <>
+                <GlobalSearch variant="icon" />
+                <Link to="/auth">
+                  <Button variant="hero" size="sm">
+                    تسجيل الدخول
+                  </Button>
+                </Link>
+              </>
             )}
           </div>
 
@@ -174,13 +178,6 @@ export function Navbar() {
           >
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-        </div>
-
-        {/* Sub-bar: Global search (desktop) */}
-        <div className="hidden lg:block pb-1.5">
-          <div className="max-w-2xl mx-auto">
-            <GlobalSearch variant="inline" />
-          </div>
         </div>
 
         {/* Mobile Navigation */}
