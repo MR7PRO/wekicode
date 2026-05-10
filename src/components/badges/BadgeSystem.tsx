@@ -1,7 +1,8 @@
 import { Award, Star, Zap, Trophy, Target, Flame, Crown, Shield, Heart, Rocket } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, forwardRef } from "react";
+import { useEffect, forwardRef, useState } from "react";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export interface BadgeTier {
   tier: number; // 1=I, 2=II, 3=III
@@ -222,6 +223,7 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
 
     return (
       <div ref={ref} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <BadgeDialogHost badges={badges} currentStreak={currentStreak} stats={stats} />
         {displayBadges.map((badge) => {
           const Icon = badgeIcons[badge.icon];
           const isUnlocked = badges.includes(badge.id);
@@ -244,6 +246,7 @@ export const BadgeDisplay = forwardRef<HTMLDivElement, BadgeDisplayProps>(
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               whileHover={{ scale: 1.03 }}
+              onClick={() => window.dispatchEvent(new CustomEvent("badge:open", { detail: badge.id }))}
               className={`relative p-4 rounded-xl border text-center transition-all cursor-pointer ${
                 isUnlocked 
                   ? `bg-gradient-to-b ${colorClasses[badge.color]}` 
