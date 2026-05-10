@@ -258,7 +258,7 @@ export default function Questions() {
   };
 
   const filteredQuestions = questions.filter(q => {
-    const matchesCategory = selectedCategory === "الكل" || q.tags?.includes(selectedCategory);
+    const matchesCategory = selectedCategory === "الكل" || (q.tags || []).some(t => t.toLowerCase() === selectedCategory.toLowerCase());
     const matchesSearch = q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           q.content.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" ||
@@ -572,7 +572,7 @@ export default function Questions() {
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => setCategory(cat)}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   selectedCategory === cat
                     ? "bg-primary text-primary-foreground shadow-glow"
@@ -656,12 +656,14 @@ export default function Questions() {
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-4">
                           {question.tags?.slice(0, 4).map((tag) => (
-                            <span
+                            <button
                               key={tag}
-                              className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs"
+                              type="button"
+                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCategory(tag); }}
+                              className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs hover:bg-primary/20 hover:text-primary transition"
                             >
                               {tag}
-                            </span>
+                            </button>
                           ))}
                         </div>
 
@@ -701,11 +703,14 @@ export default function Questions() {
                               سؤال تجريبي
                             </Button>
                           ) : (
-                            <Link to={`/questions/${question.id}`}>
-                              <Button variant="outline" size="sm">
-                                عرض التفاصيل
-                              </Button>
-                            </Link>
+                            <div className="flex items-center gap-2">
+                              <BookmarkButton itemId={question.id} itemType="question" variant="icon" />
+                              <Link to={`/questions/${question.id}`}>
+                                <Button variant="outline" size="sm">
+                                  عرض التفاصيل
+                                </Button>
+                              </Link>
+                            </div>
                           )}
                         </div>
                       </div>
