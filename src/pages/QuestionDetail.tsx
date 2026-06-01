@@ -25,6 +25,7 @@ import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface Question {
   id: string;
@@ -423,6 +424,24 @@ export default function QuestionDetail() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${question.title} — أسئلة wekicode`}
+        description={(question.content || "").replace(/<[^>]*>/g, "").slice(0, 160) || "سؤال على مجتمع wekicode"}
+        path={`/questions/${question.id}`}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "QAPage",
+          "mainEntity": {
+            "@type": "Question",
+            "name": question.title,
+            "text": (question.content || "").slice(0, 500),
+            "answerCount": question.answers_count || 0,
+            "dateCreated": question.created_at,
+            "author": { "@type": "Person", "name": question.author?.full_name || "مستخدم wekicode" },
+          },
+        }}
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">
