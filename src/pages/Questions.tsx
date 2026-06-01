@@ -28,6 +28,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { formatDistanceToNow } from "date-fns";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 
@@ -374,6 +375,12 @@ export default function Questions() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title="الأسئلة والأجوبة — wekicode"
+        description="مجتمع أسئلة وأجوبة تقني للمبرمجين العرب. اطرح سؤالك، شارك معرفتك، واكسب النقاط في wekicode."
+        path="/questions"
+        jsonLd={{ "@context": "https://schema.org", "@type": "QAPage", "name": "أسئلة وأجوبة wekicode", "url": "https://wekicode.lovable.app/questions" }}
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">
