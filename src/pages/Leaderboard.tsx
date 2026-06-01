@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarByName } from "@/lib/media/userAvatars";
 import { LevelBadge, StyledUsername } from "@/components/levels/LevelBadge";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface LeaderboardUser {
   id: string;
