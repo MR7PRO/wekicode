@@ -18,6 +18,7 @@ import { BadgeDisplay } from "@/components/badges/BadgeSystem";
 import { toast } from "@/hooks/use-toast";
 import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
 import { getLevelPerk } from "@/lib/levelPerks";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 export default function PublicProfile() {
   const { userId } = useParams<{ userId: string }>();
@@ -108,6 +109,12 @@ export default function PublicProfile() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title={`${profile.full_name || "مستخدم"} — ملف على wekicode`}
+        description={`اطلع على ملف ${profile.full_name || "المستخدم"} على wekicode: المستوى، النقاط، والنشاط في مجتمع المبرمجين.`}
+        path={`/u/${profile.user_id}`}
+      />
+      <h1 className="sr-only">{`الملف العام للمستخدم ${profile.full_name || "مستخدم"}`}</h1>
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -115,7 +122,7 @@ export default function PublicProfile() {
             {/* Cover */}
             <div className="relative w-full h-48 md:h-56">
               {profile.cover_url ? (
-                <img src={profile.cover_url} alt="غلاف" className="w-full h-full object-cover" />
+                <img src={profile.cover_url} alt={`صورة غلاف ${profile.full_name || "المستخدم"}`} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-primary/20 via-background to-accent/20" />
               )}

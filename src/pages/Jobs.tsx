@@ -28,6 +28,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { SEOHead } from "@/components/seo/SEOHead";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
@@ -314,6 +315,11 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title="فرص العمل للمبرمجين — wekicode"
+        description="تصفح وظائف برمجية عن بُعد وحضوري للمطورين العرب. تقدّم بسهولة عبر منصة wekicode."
+        path="/jobs"
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">

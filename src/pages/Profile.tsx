@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import { LevelBadge, LevelAvatarFrame, StyledUsername } from "@/components/levels/LevelBadge";
 import { getLevelPerk, getNextLevelPerk, LEVEL_PERKS } from "@/lib/levelPerks";
 import { computeLevelInfo } from "@/lib/leveling";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 const tabs = ["نظرة عامة", "الشارات", "المشاريع", "الأسئلة", "الدورات", "النقاط", "الفواتير"];
 
@@ -154,6 +155,12 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title={`${userData.name} — ملفي على wekicode`}
+        description={`ملف ${userData.name} الشخصي على wekicode: المستوى، النقاط، الإنجازات والنشاط.`}
+        path="/profile"
+      />
+      <h1 className="sr-only">{`الملف الشخصي للمستخدم ${userData.name}`}</h1>
       <Navbar />
       
       <main className="pt-20 pb-16">
@@ -186,7 +193,8 @@ export default function Profile() {
                     {user && (
                       <>
                         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
-                        <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                          <button onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                          aria-label="تغيير صورة الملف الشخصي"
                           className="absolute inset-0 rounded-3xl bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer">
                           {uploading ? <UploadLoader className="w-8 h-8 text-white animate-spin" /> : <Camera className="w-8 h-8 text-white" />}
                         </button>

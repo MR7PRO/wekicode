@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { BookmarkCheck, HelpCircle, FileText, Loader2 } from "lucide-react";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface Item {
   id: string;
@@ -52,6 +53,11 @@ export default function Bookmarks() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title="محفوظاتي — wekicode"
+        description="عناصرك المحفوظة من أسئلة ومقالات على wekicode في مكان واحد."
+        path="/bookmarks"
+      />
       <Navbar />
       <main className="pt-28 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">

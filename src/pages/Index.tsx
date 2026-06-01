@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 // Lazy load below-the-fold sections
 const PartnersSection = lazy(() => import("@/components/home/PartnersSection").then(m => ({ default: m.PartnersSection })));
@@ -34,6 +35,11 @@ SectionSkeleton.displayName = "SectionSkeleton";
 const Index = memo(() => {
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="wekicode — حاضنة أعمال للمبرمجين في فلسطين"
+        description="منصة فلسطينية للمبرمجين والطلاب: أسئلة، مقالات، وظائف، دورات، ومكافآت. ابدأ رحلتك التقنية معنا."
+        path="/"
+      />
       <Navbar />
       <main>
         {/* Hero is loaded immediately for LCP */}

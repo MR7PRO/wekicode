@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserAvatarByName } from "@/lib/media/userAvatars";
 import { LevelBadge, StyledUsername } from "@/components/levels/LevelBadge";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface LeaderboardUser {
   id: string;
@@ -140,6 +141,11 @@ export default function Leaderboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="لوحة المتصدرين — wekicode"
+        description="تابع أفضل المبرمجين على wekicode حسب النقاط والمستوى. تنافس واصعد إلى القمة."
+        path="/leaderboard"
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">

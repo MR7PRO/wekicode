@@ -15,6 +15,7 @@ import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 export default function ArticleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -120,6 +121,21 @@ export default function ArticleDetail() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title={`${article.title} — wekicode`}
+        description={(article.content || "").replace(/<[^>]*>/g, "").slice(0, 160) || "مقال على منصة wekicode"}
+        path={`/articles/${article.id}`}
+        type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": article.title,
+          "author": { "@type": "Person", "name": author?.full_name || "مستخدم wekicode" },
+          "datePublished": article.created_at,
+          "url": `https://wekicode.lovable.app/articles/${article.id}`,
+          "keywords": (article.tags || []).join(", "),
+        }}
+      />
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">

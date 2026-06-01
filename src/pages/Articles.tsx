@@ -20,6 +20,7 @@ import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface Article {
   id: string;
@@ -127,6 +128,11 @@ export default function Articles() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title="المقالات التقنية — wekicode"
+        description="اقرأ مقالات تقنية كتبها مبرمجون عرب. شارك خبرتك وتعلم من تجارب الآخرين على منصة wekicode."
+        path="/articles"
+      />
       <Navbar />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-5xl">

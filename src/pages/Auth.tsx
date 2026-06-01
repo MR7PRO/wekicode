@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, User, Loader2, Sparkles } from "lucide-react";
 import wekicodeLogo from "@/assets/wekicode-logo-new.png";
 import { z } from "zod";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 const emailSchema = z.string().email("يرجى إدخال بريد إلكتروني صحيح");
 const passwordSchema = z.string().min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل");
@@ -145,6 +146,11 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+      <SEOHead
+        title="تسجيل الدخول وإنشاء حساب — wekicode"
+        description="انضم إلى مجتمع wekicode للمبرمجين العرب: سجّل دخولك أو أنشئ حسابًا جديدًا للبدء."
+        path="/auth"
+      />
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-20 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
