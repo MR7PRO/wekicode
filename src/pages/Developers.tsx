@@ -20,6 +20,7 @@ import {
   Coins,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface Developer {
   id: string;
