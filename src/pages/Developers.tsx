@@ -119,6 +119,11 @@ export default function Developers() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="دليل المطوّرين — wekicode"
+        description="استعرض ملفات المطوّرين على wekicode، اكتشف مهاراتهم وتواصل معهم لفرص العمل والتعاون."
+        path="/developers"
+      />
       <Navbar />
 
       <main className="pt-24 pb-24 md:pb-16">
