@@ -315,6 +315,11 @@ export default function Jobs() {
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
+      <SEOHead
+        title="فرص العمل للمبرمجين — wekicode"
+        description="تصفح وظائف برمجية عن بُعد وحضوري للمطورين العرب. تقدّم بسهولة عبر منصة wekicode."
+        path="/jobs"
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">
