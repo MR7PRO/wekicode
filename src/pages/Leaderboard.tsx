@@ -141,6 +141,11 @@ export default function Leaderboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEOHead
+        title="لوحة المتصدرين — wekicode"
+        description="تابع أفضل المبرمجين على wekicode حسب النقاط والمستوى. تنافس واصعد إلى القمة."
+        path="/leaderboard"
+      />
       <Navbar />
       
       <main className="pt-24 pb-16">
