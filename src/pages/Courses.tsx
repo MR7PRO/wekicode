@@ -38,6 +38,7 @@ import coursePlaceholder from "@/assets/course-placeholder.jpg";
 import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
 import { getUserAvatarByName } from "@/lib/media/userAvatars";
 import { getCourseThumbnailById } from "@/lib/media/courseThumbnails";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 const categories = ["الكل", "تطوير الويب", "تطوير الموبايل", "علم البيانات", "DevOps", "تصميم", "ذكاء اصطناعي"];
 
@@ -360,7 +361,11 @@ export default function Courses() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <Navbar />
-      
+      <SEOHead
+        title="الدورات التعليمية في البرمجة — wekicode"
+        description="دورات ومواد تعليمية في البرمجة باللغة العربية. تعلّم لغات وأطر جديدة على منصة wekicode."
+        path="/courses"
+      />
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           {/* Header */}
