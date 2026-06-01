@@ -20,6 +20,7 @@ import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { SEOHead } from "@/components/seo/SEOHead";
 
 interface Article {
   id: string;
