@@ -39,6 +39,7 @@ import avatarPlaceholder from "@/assets/avatar-placeholder.jpg";
 import { getUserAvatarByName } from "@/lib/media/userAvatars";
 import { getCourseThumbnailById } from "@/lib/media/courseThumbnails";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { CertificateDialog } from "@/components/courses/CertificateDialog";
 
 const categories = ["الكل", "تطوير الويب", "تطوير الموبايل", "علم البيانات", "DevOps", "تصميم", "ذكاء اصطناعي"];
 
@@ -790,7 +791,7 @@ export default function Courses() {
                           {isEnrolled ? (
                             <>
                               <Play className="w-4 h-4" />
-                              استأنف الدورة
+                              {enrollment && enrollment.progress >= 100 ? "أعد المشاهدة" : enrollment && enrollment.progress > 0 ? "تابع من حيث توقفت" : "ابدأ الدورة"}
                             </>
                           ) : course.is_free ? (
                             <>
@@ -826,6 +827,16 @@ export default function Courses() {
                             </Button>
                           );
                         })()}
+
+                        {/* Certificate (when course fully completed) */}
+                        {isEnrolled && enrollment && enrollment.progress >= 100 && (
+                          <CertificateDialog
+                            courseId={course.id}
+                            courseTitle={course.title}
+                            instructor={course.instructor}
+                            studentName={profile?.full_name || user?.email?.split("@")[0] || "متعلّم"}
+                          />
+                        )}
                       </div>
                     </div>
                   );
