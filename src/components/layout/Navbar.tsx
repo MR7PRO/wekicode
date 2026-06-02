@@ -93,7 +93,7 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={`h-9 px-3 text-sm font-semibold ${isActive ? "shadow-glow" : ""}`}
+                    className={`h-10 px-3.5 text-base font-semibold ${isActive ? "shadow-glow" : ""}`}
                   >
                     {link.label}
                   </Button>
