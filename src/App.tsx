@@ -69,6 +69,7 @@ const App = () => (
                 <Route path="/u/:userId" element={<PublicProfile />} />
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/courses" element={<Courses />} />
+                <Route path="/courses/:id" element={<CourseDetail />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/articles" element={<Articles />} />
                 <Route path="/articles/:id" element={<ArticleDetail />} />
