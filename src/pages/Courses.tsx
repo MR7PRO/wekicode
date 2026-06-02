@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNav } from "@/components/layout/BottomNav";
@@ -75,6 +75,7 @@ interface CourseQuiz {
 
 export default function Courses() {
   const { user, profile, refreshProfile } = useAuth();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("الكل");
   const [searchQuery, setSearchQuery] = useState("");
   const [courses, setCourses] = useState<Course[]>([]);
@@ -192,12 +193,15 @@ export default function Courses() {
     }
 
     const isEnrolled = enrollments.some(e => e.course_id === course.id);
-    
+
     if (isEnrolled) {
-      toast({
-        title: "استئناف الدورة 📚",
-        description: `جاري تحميل ${course.title}...`,
-      });
+      const en = enrollments.find(e => e.course_id === course.id);
+      const total = course.lessons_count || 0;
+      let next: number | null = null;
+      for (let i = 1; i <= total; i++) {
+        if (!(en?.completed_lessons || []).includes(i)) { next = i; break; }
+      }
+      navigate(next ? `/courses/${course.id}?lesson=${next}` : `/courses/${course.id}`);
       return;
     }
 
@@ -239,6 +243,7 @@ export default function Courses() {
     }
 
     setEnrollments([...enrollments, { course_id: course.id, progress: 0, completed_lessons: [] }]);
+    navigate(`/courses/${course.id}?lesson=1`);
     
     // Refresh profile to update points in navbar
     await refreshProfile();
