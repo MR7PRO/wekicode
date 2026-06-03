@@ -163,6 +163,7 @@ export function NotificationBell() {
           variant="ghost"
           size="icon"
           className="relative"
+          onMouseEnter={() => setIsOpen(true)}
         >
           <Bell className="w-5 h-5" />
           <AnimatePresence>
@@ -181,7 +182,11 @@ export function NotificationBell() {
           </AnimatePresence>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0">
+      <PopoverContent
+        align="end"
+        className="w-80 p-0"
+        onMouseLeave={() => setIsOpen(false)}
+      >
         <div className="flex items-center justify-between p-3 border-b border-border">
           <h4 className="font-bold text-foreground">الإشعارات</h4>
           {unreadCount > 0 && (
