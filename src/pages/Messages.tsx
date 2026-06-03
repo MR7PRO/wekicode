@@ -101,6 +101,10 @@ function ChatView({
   const { sendMessage, markAsRead } = useMessages();
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [otherTyping, setOtherTyping] = useState(false);
+  const typingChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
+  const lastSentRef = useRef<number>(0);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -110,6 +114,39 @@ function ChatView({
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Typing indicator via realtime broadcast
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase.channel(`typing:${conversation.id}`, {
+      config: { broadcast: { self: false } },
+    });
+    channel.on("broadcast", { event: "typing" }, (payload) => {
+      if ((payload.payload as any)?.userId !== user.id) {
+        setOtherTyping(true);
+        if (typingTimeoutRef.current) window.clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = window.setTimeout(() => setOtherTyping(false), 2500);
+      }
+    });
+    channel.subscribe();
+    typingChannelRef.current = channel;
+    return () => {
+      if (typingTimeoutRef.current) window.clearTimeout(typingTimeoutRef.current);
+      supabase.removeChannel(channel);
+      typingChannelRef.current = null;
+    };
+  }, [conversation.id, user]);
+
+  const broadcastTyping = () => {
+    const now = Date.now();
+    if (now - lastSentRef.current < 1500) return;
+    lastSentRef.current = now;
+    typingChannelRef.current?.send({
+      type: "broadcast",
+      event: "typing",
+      payload: { userId: user?.id },
+    });
+  };
 
   const handleSend = async () => {
     if (!input.trim() || sending) return;
@@ -176,6 +213,25 @@ function ChatView({
             })}
           </AnimatePresence>
         )}
+        <AnimatePresence>
+          {otherTyping && (
+            <motion.div
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="flex justify-end"
+            >
+              <div className="bg-secondary text-muted-foreground rounded-2xl rounded-br-sm px-4 py-2 text-xs flex items-center gap-1">
+                <span>يكتب الآن</span>
+                <span className="flex gap-0.5">
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground animate-bounce" style={{ animationDelay: "300ms" }} />
+                </span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div ref={bottomRef} />
       </div>
 
@@ -190,7 +246,7 @@ function ChatView({
         >
           <Input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => { setInput(e.target.value); broadcastTyping(); }}
             placeholder="اكتب رسالة..."
             className="flex-1"
           />

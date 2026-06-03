@@ -35,27 +35,36 @@ interface LeaderboardUser {
 // No demo users needed - all data comes from real profiles in the database
 const demoUsers: LeaderboardUser[] = [];
 
+type Period = "week" | "month" | "all";
+
+interface LeaderboardUserExt extends LeaderboardUser {
+  skills?: string[] | null;
+}
+
 export default function Leaderboard() {
   const { user, profile } = useAuth();
-  const [users, setUsers] = useState<LeaderboardUser[]>([]);
+  const [users, setUsers] = useState<LeaderboardUserExt[]>([]);
   const [loading, setLoading] = useState(true);
   const [userRank, setUserRank] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
+  const [skillFilter, setSkillFilter] = useState<string>("all");
+  const [period, setPeriod] = useState<Period>("all");
   const [showFilters, setShowFilters] = useState(false);
+  const [availableSkills, setAvailableSkills] = useState<string[]>([]);
 
   useEffect(() => {
     fetchLeaderboard();
-  }, [user]);
+  }, [user, period]);
 
   const fetchLeaderboard = async () => {
     setLoading(true);
-    
+
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, user_id, full_name, avatar_url, points, level, badges')
+      .select('id, user_id, full_name, avatar_url, points, level, badges, skills')
       .order('points', { ascending: false })
-      .limit(100);
+      .limit(200);
 
     if (error) {
       console.error('Error fetching leaderboard:', error);
@@ -63,28 +72,44 @@ export default function Leaderboard() {
       return;
     }
 
-    const validUsers = (data || []).map(u => ({
+    let validUsers: LeaderboardUserExt[] = (data || []).map(u => ({
       ...u,
       points: u.points ?? 0,
-      level: u.level ?? 1
+      level: u.level ?? 1,
+      skills: (u as any).skills ?? [],
     }));
 
-    // Merge real users with demo users, avoiding duplicates and sorting by points
-    const allUsers = [...validUsers];
-    demoUsers.forEach(demo => {
-      if (!allUsers.some(u => u.full_name === demo.full_name)) {
-        allUsers.push(demo);
-      }
-    });
-    
-    // Sort by points descending
-    allUsers.sort((a, b) => b.points - a.points);
+    // Collect skills for filter
+    const skillsSet = new Set<string>();
+    validUsers.forEach(u => (u.skills ?? []).forEach(s => s && skillsSet.add(s)));
+    setAvailableSkills(Array.from(skillsSet).sort().slice(0, 30));
 
-    setUsers(allUsers);
+    // For time-bounded periods, compute period-points from activity windows
+    if (period !== "all") {
+      const since = new Date();
+      if (period === "week") since.setDate(since.getDate() - 7);
+      else since.setMonth(since.getMonth() - 1);
+      const sinceIso = since.toISOString();
 
-    // Find current user's rank
+      const [qRes, aRes, artRes] = await Promise.all([
+        supabase.from("questions").select("user_id").gte("created_at", sinceIso),
+        supabase.from("answers").select("user_id").gte("created_at", sinceIso),
+        supabase.from("articles").select("user_id").gte("created_at", sinceIso),
+      ]);
+      const score: Record<string, number> = {};
+      (qRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 5; });
+      (aRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 10; });
+      (artRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 15; });
+      validUsers = validUsers
+        .map(u => ({ ...u, points: score[u.user_id] ?? 0 }))
+        .filter(u => u.points > 0);
+    }
+
+    validUsers.sort((a, b) => b.points - a.points);
+    setUsers(validUsers);
+
     if (user) {
-      const rank = allUsers.findIndex(u => u.user_id === user.id);
+      const rank = validUsers.findIndex(u => u.user_id === user.id);
       setUserRank(rank !== -1 ? rank + 1 : null);
     }
 
@@ -133,7 +158,8 @@ export default function Leaderboard() {
       (levelFilter === "beginner" && u.level <= 3) ||
       (levelFilter === "intermediate" && u.level >= 4 && u.level <= 7) ||
       (levelFilter === "advanced" && u.level >= 8);
-    return matchesSearch && matchesLevel;
+    const matchesSkill = skillFilter === "all" || (u.skills ?? []).includes(skillFilter);
+    return matchesSearch && matchesLevel && matchesSkill;
   });
 
   const topThree = filteredUsers.slice(0, 3);
@@ -160,6 +186,29 @@ export default function Leaderboard() {
             <p className="text-muted-foreground">
               أفضل المستخدمين حسب النقاط والمستوى
             </p>
+          </div>
+
+          {/* Time period tabs */}
+          <div className="flex justify-center mb-6">
+            <div className="inline-flex rounded-xl bg-secondary p-1 border border-border">
+              {([
+                { v: "week", l: "هذا الأسبوع" },
+                { v: "month", l: "هذا الشهر" },
+                { v: "all", l: "كل الوقت" },
+              ] as { v: Period; l: string }[]).map(t => (
+                <button
+                  key={t.v}
+                  onClick={() => setPeriod(t.v)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    period === t.v
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t.l}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Search & Filter */}
@@ -208,9 +257,39 @@ export default function Leaderboard() {
                   </button>
                 ))}
               </div>
-              {(levelFilter !== "all" || searchQuery) && (
+              {availableSkills.length > 0 && (
+                <>
+                  <label className="text-sm font-medium text-foreground mt-4 mb-2 block">التخصص</label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setSkillFilter("all")}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        skillFilter === "all"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                      }`}
+                    >
+                      الكل
+                    </button>
+                    {availableSkills.map(s => (
+                      <button
+                        key={s}
+                        onClick={() => setSkillFilter(s)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          skillFilter === s
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+              {(levelFilter !== "all" || skillFilter !== "all" || searchQuery) && (
                 <button
-                  onClick={() => { setLevelFilter("all"); setSearchQuery(""); }}
+                  onClick={() => { setLevelFilter("all"); setSkillFilter("all"); setSearchQuery(""); }}
                   className="mt-3 px-4 py-1.5 rounded-lg text-xs font-medium bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all flex items-center gap-1"
                 >
                   إعادة تعيين الفلاتر
