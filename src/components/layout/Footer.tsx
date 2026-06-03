@@ -18,9 +18,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
       return;
     }
     setSubmitting(true);
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("newsletter_subscribers")
-      .insert({ email: value, source: "footer" } as any);
+      .insert({ email: value, source: "footer" });
     setSubmitting(false);
     if (error && !`${error.message}`.toLowerCase().includes("duplicate")) {
       toast.error("تعذر الاشتراك، حاول لاحقاً");
