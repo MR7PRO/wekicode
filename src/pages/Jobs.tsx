@@ -66,6 +66,7 @@ export default function Jobs() {
   const [showFilters, setShowFilters] = useState(false);
   const [budgetFilter, setBudgetFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
+  const [locationFilter, setLocationFilter] = useState<"all" | "remote" | "onsite">("all");
   
   // New job form
   const [newJob, setNewJob] = useState({
@@ -145,7 +146,12 @@ export default function Jobs() {
       (budgetFilter === "low" && (j.budget_max ?? 0) <= 100) ||
       (budgetFilter === "mid" && (j.budget_min ?? 0) >= 100 && (j.budget_max ?? Infinity) <= 500) ||
       (budgetFilter === "high" && (j.budget_min ?? 0) >= 500);
-    return matchesType && matchesSearch && matchesBudget;
+    const haystack = `${j.job_type} ${j.description}`.toLowerCase();
+    const matchesLocation =
+      locationFilter === "all" ||
+      (locationFilter === "remote" && (haystack.includes("عن بُعد") || haystack.includes("عن بعد") || haystack.includes("remote"))) ||
+      (locationFilter === "onsite" && (haystack.includes("حضوري") || haystack.includes("في الموقع") || haystack.includes("onsite")));
+    return matchesType && matchesSearch && matchesBudget && matchesLocation;
   }).sort((a, b) => {
     if (sortBy === "newest") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     if (sortBy === "oldest") return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -296,6 +302,10 @@ export default function Jobs() {
 
   const openApplyDialog = (job: Job) => {
     setSelectedJob(job);
+    if (user && !applyForm.portfolio) {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      setApplyForm((prev) => ({ ...prev, portfolio: `${origin}/u/${user.id}` }));
+    }
     setIsApplyDialogOpen(true);
   };
 
