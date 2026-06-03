@@ -479,6 +479,28 @@ export default function Jobs() {
           {showFilters && (
             <div className="glass rounded-xl p-4 mb-6 border-border/50 animate-in slide-in-from-top-2 duration-200">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="text-sm font-medium text-foreground mb-2 block">موقع العمل</label>
+                  <div className="flex flex-wrap gap-2">
+                    {([
+                      { value: "all", label: "الكل" },
+                      { value: "remote", label: "عن بُعد" },
+                      { value: "onsite", label: "حضوري" },
+                    ] as { value: "all" | "remote" | "onsite"; label: string }[]).map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setLocationFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          locationFilter === opt.value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-2 block">الميزانية</label>
                   <div className="flex flex-wrap gap-2">
@@ -527,9 +549,9 @@ export default function Jobs() {
                   </div>
                 </div>
               </div>
-              {(budgetFilter !== "all" || sortBy !== "newest" || selectedType !== "الكل" || searchQuery) && (
+              {(budgetFilter !== "all" || sortBy !== "newest" || selectedType !== "الكل" || searchQuery || locationFilter !== "all") && (
                 <button
-                  onClick={() => { setBudgetFilter("all"); setSortBy("newest"); setSelectedType("الكل"); setSearchQuery(""); }}
+                  onClick={() => { setBudgetFilter("all"); setSortBy("newest"); setSelectedType("الكل"); setSearchQuery(""); setLocationFilter("all"); }}
                   className="mt-3 px-4 py-1.5 rounded-lg text-xs font-medium bg-destructive/10 text-destructive hover:bg-destructive/20 transition-all flex items-center gap-1"
                 >
                   <X className="w-3 h-3" />
