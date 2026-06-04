@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FileText, ExternalLink, Loader2, Download, Smartphone, Building2, Wallet, MessageCircle, Copy, Clock, User } from "lucide-react";
+import { FileText, ExternalLink, Loader2, Download, Smartphone, Wallet, MessageCircle, Copy, Clock, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { SubscriptionCustomizer } from "@/components/billing/SubscriptionCustomizer";
+import jawwalPayLogo from "@/assets/payments/jawwal-pay.png";
+import bankOfPalestineLogo from "@/assets/payments/bank-of-palestine.png";
+import palPayLogo from "@/assets/payments/pal-pay.png";
 
 interface InvoiceRow {
   id: string;
@@ -40,9 +44,9 @@ const ACCOUNT_NUMBER = "0598754887";
 const ACCOUNT_HOLDER = "أيهم الهور";
 
 const paymentMethods = [
-  { id: "jawwal-pay", name: "محفظة جوّال باي", icon: Smartphone, color: "primary" },
-  { id: "bank-of-palestine", name: "بنك فلسطين", icon: Building2, color: "accent" },
-  { id: "pal-pay", name: "محفظة PalPay", icon: Wallet, color: "success" },
+  { id: "jawwal-pay", name: "محفظة جوّال باي", logo: jawwalPayLogo, ring: "from-emerald-500/20 to-emerald-500/5" },
+  { id: "bank-of-palestine", name: "بنك فلسطين", logo: bankOfPalestineLogo, ring: "from-blue-700/20 to-amber-400/5" },
+  { id: "pal-pay", name: "محفظة PalPay", logo: palPayLogo, ring: "from-blue-600/20 to-orange-500/5" },
 ];
 
 function PaymentMethodsCard({ userId }: { userId?: string }) {
@@ -73,23 +77,25 @@ function PaymentMethodsCard({ userId }: { userId?: string }) {
       </div>
 
       <div className="grid sm:grid-cols-3 gap-3">
-        {paymentMethods.map((m) => {
-          const Icon = m.icon;
-          return (
-            <div
-              key={m.id}
-              className={`rounded-xl border border-${m.color}/20 bg-gradient-to-br from-${m.color}/10 to-${m.color}/5 p-4`}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`w-9 h-9 rounded-lg bg-${m.color}/20 flex items-center justify-center`}>
-                  <Icon className={`w-5 h-5 text-${m.color}`} />
-                </div>
-                <div className="font-bold text-sm text-foreground">{m.name}</div>
-              </div>
-              <div className="text-[11px] text-muted-foreground">رقم الحساب موحّد للمحافظ الثلاث</div>
+        {paymentMethods.map((m) => (
+          <div
+            key={m.id}
+            className={`rounded-xl border border-border/60 bg-gradient-to-br ${m.ring} p-4 flex flex-col items-center text-center`}
+          >
+            <div className="h-16 w-full flex items-center justify-center bg-white rounded-lg mb-3 p-2">
+              <img
+                src={m.logo}
+                alt={m.name}
+                width={120}
+                height={60}
+                loading="lazy"
+                className="max-h-12 w-auto object-contain"
+              />
             </div>
-          );
-        })}
+            <div className="font-bold text-sm text-foreground">{m.name}</div>
+            <div className="text-[11px] text-muted-foreground mt-1">رقم الحساب موحّد للمحافظ الثلاث</div>
+          </div>
+        ))}
       </div>
 
       <div className="rounded-xl border border-border/60 bg-secondary/30 divide-y divide-border/60">
@@ -180,8 +186,26 @@ export function InvoicesPanel() {
     );
   }
 
+  const refresh = async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("invoices")
+      .select("id, invoice_number, total_amount, status, issued_at, due_date, payment_method")
+      .eq("user_id", user.id)
+      .order("issued_at", { ascending: false });
+    setInvoices((data as InvoiceRow[]) ?? []);
+  };
+
   return (
     <div className="space-y-6">
+      <div className="glass rounded-2xl p-6 border-border/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-bold text-foreground mb-1">خصّص اشتراكك وأنشئ فاتورة</h3>
+          <p className="text-sm text-muted-foreground">اختر الخطة الأساسية والخدمات الإضافية، وسنُصدر لك فاتورة فوراً مع تعليمات الدفع.</p>
+        </div>
+        <SubscriptionCustomizer userId={user?.id} onComplete={refresh} triggerLabel="اشتراك جديد" />
+      </div>
+
       <PaymentMethodsCard userId={user?.id} />
 
       <div className="grid sm:grid-cols-3 gap-4">
