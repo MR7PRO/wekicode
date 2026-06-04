@@ -17,6 +17,7 @@ import { getUserAvatarSrc } from "@/lib/media/userAvatars";
 import { EditProfileDialog } from "@/components/profile/EditProfileDialog";
 import { ActivityGraph } from "@/components/profile/ActivityGraph";
 import { PointsLedger } from "@/components/profile/PointsLedger";
+import { InvoicesPanel } from "@/components/profile/InvoicesPanel";
 import { CoverUpload } from "@/components/profile/CoverUpload";
 import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
 import { UpcomingAchievements } from "@/components/profile/UpcomingAchievements";
@@ -609,11 +610,7 @@ export default function Profile() {
             {activeTab === "النقاط" && <PointsLedger />}
 
             {activeTab === "الفواتير" && (
-              <div className="text-center py-12">
-                <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
-                <h4 className="text-xl font-bold text-foreground mb-2">قريباً</h4>
-                <p className="text-muted-foreground">نظام الفواتير سيكون متاحاً قريباً</p>
-              </div>
+              <InvoicesPanel />
             )}
           </motion.div>
         </div>
