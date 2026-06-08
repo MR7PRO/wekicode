@@ -37,7 +37,7 @@ const features = [
   },
   {
     icon: Gift,
-    title: "المكافآت والجوائز",
+    title: "المكافئات والجوائز",
     description: "حوّل نقاطك إلى اشتراكات بالوورك سبيس، قسائم مالية، أو خدمات متنوعة.",
     link: "/rewards",
     color: "warning",
