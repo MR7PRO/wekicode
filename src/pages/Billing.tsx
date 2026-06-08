@@ -289,6 +289,12 @@ export default function Billing() {
                   <div className="text-sm text-muted-foreground">إجمالي الفواتير</div>
                 </div>
               </div>
+
+              {/* Payment methods + activation */}
+              <PaymentMethodsCard userId={user?.id} />
+
+              {/* Workspace locations across Gaza Strip */}
+              <WorkspaceLocations />
             </div>
 
             {/* Sidebar */}
