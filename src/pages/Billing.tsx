@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { SubscriptionCustomizer } from "@/components/billing/SubscriptionCustomizer";
+import { PaymentMethodsCard } from "@/components/billing/PaymentMethodsCard";
+import { WorkspaceLocations } from "@/components/billing/WorkspaceLocations";
 
 interface WorkspaceService {
   id: string;
@@ -126,7 +128,7 @@ export default function Billing() {
               <span className="text-gradient-primary">وإدارة الاشتراكات</span>
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              تتبع فواتيرك واشتراكاتك في وورك سبيس wekicode بقطاع غزة
+              تتبع فواتيرك واشتراكاتك في شبكة وورك سبيس wekicode على مستوى محافظات قطاع غزة
             </p>
           </div>
 
@@ -287,6 +289,12 @@ export default function Billing() {
                   <div className="text-sm text-muted-foreground">إجمالي الفواتير</div>
                 </div>
               </div>
+
+              {/* Payment methods + activation */}
+              <PaymentMethodsCard userId={user?.id} />
+
+              {/* Workspace locations across Gaza Strip */}
+              <WorkspaceLocations />
             </div>
 
             {/* Sidebar */}

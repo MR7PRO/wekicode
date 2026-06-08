@@ -99,7 +99,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               </li>
               <li>
                 <Link to="/rewards" className="text-muted-foreground hover:text-primary transition-colors">
-                  المكافآت والنقاط
+                  المكافئات والنقاط
                 </Link>
               </li>
             </ul>

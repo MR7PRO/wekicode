@@ -42,7 +42,7 @@ const navLinks = [
   { path: "/courses", label: "التعليم", icon: BookOpen },
   { path: "/developers", label: "المبرمجين", icon: Users },
   { path: "/leaderboard", label: "المتصدرين", icon: Trophy },
-  { path: "/rewards", label: "المكافآت", icon: Gift },
+  { path: "/rewards", label: "المكافئات", icon: Gift },
   { path: "/billing", label: "الفواتير", icon: CreditCard },
 ];
 

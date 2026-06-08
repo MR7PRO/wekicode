@@ -37,7 +37,7 @@ export function PointsSection() {
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/30 mb-6">
               <Coins className="w-4 h-4 text-accent" />
-              <span className="text-sm font-medium text-accent">نظام المكافآت</span>
+              <span className="text-sm font-medium text-accent">نظام المكافئات</span>
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-6">

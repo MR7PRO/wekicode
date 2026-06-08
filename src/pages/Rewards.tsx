@@ -139,7 +139,7 @@ export default function Rewards() {
     if (!user) {
       toast({
         title: "يجب تسجيل الدخول",
-        description: "قم بتسجيل الدخول لاستبدال المكافآت",
+        description: "قم بتسجيل الدخول لاستبدال المكافئات",
         variant: "destructive"
       });
       return;
@@ -259,7 +259,7 @@ export default function Rewards() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">
-                <span className="text-foreground">المكافآت</span>
+                <span className="text-foreground">المكافئات</span>
                 {" "}
                 <span className="text-gradient-accent">والجوائز</span>
               </h1>
