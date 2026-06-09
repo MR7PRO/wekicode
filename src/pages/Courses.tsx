@@ -828,7 +828,7 @@ export default function Courses() {
                               onClick={() => setActiveQuiz({ id: quiz.id, title: quiz.title })}
                             >
                               <Brain className="w-4 h-4" />
-                              اختبر معلوماتك
+                              اختبر نفسك
                             </Button>
                           );
                         })()}

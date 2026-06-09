@@ -1,9 +1,13 @@
 import { Smartphone, Wallet, MessageCircle, Copy, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import jawwalPayLogo from "@/assets/payments/jawwal-pay.png";
-import bankOfPalestineLogo from "@/assets/payments/bank-of-palestine.png";
-import palPayLogo from "@/assets/payments/pal-pay.png";
+import jawwalPayAsset from "@/assets/payments/jawwal-pay.png.asset.json";
+import bankOfPalestineAsset from "@/assets/payments/bank-of-palestine.png.asset.json";
+import palPayAsset from "@/assets/payments/pal-pay.png.asset.json";
+
+const jawwalPayLogo = jawwalPayAsset.url;
+const bankOfPalestineLogo = bankOfPalestineAsset.url;
+const palPayLogo = palPayAsset.url;
 
 export const WHATSAPP_NUMBER = "972598754887";
 export const ACCOUNT_NUMBER = "0598754887";

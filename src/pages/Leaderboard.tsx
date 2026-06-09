@@ -100,9 +100,8 @@ export default function Leaderboard() {
       (qRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 5; });
       (aRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 10; });
       (artRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 15; });
-      validUsers = validUsers
-        .map(u => ({ ...u, points: score[u.user_id] ?? 0 }))
-        .filter(u => u.points > 0);
+      // Keep all users; show their period score (0 if no activity in window)
+      validUsers = validUsers.map(u => ({ ...u, points: score[u.user_id] ?? 0 }));
     }
 
     validUsers.sort((a, b) => b.points - a.points);
