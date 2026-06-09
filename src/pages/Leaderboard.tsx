@@ -91,15 +91,29 @@ export default function Leaderboard() {
       else since.setMonth(since.getMonth() - 1);
       const sinceIso = since.toISOString();
 
-      const [qRes, aRes, artRes] = await Promise.all([
+      const [qRes, aRes, artRes, enRes, qzRes, ckRes, cmRes, voRes] = await Promise.all([
         supabase.from("questions").select("user_id").gte("created_at", sinceIso),
         supabase.from("answers").select("user_id").gte("created_at", sinceIso),
         supabase.from("articles").select("user_id").gte("created_at", sinceIso),
+        supabase.from("course_enrollments").select("user_id").gte("created_at", sinceIso),
+        supabase.from("quiz_attempts").select("user_id, points_earned").gte("completed_at", sinceIso),
+        supabase.from("daily_checkins").select("user_id").gte("checkin_date", since.toISOString().slice(0, 10)),
+        supabase.from("comments").select("user_id").gte("created_at", sinceIso),
+        supabase.from("votes").select("user_id, vote_type").gte("created_at", sinceIso),
       ]);
       const score: Record<string, number> = {};
-      (qRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 5; });
-      (aRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 10; });
-      (artRes.data ?? []).forEach((r: any) => { score[r.user_id] = (score[r.user_id] ?? 0) + 15; });
+      const add = (uid: string | null | undefined, n: number) => {
+        if (!uid) return;
+        score[uid] = (score[uid] ?? 0) + n;
+      };
+      (qRes.data ?? []).forEach((r: any) => add(r.user_id, 5));
+      (aRes.data ?? []).forEach((r: any) => add(r.user_id, 10));
+      (artRes.data ?? []).forEach((r: any) => add(r.user_id, 15));
+      (enRes.data ?? []).forEach((r: any) => add(r.user_id, 3));
+      (qzRes.data ?? []).forEach((r: any) => add(r.user_id, Number(r.points_earned ?? 0)));
+      (ckRes.data ?? []).forEach((r: any) => add(r.user_id, 2));
+      (cmRes.data ?? []).forEach((r: any) => add(r.user_id, 1));
+      (voRes.data ?? []).forEach((r: any) => add(r.user_id, Math.max(1, Number(r.vote_type ?? 1))));
       // Keep all users; show their period score (0 if no activity in window)
       validUsers = validUsers.map(u => ({ ...u, points: score[u.user_id] ?? 0 }));
     }
