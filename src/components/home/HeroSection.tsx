@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Sparkles, Users, Zap, Award, HelpCircle, Briefcase, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { animate, createTimeline, stagger } from "animejs";
 
 interface Counts {
   users: number;
@@ -19,6 +20,9 @@ function formatNumber(n: number): string {
 
 export function HeroSection() {
   const [counts, setCounts] = useState<Counts | null>(null);
+  const statsRef = useRef<HTMLDivElement | null>(null);
+  const numRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const animatedOnce = useRef(false);
 
   useEffect(() => {
     const load = async () => {
@@ -37,6 +41,38 @@ export function HeroSection() {
     };
     load();
   }, []);
+
+  // Subtle entrance animation for the stat cards
+  useEffect(() => {
+    if (!statsRef.current) return;
+    const cards = statsRef.current.querySelectorAll<HTMLElement>("[data-stat-card]");
+    if (cards.length === 0) return;
+    createTimeline({ defaults: { ease: "outExpo", duration: 700 } }).add(cards, {
+      opacity: [0, 1],
+      translateY: [24, 0],
+      delay: stagger(90),
+    });
+  }, []);
+
+  // Count-up numbers when live stats arrive
+  useEffect(() => {
+    if (!counts || animatedOnce.current) return;
+    animatedOnce.current = true;
+    const targets = [counts.users, counts.questions, counts.articles, counts.jobs];
+    numRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const target = targets[i];
+      const obj = { v: 0 };
+      animate(obj, {
+        v: target,
+        duration: 1400,
+        ease: "outCubic",
+        onUpdate: () => {
+          el.textContent = formatNumber(Math.round(obj.v));
+        },
+      });
+    });
+  }, [counts]);
 
   const stats = [
     { icon: Users, label: "مبرمج نشط", value: counts ? formatNumber(counts.users) : "—", color: "text-primary" },
@@ -96,13 +132,16 @@ export function HeroSection() {
           </div>
 
           {/* Live Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto animate-slide-up" style={{ animationDelay: "0.3s" }}>
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-3xl mx-auto">
             {stats.map((s, i) => {
               const Icon = s.icon;
               return (
-                <div key={i} className="glass rounded-xl p-4 md:p-6 hover-lift">
+                <div key={i} data-stat-card className="glass rounded-xl p-4 md:p-6 hover-lift opacity-0">
                   <Icon className={`w-8 h-8 ${s.color} mx-auto mb-2`} />
-                  <div className="text-2xl md:text-3xl font-bold text-foreground tabular-nums">
+                  <div
+                    ref={(el) => { numRefs.current[i] = el; }}
+                    className="text-2xl md:text-3xl font-bold text-foreground tabular-nums"
+                  >
                     {s.value}
                   </div>
                   <div className="text-sm text-muted-foreground">{s.label}</div>
