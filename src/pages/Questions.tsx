@@ -186,6 +186,7 @@ export default function Questions() {
     category: "JavaScript",
     tags: ""
   });
+  const [newImage, setNewImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchQuestions();
@@ -304,7 +305,8 @@ export default function Questions() {
         user_id: user.id,
         title: newQuestion.title,
         content: newQuestion.content,
-        tags: tags
+        tags: tags,
+        image_url: newImage,
       })
       .select()
       .single();
@@ -328,6 +330,7 @@ export default function Questions() {
     });
 
     setNewQuestion({ title: "", content: "", category: "JavaScript", tags: "" });
+    setNewImage(null);
     setIsDialogOpen(false);
     setSubmitting(false);
     fetchQuestions();
