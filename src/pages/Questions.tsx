@@ -454,6 +454,7 @@ export default function Questions() {
                       />
                     </div>
                   </div>
+                  <PostImageUploader value={newImage} onChange={setNewImage} folder="questions" />
                   <Button 
                     className="w-full" 
                     variant="hero" 
