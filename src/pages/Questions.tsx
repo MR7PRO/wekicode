@@ -31,6 +31,7 @@ import { formatDistanceToNow } from "date-fns";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
+import { PostImageUploader } from "@/components/posts/PostImageUploader";
 
 const categories = [
   "الكل", "JavaScript", "Python", "React", "Node.js", "قواعد البيانات", "DevOps", "TypeScript", "CSS", "أخرى"
@@ -48,6 +49,7 @@ interface Question {
   user_id: string;
   created_at: string;
   accepted_answer_id?: string | null;
+  image_url?: string | null;
   updated_at?: string;
   author?: {
     full_name: string;
