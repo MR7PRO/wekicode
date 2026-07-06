@@ -665,6 +665,14 @@ export default function Questions() {
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                           {question.content}
                         </p>
+                        {question.image_url && (
+                          <img
+                            src={question.image_url}
+                            alt={question.title}
+                            loading="lazy"
+                            className="w-full max-h-72 object-cover rounded-xl border border-border mb-4"
+                          />
+                        )}
 
                         {/* Tags */}
                         <div className="flex flex-wrap gap-2 mb-4">
