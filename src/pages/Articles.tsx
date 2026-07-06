@@ -242,6 +242,14 @@ export default function Articles() {
                             {article.title}
                           </h2>
                           <p className="text-muted-foreground text-sm line-clamp-2 mt-1">{article.content}</p>
+                          {article.image_url && (
+                            <img
+                              src={article.image_url}
+                              alt={article.title}
+                              loading="lazy"
+                              className="w-full max-h-64 object-cover rounded-xl border border-border mt-3"
+                            />
+                          )}
                           <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-muted-foreground">
                             <Link to={`/u/${article.user_id}`} onClick={e => e.stopPropagation()} className="flex items-center gap-1 hover:text-primary transition-colors">
                               <User className="w-3 h-3" />{article.author?.full_name || "مستخدم"}
