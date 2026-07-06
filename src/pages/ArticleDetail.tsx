@@ -166,6 +166,15 @@ export default function ArticleDetail() {
               </div>
             )}
 
+            {(article as any).image_url && (
+              <img
+                src={(article as any).image_url}
+                alt={article.title}
+                loading="lazy"
+                className="w-full max-h-[500px] object-cover rounded-xl border border-border mb-6"
+              />
+            )}
+
             <div className="prose prose-lg dark:prose-invert max-w-none text-foreground/90 whitespace-pre-wrap leading-relaxed">
               {article.content}
             </div>

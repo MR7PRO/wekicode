@@ -501,6 +501,14 @@ export default function QuestionDetail() {
                 <p className="text-foreground/90 whitespace-pre-wrap mb-6 leading-relaxed">
                   {question.content}
                 </p>
+                {(question as any).image_url && (
+                  <img
+                    src={(question as any).image_url}
+                    alt={question.title}
+                    loading="lazy"
+                    className="w-full max-h-[500px] object-contain rounded-xl border border-border mb-6 bg-secondary/30"
+                  />
+                )}
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-6">
