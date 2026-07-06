@@ -21,6 +21,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { BookmarkButton } from "@/components/bookmarks/BookmarkButton";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { PostImageUploader } from "@/components/posts/PostImageUploader";
 
 interface Article {
   id: string;
@@ -32,6 +33,7 @@ interface Article {
   votes: number;
   comments_count: number;
   created_at: string;
+  image_url?: string | null;
   author?: { full_name: string | null; avatar_url: string | null };
 }
 
@@ -47,6 +49,7 @@ export default function Articles() {
   const [newTitle, setNewTitle] = useState("");
   const [newContent, setNewContent] = useState("");
   const [newTags, setNewTags] = useState("");
+  const [newImage, setNewImage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -93,6 +96,7 @@ export default function Articles() {
       title: newTitle.trim(),
       content: newContent.trim(),
       tags: newTags.split(",").map(t => t.trim()).filter(Boolean),
+      image_url: newImage,
     });
 
     if (error) {
@@ -103,6 +107,7 @@ export default function Articles() {
       setNewTitle("");
       setNewContent("");
       setNewTags("");
+      setNewImage(null);
       fetchArticles();
     }
     setSubmitting(false);
@@ -161,6 +166,7 @@ export default function Articles() {
                     <Input placeholder="عنوان المقالة" value={newTitle} onChange={e => setNewTitle(e.target.value)} />
                     <Textarea placeholder="اكتب محتوى المقالة..." className="min-h-[200px]" value={newContent} onChange={e => setNewContent(e.target.value)} />
                     <Input placeholder="الوسوم (مفصولة بفاصلة): react, javascript, python" value={newTags} onChange={e => setNewTags(e.target.value)} />
+                    <PostImageUploader value={newImage} onChange={setNewImage} folder="articles" />
                     <Button onClick={handleCreate} disabled={submitting || !newTitle.trim() || !newContent.trim()} className="w-full">
                       {submitting ? "جاري النشر..." : "نشر المقالة (+15 نقطة)"}
                     </Button>
