@@ -50,14 +50,6 @@ export function HomeAnimator() {
     });
 
     const revealSelectors = "main section:not(:first-child) h2, main section:not(:first-child) h3, main section:not(:first-child) p, main section:not(:first-child) a, main section:not(:first-child) button, main section:not(:first-child) .glass, main section:not(:first-child) .rounded-xl, main section:not(:first-child) .rounded-2xl, main section:not(:first-child) [class*='grid'] > .p-5, main section:not(:first-child) [class*='grid'] > .p-3";
-    const targets = Array.from(document.querySelectorAll<HTMLElement>(revealSelectors))
-      .filter((el) => !el.dataset.homeAnimated && !el.closest("[role='dialog']"));
-
-    targets.forEach((el) => {
-      el.style.opacity = "0";
-      el.style.transform = "translateY(30px) scale(.985)";
-      el.style.willChange = "transform, opacity";
-    });
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -85,7 +77,21 @@ export function HomeAnimator() {
       { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
     );
 
-    targets.forEach((el) => io.observe(el));
+    const observeRevealTargets = () => {
+      Array.from(document.querySelectorAll<HTMLElement>(revealSelectors))
+        .filter((el) => !el.dataset.homeObserved && !el.dataset.homeAnimated && !el.closest("[role='dialog']"))
+        .forEach((el) => {
+          el.dataset.homeObserved = "1";
+          el.style.opacity = "0";
+          el.style.transform = "translateY(30px) scale(.985)";
+          el.style.willChange = "transform, opacity";
+          io.observe(el);
+        });
+    };
+
+    observeRevealTargets();
+    const mutationObserver = new MutationObserver(observeRevealTargets);
+    mutationObserver.observe(document.querySelector("main") ?? document.body, { childList: true, subtree: true });
 
     const sections = Array.from(document.querySelectorAll<HTMLElement>("main section"));
     const sectionIO = new IntersectionObserver(
@@ -121,6 +127,7 @@ export function HomeAnimator() {
     return () => {
       document.documentElement.classList.remove("home-anime-ready");
       io.disconnect();
+      mutationObserver.disconnect();
       sectionIO.disconnect();
       ctas.forEach((el) => {
         el.removeEventListener("mouseenter", enter);
