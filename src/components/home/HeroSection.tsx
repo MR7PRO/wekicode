@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sparkles, Users, Zap, Award, HelpCircle, Briefcase, FileText } from "lucide-react";
+import { ArrowLeft, Users, HelpCircle, Briefcase, FileText, Code2, Terminal, Wifi, Coins, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -83,28 +83,29 @@ export function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-hero pt-28 lg:pt-32">
-      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 right-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 left-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "-3s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(45,212,191,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(45,212,191,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        <div className="absolute inset-0 home-tech-grid" />
+        <div className="absolute inset-x-0 top-0 h-1/2 home-signal-field" />
+        <div className="absolute right-[8%] top-[18%] h-48 w-48 rounded-full border border-primary/20 home-pulse-node" />
+        <div className="absolute left-[10%] bottom-[18%] h-36 w-36 rounded-full border border-accent/20 home-pulse-node" />
+        <div className="absolute left-[46%] top-[54%] h-28 w-28 rounded-full border border-success/20 home-pulse-node" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/20 border border-success/30 mb-8 animate-fade-in">
+        <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.72fr)] gap-10 lg:gap-12 items-center max-w-7xl mx-auto">
+          <div className="text-center lg:text-right">
+          <div data-home-hero="badge" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/20 border border-success/30 mb-8 opacity-0">
             <span className="text-lg">🇵🇸</span>
             <span className="text-sm font-medium text-success">صنع في فلسطين - من غزة للعالم</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 animate-slide-up">
+          <h1 data-home-hero="title" className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight mb-6 opacity-0">
             <span className="text-foreground">منصة </span>
-            <span className="inline-block font-black transition-all duration-300 cursor-default group">
-              <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_25px_rgba(59,130,246,0.7)]">
+            <span className="inline-block font-black transition-all duration-300 cursor-default group home-logo-code">
+              <span className="text-gradient-primary">
                 Weki
               </span>
-              <span className="bg-gradient-to-b from-amber-300 via-orange-500 to-orange-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_25px_rgba(249,115,22,0.7)]">
+              <span className="text-gradient-accent">
                 Code
               </span>
             </span>
@@ -112,20 +113,20 @@ export function HeroSection() {
             <span className="text-foreground">لمستقبل المبرمجين</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
+          <p data-home-hero="copy" className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 mb-8 opacity-0">
             منصة وحاضنة أعمال فلسطينية في قطاع غزة توفر للطلبة والفريلانسرز مساحة عمل متكاملة 
             مع كهرباء وإنترنت سريع، فرص عمل، مشاركة المعرفة ونظام نقاط تفاعلي.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+          <div data-home-hero="actions" className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
             <Link to="/jobs">
-              <Button variant="hero" size="xl">
+              <Button variant="hero" size="xl" className="opacity-0">
                 ابدأ الآن
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
             <Link to="/courses">
-              <Button variant="glass" size="xl">
+              <Button variant="glass" size="xl" className="opacity-0">
                 استكشف الدورات
               </Button>
             </Link>
@@ -148,6 +149,79 @@ export function HeroSection() {
                 </div>
               );
             })}
+          </div>
+          </div>
+
+          <div className="home-command-center relative hidden lg:block opacity-0" aria-hidden="true">
+            <div className="relative min-h-[520px] overflow-hidden rounded-[2rem] border border-border/60 bg-card/60 backdrop-blur-2xl shadow-card">
+              <div className="home-scan-line absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-primary/0 via-primary/20 to-primary/0" />
+              <div className="absolute inset-0 home-panel-grid" />
+              <div className="relative z-10 p-6 space-y-5">
+                <div className="flex items-center justify-between border-b border-border/50 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+                      <Terminal className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-foreground">مركز تشغيل المنصة</div>
+                      <div className="text-xs text-muted-foreground">تعلم • عمل • مجتمع • مكافئات</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-success home-pulse-node" />
+                    <span className="text-xs text-success font-semibold">مباشر</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: Code2, label: "أسئلة", value: counts ? formatNumber(counts.questions) : "—", tone: "primary" },
+                    { icon: BookOpen, label: "تعلم", value: "9 مسارات", tone: "accent" },
+                    { icon: Briefcase, label: "فرص", value: counts ? formatNumber(counts.jobs) : "—", tone: "success" },
+                    { icon: Coins, label: "نقاط", value: "مكافئات", tone: "warning" },
+                  ].map((item) => {
+                    const Icon = item.icon;
+                    const toneClass = item.tone === "primary" ? "text-primary bg-primary/10 border-primary/20" : item.tone === "accent" ? "text-accent bg-accent/10 border-accent/20" : item.tone === "success" ? "text-success bg-success/10 border-success/20" : "text-warning bg-warning/10 border-warning/20";
+                    return (
+                      <div key={item.label} className="home-flow-chip rounded-2xl border border-border/60 bg-background/70 p-4 shadow-card">
+                        <div className={`mb-4 flex h-10 w-10 items-center justify-center rounded-xl border ${toneClass}`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div className="text-xs text-muted-foreground">{item.label}</div>
+                        <div className="text-lg font-black text-foreground">{item.value}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="rounded-2xl border border-border/60 bg-background/70 p-4">
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-sm font-bold text-foreground">مسار مطوّر اليوم</span>
+                    <Wifi className="w-4 h-4 text-primary home-pulse-node" />
+                  </div>
+                  <div className="space-y-3">
+                    {["اختبار React", "إجابة سؤال", "حجز مساحة عمل", "استبدال نقاط"].map((step, index) => (
+                      <div key={step} className="flex items-center gap-3">
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{index + 1}</div>
+                        <div className="h-2 flex-1 rounded-full bg-secondary overflow-hidden">
+                          <div className="h-full rounded-full bg-gradient-primary" style={{ width: `${92 - index * 16}%` }} />
+                        </div>
+                        <span className="w-24 text-xs text-muted-foreground">{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 text-center">
+                  {["Gaza", "Remote", "Workspace"].map((label) => (
+                    <div key={label} className="rounded-xl border border-border/60 bg-background/60 p-3">
+                      <div className="mx-auto mb-2 h-2 w-2 rounded-full bg-success home-pulse-node" />
+                      <div className="text-xs font-semibold text-foreground">{label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
