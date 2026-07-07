@@ -22,23 +22,28 @@ export function PostImageUploader({ value, onChange, folder = "posts" }: Props) 
       toast({ title: "الصورة كبيرة جداً", description: "الحد الأقصى 20 ميغابايت", variant: "destructive" });
       return;
     }
-    if (!file.type.startsWith("image/")) {
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    const imageExtensions = new Set(["jpg", "jpeg", "png", "gif", "webp", "avif", "bmp", "svg", "heic", "heif", "tif", "tiff"]);
+    const looksLikeImage = file.type.startsWith("image/") || imageExtensions.has(ext);
+    if (!looksLikeImage) {
       toast({ title: "نوع الملف غير مدعوم", description: "يرجى رفع صورة", variant: "destructive" });
       return;
     }
     setUploading(true);
-    const ext = (file.name.split(".").pop() || "png").toLowerCase();
-    // NOTE: path MUST start with the user's uid to satisfy storage RLS on avatars bucket
-    const path = `${user.id}/${folder}/${Date.now()}.${ext}`;
+    // Path starts with uid to satisfy storage rules, and keeps question/article images separated.
+    const safeFolder = ["posts", "questions", "articles"].includes(folder) ? folder : "posts";
+    const path = `${user.id}/${safeFolder}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage
       .from("avatars")
-      .upload(path, file, { upsert: false, contentType: file.type || "image/*" });
+      .upload(path, file, { upsert: false, contentType: file.type || `image/${ext}` });
     if (error) {
       toast({ title: "فشل رفع الصورة", description: error.message, variant: "destructive" });
     } else {
       const { data } = supabase.storage.from("avatars").getPublicUrl(path);
       onChange(data.publicUrl);
+      toast({ title: "تم رفع الصورة", description: "يمكنك الآن نشرها مع المحتوى" });
     }
+    if (inputRef.current) inputRef.current.value = "";
     setUploading(false);
   };
 
