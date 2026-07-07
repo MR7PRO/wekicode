@@ -207,6 +207,55 @@
     @apply bg-card/50 backdrop-blur-xl border border-border/50;
   }
 
+  .home-tech-grid {
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.08) 1px, transparent 1px),
+      radial-gradient(circle at 18% 24%, hsl(var(--primary) / 0.16), transparent 30%),
+      radial-gradient(circle at 78% 64%, hsl(var(--accent) / 0.14), transparent 32%);
+    background-size: 54px 54px, 54px 54px, 100% 100%, 100% 100%;
+    mask-image: linear-gradient(to bottom, black 0%, black 72%, transparent 100%);
+  }
+
+  .home-signal-field {
+    background:
+      repeating-linear-gradient(120deg, transparent 0 32px, hsl(var(--primary) / 0.08) 33px, transparent 34px),
+      linear-gradient(180deg, hsl(var(--primary) / 0.08), transparent);
+  }
+
+  .home-panel-grid {
+    background-image:
+      linear-gradient(hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.42;
+  }
+
+  .home-command-center::before,
+  .home-command-center::after {
+    content: "";
+    position: absolute;
+    border-radius: 9999px;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .home-command-center::before {
+    inset: 12% -8% auto auto;
+    width: 220px;
+    height: 220px;
+    background: hsl(var(--primary) / 0.16);
+    filter: blur(54px);
+  }
+
+  .home-command-center::after {
+    inset: auto auto 6% -10%;
+    width: 260px;
+    height: 260px;
+    background: hsl(var(--accent) / 0.14);
+    filter: blur(58px);
+  }
+
   .hover-lift {
     @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
   }
