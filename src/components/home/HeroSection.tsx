@@ -120,13 +120,13 @@ export function HeroSection() {
 
           <div data-home-hero="actions" className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12">
             <Link to="/jobs">
-              <Button variant="hero" size="xl" className="opacity-0">
+              <Button variant="hero" size="xl">
                 ابدأ الآن
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
             <Link to="/courses">
-              <Button variant="glass" size="xl" className="opacity-0">
+              <Button variant="glass" size="xl">
                 استكشف الدورات
               </Button>
             </Link>
