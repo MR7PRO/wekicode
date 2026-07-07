@@ -5,6 +5,7 @@ import { BottomNav } from "@/components/layout/BottomNav";
 import { HeroSection } from "@/components/home/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/seo/SEOHead";
+import { HomeAnimator } from "@/components/home/HomeAnimator";
 
 // Lazy load below-the-fold sections
 const PartnersSection = lazy(() => import("@/components/home/PartnersSection").then(m => ({ default: m.PartnersSection })));
@@ -44,6 +45,7 @@ const Index = memo(() => {
       <main>
         {/* Hero is loaded immediately for LCP */}
         <HeroSection />
+        <HomeAnimator />
         
         {/* Below-the-fold content is lazy loaded */}
         <Suspense fallback={<SectionSkeleton />}>

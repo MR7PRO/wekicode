@@ -18,14 +18,21 @@ export function PostImageUploader({ value, onChange, folder = "posts" }: Props) 
 
   const handleFile = async (file: File) => {
     if (!user) return;
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "الصورة كبيرة", description: "الحد الأقصى 5 ميغابايت", variant: "destructive" });
+    if (file.size > 20 * 1024 * 1024) {
+      toast({ title: "الصورة كبيرة جداً", description: "الحد الأقصى 20 ميغابايت", variant: "destructive" });
+      return;
+    }
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "نوع الملف غير مدعوم", description: "يرجى رفع صورة", variant: "destructive" });
       return;
     }
     setUploading(true);
-    const ext = file.name.split(".").pop() || "png";
-    const path = `${folder}/${user.id}/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: false, contentType: file.type });
+    const ext = (file.name.split(".").pop() || "png").toLowerCase();
+    // NOTE: path MUST start with the user's uid to satisfy storage RLS on avatars bucket
+    const path = `${user.id}/${folder}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage
+      .from("avatars")
+      .upload(path, file, { upsert: false, contentType: file.type || "image/*" });
     if (error) {
       toast({ title: "فشل رفع الصورة", description: error.message, variant: "destructive" });
     } else {
