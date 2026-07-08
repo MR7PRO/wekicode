@@ -6,6 +6,12 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SEOHead } from "@/components/seo/SEOHead";
 import { HomeAnimator } from "@/components/home/HomeAnimator";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
+
+const AuthenticatedForumHome = lazy(() =>
+  import("@/components/forums/AuthenticatedForumHome").then((m) => ({ default: m.AuthenticatedForumHome }))
+);
 
 // Lazy load below-the-fold sections
 const PartnersSection = lazy(() => import("@/components/home/PartnersSection").then(m => ({ default: m.PartnersSection })));
@@ -34,6 +40,39 @@ const SectionSkeleton = memo(() => (
 SectionSkeleton.displayName = "SectionSkeleton";
 
 const Index = memo(() => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="min-h-[60vh] flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <SEOHead
+          title="موسوعة WekiCode — منتديات المبرمجين والفريلانسرز"
+          description="منتديات، نقاشات، أسئلة، مقالات، فرص، أدوات، ومسارات تعلم — كل شيء منظم وقابل للبحث."
+          path="/"
+        />
+        <Navbar />
+        <main>
+          <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
+            <AuthenticatedForumHome />
+          </Suspense>
+        </main>
+        <Footer />
+        <BottomNav />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
