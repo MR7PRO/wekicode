@@ -30,6 +30,10 @@ const ArticleDetail = lazy(() => import("./pages/ArticleDetail"));
 const Bookmarks = lazy(() => import("./pages/Bookmarks"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Developers = lazy(() => import("./pages/Developers"));
+const Forums = lazy(() => import("./pages/Forums"));
+const ForumDetail = lazy(() => import("./pages/ForumDetail"));
+const TopicDetail = lazy(() => import("./pages/TopicDetail"));
+const NewTopic = lazy(() => import("./pages/NewTopic"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
 
@@ -75,6 +79,10 @@ const App = () => (
                 <Route path="/articles" element={<Articles />} />
                 <Route path="/articles/:id" element={<ArticleDetail />} />
                 <Route path="/developers" element={<Developers />} />
+                <Route path="/forums" element={<Forums />} />
+                <Route path="/forums/new" element={<NewTopic />} />
+                <Route path="/forums/:forumSlug" element={<ForumDetail />} />
+                <Route path="/forums/:forumSlug/:topicSlugOrId" element={<TopicDetail />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/rewards" element={<Rewards />} />
