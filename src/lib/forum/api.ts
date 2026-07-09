@@ -112,8 +112,8 @@ export async function fetchCategoriesWithForums() {
     topicsByForum.get(t.forum_id)!.push(t);
   });
 
-  const authorIds = Array.from(
-    new Set((topics ?? []).map((t: any) => t.author_id).filter(Boolean))
+  const authorIds: string[] = Array.from(
+    new Set((topics ?? []).map((t: any) => t.author_id as string).filter(Boolean))
   );
   const profilesById = await fetchProfilesByUserIds(authorIds);
 
@@ -159,7 +159,7 @@ export async function fetchLatestTopics(limit = 12) {
   if (error) throw error;
   const rows = data ?? [];
   const profiles = await fetchProfilesByUserIds(
-    Array.from(new Set(rows.map((r: any) => r.author_id).filter(Boolean)))
+    Array.from(new Set(rows.map((r: any) => r.author_id as string).filter(Boolean))) as string[]
   );
   return rows.map((r: any) => ({
     ...r,
@@ -226,7 +226,7 @@ export async function fetchTopicsForForum(forumId: string, opts: { sort?: string
   if (error) throw error;
   const rows = data ?? [];
   const profiles = await fetchProfilesByUserIds(
-    Array.from(new Set(rows.map((r: any) => r.author_id).filter(Boolean)))
+    Array.from(new Set(rows.map((r: any) => r.author_id as string).filter(Boolean))) as string[]
   );
   return {
     total: count ?? 0,
@@ -271,7 +271,7 @@ export async function fetchReplies(topicId: string) {
   if (error) throw error;
   const rows = data ?? [];
   const profiles = await fetchProfilesByUserIds(
-    Array.from(new Set(rows.map((r: any) => r.author_id).filter(Boolean)))
+    Array.from(new Set(rows.map((r: any) => r.author_id as string).filter(Boolean))) as string[]
   );
   return rows.map((r: any) => ({
     ...r,
