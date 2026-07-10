@@ -22,7 +22,8 @@ export function ForumNotificationBell() {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0" dir="rtl">
+      <PopoverContent align="end" className="w-80 p-0">
+        <div dir="rtl">
         <div className="flex items-center justify-between p-3 border-b border-border">
           <h4 className="font-bold text-sm">الإشعارات</h4>
           {unread > 0 && (
@@ -61,6 +62,7 @@ export function ForumNotificationBell() {
           <Link to="/notifications" onClick={() => setOpen(false)} className="text-xs text-primary hover:underline">
             عرض كل الإشعارات
           </Link>
+        </div>
         </div>
       </PopoverContent>
     </Popover>
