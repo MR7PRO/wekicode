@@ -30,6 +30,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProgressWidget } from "./ProgressWidget";
 import { NotificationBell } from "@/components/notifications/NotificationSystem";
+import { ForumNotificationBell } from "@/components/notifications/ForumNotificationBell";
 import { MessagesBadge } from "@/components/messages/MessagesBadge";
 import { GlobalSearch } from "./GlobalSearch";
 import { QuickCreate } from "./QuickCreate";
@@ -112,6 +113,7 @@ export function Navbar() {
                 <QuickCreate />
                 <MessagesBadge />
                 <NotificationBell />
+                <ForumNotificationBell />
                 <ProgressWidget />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
