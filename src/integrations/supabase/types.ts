@@ -568,6 +568,9 @@ export type Database = {
           reason: string
           reply_id: string | null
           reporter_id: string
+          resolution: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: string
           topic_id: string | null
         }
@@ -578,6 +581,9 @@ export type Database = {
           reason: string
           reply_id?: string | null
           reporter_id: string
+          resolution?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string
           topic_id?: string | null
         }
@@ -588,6 +594,9 @@ export type Database = {
           reason?: string
           reply_id?: string | null
           reporter_id?: string
+          resolution?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string
           topic_id?: string | null
         }
@@ -1435,6 +1444,60 @@ export type Database = {
           },
         ]
       }
+      user_notifications: {
+        Row: {
+          actor_id: string | null
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       votes: {
         Row: {
           answer_id: string | null
@@ -1648,6 +1711,28 @@ export type Database = {
         Returns: Json
       }
       complete_challenge: { Args: { p_challenge_id: string }; Returns: Json }
+      create_notification: {
+        Args: {
+          _actor_id: string
+          _body: string
+          _link: string
+          _title: string
+          _type: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      forum_add_points: {
+        Args: { _delta: number; _user_id: string }
+        Returns: undefined
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_article_comments: {
         Args: { article_uuid: string }
         Returns: undefined
@@ -1668,6 +1753,7 @@ export type Database = {
         Args: { question_uuid: string }
         Returns: undefined
       }
+      is_forum_mod: { Args: { _user_id: string }; Returns: boolean }
       mark_forum_solution: { Args: { p_reply_id: string }; Returns: Json }
       refresh_challenge_progress: {
         Args: { p_challenge_id: string }
@@ -1705,7 +1791,7 @@ export type Database = {
           }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "user" | "moderator" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1832,6 +1918,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["user", "moderator", "admin"],
+    },
   },
 } as const
