@@ -383,3 +383,154 @@ export function exactArabic(iso: string) {
     return iso;
   }
 }
+
+// ================= Reputation =================
+
+export function reputationLevel(points: number): { label: string; color: string } {
+  if (points >= 1000) return { label: "نجم WekiCode", color: "bg-amber-500/20 text-amber-500 border-amber-500/40" };
+  if (points >= 400) return { label: "خبير", color: "bg-purple-500/20 text-purple-400 border-purple-500/40" };
+  if (points >= 150) return { label: "مساهم", color: "bg-emerald-500/20 text-emerald-500 border-emerald-500/40" };
+  if (points >= 50) return { label: "متفاعل", color: "bg-blue-500/20 text-blue-400 border-blue-500/40" };
+  return { label: "مبتدئ", color: "bg-muted text-muted-foreground border-border" };
+}
+
+export async function fetchTopContributors(limit = 6) {
+  const { data } = await db
+    .from("profiles")
+    .select("user_id, full_name, avatar_url, points")
+    .order("points", { ascending: false })
+    .limit(limit);
+  return (data ?? []) as { user_id: string; full_name: string | null; avatar_url: string | null; points: number }[];
+}
+
+// ================= Notifications =================
+
+export interface ForumNotification {
+  id: string;
+  user_id: string;
+  actor_id: string | null;
+  type: string;
+  title: string;
+  body: string | null;
+  link: string | null;
+  is_read: boolean;
+  created_at: string;
+}
+
+export async function fetchNotifications(userId: string, limit = 30) {
+  const { data, error } = await db
+    .from("user_notifications")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as ForumNotification[];
+}
+
+export async function fetchUnreadCount(userId: string) {
+  const { count } = await db
+    .from("user_notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("is_read", false);
+  return count ?? 0;
+}
+
+export async function markNotificationRead(id: string) {
+  await db.from("user_notifications").update({ is_read: true }).eq("id", id);
+}
+
+export async function markAllNotificationsRead(userId: string) {
+  await db.from("user_notifications").update({ is_read: true }).eq("user_id", userId).eq("is_read", false);
+}
+
+// ================= Moderator =================
+
+export async function checkIsModerator(userId: string): Promise<boolean> {
+  if (!userId) return false;
+  const { data } = await db
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .in("role", ["moderator", "admin"]);
+  return !!(data && data.length);
+}
+
+export async function moderateTopic(topicId: string, patch: Partial<{
+  is_pinned: boolean; is_locked: boolean; is_featured: boolean; status: string;
+}>) {
+  const { error } = await db.from("forum_topics").update(patch).eq("id", topicId);
+  if (error) throw error;
+}
+
+export async function deleteReply(replyId: string) {
+  const { error } = await db.from("forum_replies").delete().eq("id", replyId);
+  if (error) throw error;
+}
+
+export async function deleteTopic(topicId: string) {
+  const { error } = await db.from("forum_topics").delete().eq("id", topicId);
+  if (error) throw error;
+}
+
+// ================= Reports =================
+
+export async function createReport(params: {
+  reporterId: string; topicId?: string; replyId?: string; reason: string; details?: string;
+}) {
+  const { error } = await db.from("forum_reports").insert({
+    reporter_id: params.reporterId,
+    topic_id: params.topicId ?? null,
+    reply_id: params.replyId ?? null,
+    reason: params.reason,
+    details: params.details ?? null,
+    status: "pending",
+  });
+  if (error) throw error;
+}
+
+export async function fetchReports(status?: string) {
+  let q = db.from("forum_reports").select("*").order("created_at", { ascending: false }).limit(100);
+  if (status) q = q.eq("status", status);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []) as any[];
+}
+
+export async function updateReport(id: string, patch: { status: string; resolution?: string; reviewedBy: string }) {
+  const { error } = await db.from("forum_reports").update({
+    status: patch.status,
+    resolution: patch.resolution ?? null,
+    reviewed_by: patch.reviewedBy,
+    reviewed_at: new Date().toISOString(),
+  }).eq("id", id);
+  if (error) throw error;
+}
+
+// ================= Duplicates =================
+
+export async function findSimilarTopics(forumId: string, title: string, limit = 3) {
+  if (!forumId || title.trim().length < 6) return [];
+  const first = title.trim().split(/\s+/).slice(0, 3).join(" ");
+  const { data } = await db
+    .from("forum_topics")
+    .select("id, title, forum_id, forums(slug)")
+    .eq("forum_id", forumId)
+    .ilike("title", `%${first}%`)
+    .limit(limit);
+  return (data ?? []).map((r: any) => ({ id: r.id, title: r.title, forum_slug: r.forums?.slug }));
+}
+
+// ================= Related =================
+
+export async function fetchRelatedTopics(forumId: string, excludeId: string, limit = 5) {
+  const { data } = await db
+    .from("forum_topics")
+    .select("id, title, last_activity_at, replies_count, forums(slug)")
+    .eq("forum_id", forumId)
+    .neq("id", excludeId)
+    .order("last_activity_at", { ascending: false })
+    .limit(limit);
+  return (data ?? []).map((r: any) => ({ ...r, forum_slug: r.forums?.slug }));
+}
