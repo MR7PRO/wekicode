@@ -34,6 +34,8 @@ const Forums = lazy(() => import("./pages/Forums"));
 const ForumDetail = lazy(() => import("./pages/ForumDetail"));
 const TopicDetail = lazy(() => import("./pages/TopicDetail"));
 const NewTopic = lazy(() => import("./pages/NewTopic"));
+const Moderation = lazy(() => import("./pages/Moderation"));
+const ForumNotifications = lazy(() => import("./pages/ForumNotifications"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
 
@@ -91,6 +93,8 @@ const App = () => (
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/messages" element={<Messages />} />
                   <Route path="/bookmarks" element={<Bookmarks />} />
+                  <Route path="/notifications" element={<ForumNotifications />} />
+                  <Route path="/moderation" element={<Moderation />} />
                 </Route>
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
