@@ -31,7 +31,7 @@ export function ForumModerationMenu({ topicId, isPinned, isLocked, isFeatured, o
           {busy ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MoreVertical className="w-3.5 h-3.5" />}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-48" dir="rtl">
+      <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem onClick={() => run(() => moderateTopic(topicId, { is_pinned: !isPinned }), isPinned ? "أُلغي التثبيت" : "تم التثبيت")}>
           <Pin className="w-4 h-4 ml-2" /> {isPinned ? "إلغاء التثبيت" : "تثبيت"}
         </DropdownMenuItem>
