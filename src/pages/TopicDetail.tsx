@@ -15,6 +15,10 @@ import { Navbar } from "@/components/layout/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ArrowUp, ArrowDown, Bookmark, Flag, CheckCircle2, Eye, MessageSquare } from "lucide-react";
+import { TopicSummaryCard } from "@/components/ai/TopicSummaryCard";
+import { AiReplyAssistant } from "@/components/ai/AiReplyAssistant";
+import { ConvertToArticleButton } from "@/components/ai/ConvertToArticleButton";
+import { useIsModerator } from "@/hooks/useIsModerator";
 
 export default function TopicDetail() {
   const { forumSlug = "", topicSlugOrId = "" } = useParams();
@@ -24,6 +28,7 @@ export default function TopicDetail() {
   const [reply, setReply] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const isMod = useIsModerator();
 
   const topicQ = useQuery({ queryKey: ["topic", topicSlugOrId], queryFn: () => fetchTopic(topicSlugOrId) });
   const repliesQ = useQuery({ queryKey: ["replies", topicSlugOrId], queryFn: () => fetchReplies(topicSlugOrId) });
@@ -76,6 +81,7 @@ export default function TopicDetail() {
 
   const t = topicQ.data;
   const isAuthor = user?.id === t.author_id;
+  const canConvert = t.status === "solved" && (isAuthor || isMod);
 
   return (
     <>
@@ -112,10 +118,13 @@ export default function TopicDetail() {
               <div className="flex gap-2 mt-4">
                 <Button size="sm" variant="outline" onClick={onBookmark} className="gap-1"><Bookmark className="w-3 h-3" /> {bookmarked ? "محفوظ" : "حفظ"}</Button>
                 <Button size="sm" variant="outline" className="gap-1" onClick={() => toast.info("تم إرسال البلاغ")}><Flag className="w-3 h-3" /> إبلاغ</Button>
+                {canConvert && <ConvertToArticleButton topicId={t.id} />}
               </div>
             </div>
           </div>
         </Card>
+
+        <TopicSummaryCard topicId={t.id} repliesCount={t.replies_count} />
 
         <h2 className="text-lg font-bold mb-3">الردود ({repliesQ.data?.length ?? 0})</h2>
         {repliesQ.isLoading ? <Skeleton className="h-20 w-full" /> : (
@@ -147,6 +156,7 @@ export default function TopicDetail() {
         {user ? (
           <Card className="p-4">
             <h3 className="text-sm font-bold mb-2">أضف ردًا</h3>
+            <AiReplyAssistant topicId={t.id} onInsert={(txt) => setReply((prev) => (prev ? prev + "\n\n" : "") + txt)} />
             <Textarea value={reply} onChange={(e) => setReply(e.target.value)} rows={5} placeholder="اكتب ردك…" />
             <div className="mt-2 flex justify-end">
               <Button onClick={onReply} disabled={submitting || !reply.trim()}>نشر الرد</Button>
