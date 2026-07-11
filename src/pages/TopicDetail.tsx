@@ -28,7 +28,7 @@ export default function TopicDetail() {
   const [reply, setReply] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
-  const isMod = useIsModerator();
+  const { isModerator } = useIsModerator();
 
   const topicQ = useQuery({ queryKey: ["topic", topicSlugOrId], queryFn: () => fetchTopic(topicSlugOrId) });
   const repliesQ = useQuery({ queryKey: ["replies", topicSlugOrId], queryFn: () => fetchReplies(topicSlugOrId) });
@@ -81,7 +81,7 @@ export default function TopicDetail() {
 
   const t = topicQ.data;
   const isAuthor = user?.id === t.author_id;
-  const canConvert = t.status === "solved" && (isAuthor || isMod);
+  const canConvert = t.status === "solved" && (isAuthor || isModerator);
 
   return (
     <>
