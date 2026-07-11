@@ -36,6 +36,7 @@ const TopicDetail = lazy(() => import("./pages/TopicDetail"));
 const NewTopic = lazy(() => import("./pages/NewTopic"));
 const Moderation = lazy(() => import("./pages/Moderation"));
 const ForumNotifications = lazy(() => import("./pages/ForumNotifications"));
+const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
 
@@ -85,6 +86,7 @@ const App = () => (
                 <Route path="/forums/new" element={<NewTopic />} />
                 <Route path="/forums/:forumSlug" element={<ForumDetail />} />
                 <Route path="/forums/:forumSlug/:topicSlugOrId" element={<TopicDetail />} />
+                <Route path="/knowledge/:id" element={<KnowledgeArticle />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/rewards" element={<Rewards />} />

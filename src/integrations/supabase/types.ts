@@ -38,6 +38,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_usage_logs: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          input_hash: string | null
+          target_id: string | null
+          target_type: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          input_hash?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          input_hash?: string | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       answers: {
         Row: {
           content: string
@@ -443,6 +473,53 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      forum_ai_summaries: {
+        Row: {
+          created_at: string
+          generated_by: string | null
+          id: string
+          input_hash: string
+          key_points: string[]
+          model_name: string | null
+          solution_summary: string | null
+          summary: string
+          topic_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          input_hash: string
+          key_points?: string[]
+          model_name?: string | null
+          solution_summary?: string | null
+          summary: string
+          topic_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          generated_by?: string | null
+          id?: string
+          input_hash?: string
+          key_points?: string[]
+          model_name?: string | null
+          solution_summary?: string | null
+          summary?: string
+          topic_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_ai_summaries_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "forum_topics"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       forum_bookmarks: {
         Row: {
@@ -1017,6 +1094,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      knowledge_articles: {
+        Row: {
+          author_id: string | null
+          content: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          slug: string | null
+          source_topic_id: string | null
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          slug?: string | null
+          source_topic_id?: string | null
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          slug?: string | null
+          source_topic_id?: string | null
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "knowledge_articles_source_topic_id_fkey"
+            columns: ["source_topic_id"]
+            isOneToOne: false
+            referencedRelation: "forum_topics"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {
@@ -1702,6 +1829,10 @@ export type Database = {
       }
     }
     Functions: {
+      ai_usage_count_today: {
+        Args: { _action: string; _user_id: string }
+        Returns: number
+      }
       check_ai_chat_rate_limit: {
         Args: {
           p_max_requests?: number

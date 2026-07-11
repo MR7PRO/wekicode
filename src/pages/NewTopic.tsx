@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { AiSuggestionPanel } from "@/components/ai/AiSuggestionPanel";
+import { supabase } from "@/integrations/supabase/client";
 
 const TYPES = [
   { value: "discussion", label: "نقاش" },
@@ -51,11 +53,32 @@ export default function NewTopic() {
 
   const toggleTag = (id: string) => setTagIds((prev) => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
+  const addTagByName = async (name: string) => {
+    const slug = name.toLowerCase().replace(/[^a-z0-9\u0600-\u06FF]+/g, "-").replace(/^-|-$/g, "");
+    if (!slug) return;
+    let tag = (tagsQ.data ?? []).find((t) => t.slug === slug || t.name.toLowerCase() === name.toLowerCase());
+    if (!tag) {
+      const { data } = await (supabase as any).from("forum_tags").insert({ name, slug }).select().single();
+      if (data) tag = data;
+    }
+    if (tag && !tagIds.includes(tag.id)) setTagIds((p) => [...p, tag!.id]);
+  };
+
   return (
     <>
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-16 max-w-3xl" dir="rtl">
         <h1 className="text-2xl font-black mb-4">موضوع جديد</h1>
+        <div className="mb-4">
+          <AiSuggestionPanel
+            title={title}
+            content={content}
+            type={type}
+            forumId={forumId}
+            onApplyTitle={setTitle}
+            onAddTag={addTagByName}
+          />
+        </div>
         <Card className="p-5 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
