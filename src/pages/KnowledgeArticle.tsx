@@ -5,6 +5,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Navbar } from "@/components/layout/Navbar";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { breadcrumbLd, clamp, absUrl } from "@/lib/seo";
 import { BookOpen } from "lucide-react";
 
 export default function KnowledgeArticle() {
@@ -21,8 +23,40 @@ export default function KnowledgeArticle() {
 
   return (
     <>
+      {q.data && q.data.status === "published" && (
+        <SEOHead
+          title={q.data.title}
+          description={clamp(q.data.excerpt || q.data.content) || "مقال معرفي على WekiCode."}
+          path={`/knowledge/${q.data.id}`}
+          type="article"
+          publishedTime={q.data.created_at}
+          modifiedTime={q.data.updated_at || q.data.created_at}
+          keywords={q.data.tags ?? []}
+          jsonLd={[
+            breadcrumbLd([
+              { name: "الرئيسية", path: "/" },
+              { name: "المكتبة المعرفية", path: "/articles" },
+              { name: q.data.title, path: `/knowledge/${q.data.id}` },
+            ]),
+            {
+              "@context": "https://schema.org",
+              "@type": "Article",
+              headline: q.data.title,
+              description: clamp(q.data.excerpt || q.data.content),
+              datePublished: q.data.created_at,
+              dateModified: q.data.updated_at || q.data.created_at,
+              inLanguage: "ar",
+              mainEntityOfPage: absUrl(`/knowledge/${q.data.id}`),
+              publisher: { "@type": "Organization", name: "WekiCode" },
+            },
+          ]}
+        />
+      )}
+      {q.data && q.data.status !== "published" && (
+        <SEOHead title={q.data.title} description="مسودة مقال" path={`/knowledge/${q.data.id}`} noindex />
+      )}
       <Navbar />
-      <div className="container mx-auto px-4 pt-24 pb-16 max-w-3xl" dir="rtl">
+      <main className="container mx-auto px-4 pt-24 pb-16 max-w-3xl" dir="rtl">
         {q.isLoading ? <Skeleton className="h-40 w-full" /> : !q.data ? (
           <Card className="p-6 text-center">المقال غير موجود</Card>
         ) : (
@@ -47,7 +81,7 @@ export default function KnowledgeArticle() {
             )}
           </Card>
         )}
-      </div>
+      </main>
     </>
   );
 }
