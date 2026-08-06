@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Hash, Plus } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { breadcrumbLd } from "@/lib/seo";
 
 export default function Forums() {
   const { data, isLoading, isError, refetch } = useQuery({
@@ -16,6 +18,15 @@ export default function Forums() {
 
   return (
     <>
+      <SEOHead
+        title="منتديات WekiCode — مجتمع المبرمجين والفريلانسرز"
+        description="دليل منتديات WekiCode: برمجة، ذكاء اصطناعي، عمل حر، مسار مهني، ومكتبة معرفية بالعربية للمبرمجين والفريلانسرز."
+        path="/forums"
+        jsonLd={breadcrumbLd([
+          { name: "الرئيسية", path: "/" },
+          { name: "المنتديات", path: "/forums" },
+        ])}
+      />
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-16" dir="rtl">
         <div className="flex items-center justify-between mb-6">
