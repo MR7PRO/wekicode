@@ -57,6 +57,7 @@ export default function Bookmarks() {
         title="محفوظاتي — wekicode"
         description="عناصرك المحفوظة من أسئلة ومقالات على wekicode في مكان واحد."
         path="/bookmarks"
+        noindex
       />
       <Navbar />
       <main className="pt-28 pb-16">
