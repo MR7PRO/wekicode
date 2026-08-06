@@ -160,6 +160,7 @@ export default function Profile() {
         title={`${userData.name} — ملفي على wekicode`}
         description={`ملف ${userData.name} الشخصي على wekicode: المستوى، النقاط، الإنجازات والنشاط.`}
         path="/profile"
+        noindex
       />
       <h1 className="sr-only">{`الملف الشخصي للمستخدم ${userData.name}`}</h1>
       <Navbar />

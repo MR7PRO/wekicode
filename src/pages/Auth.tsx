@@ -150,6 +150,7 @@ export default function Auth() {
         title="تسجيل الدخول وإنشاء حساب — wekicode"
         description="انضم إلى مجتمع wekicode للمبرمجين العرب: سجّل دخولك أو أنشئ حسابًا جديدًا للبدء."
         path="/auth"
+        noindex
       />
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

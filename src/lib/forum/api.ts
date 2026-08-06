@@ -534,3 +534,32 @@ export async function fetchRelatedTopics(forumId: string, excludeId: string, lim
     .limit(limit);
   return (data ?? []).map((r: any) => ({ ...r, forum_slug: r.forums?.slug }));
 }
+/* ---------------- Tag landing pages (SEO) ---------------- */
+
+export async function fetchTagBySlug(slug: string) {
+  const { data } = await db.from("forum_tags").select("*").eq("slug", slug).maybeSingle();
+  return (data as ForumTag) ?? null;
+}
+
+export async function fetchTopicsByTag(tagId: string, limit = 30) {
+  const { data } = await db
+    .from("forum_topic_tags")
+    .select("forum_topics(id, title, excerpt, status, replies_count, score, last_activity_at, created_at, forums(slug, title))")
+    .eq("tag_id", tagId)
+    .limit(limit);
+  return (data ?? [])
+    .map((r: any) => r.forum_topics)
+    .filter(Boolean)
+    .map((t: any) => ({ ...t, forum_slug: t.forums?.slug, forum_title: t.forums?.title }))
+    .sort((a: any, b: any) => (a.last_activity_at < b.last_activity_at ? 1 : -1));
+}
+
+export async function fetchArticlesByTag(tagName: string, limit = 10) {
+  const { data } = await db
+    .from("knowledge_articles")
+    .select("id, title, excerpt, created_at, tags, status")
+    .eq("status", "published")
+    .contains("tags", [tagName])
+    .limit(limit);
+  return (data ?? []) as any[];
+}

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchTopic, fetchReplies, incrementTopicViews, castVote,
   toggleBookmark, createReply, markSolution, relativeArabic, exactArabic,
+  fetchRelatedTopics,
 } from "@/lib/forum/api";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,8 @@ import { TopicSummaryCard } from "@/components/ai/TopicSummaryCard";
 import { AiReplyAssistant } from "@/components/ai/AiReplyAssistant";
 import { ConvertToArticleButton } from "@/components/ai/ConvertToArticleButton";
 import { useIsModerator } from "@/hooks/useIsModerator";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { breadcrumbLd, clamp, absUrl } from "@/lib/seo";
 
 export default function TopicDetail() {
   const { forumSlug = "", topicSlugOrId = "" } = useParams();
@@ -32,6 +35,11 @@ export default function TopicDetail() {
 
   const topicQ = useQuery({ queryKey: ["topic", topicSlugOrId], queryFn: () => fetchTopic(topicSlugOrId) });
   const repliesQ = useQuery({ queryKey: ["replies", topicSlugOrId], queryFn: () => fetchReplies(topicSlugOrId) });
+  const relatedQ = useQuery({
+    queryKey: ["related-topics", topicQ.data?.forum_id, topicSlugOrId],
+    queryFn: () => fetchRelatedTopics(topicQ.data!.forum_id, topicSlugOrId),
+    enabled: !!topicQ.data?.forum_id,
+  });
 
   useEffect(() => { if (topicSlugOrId) incrementTopicViews(topicSlugOrId).catch(() => {}); }, [topicSlugOrId]);
 
@@ -82,14 +90,61 @@ export default function TopicDetail() {
   const t = topicQ.data;
   const isAuthor = user?.id === t.author_id;
   const canConvert = t.status === "solved" && (isAuthor || isModerator);
+  const replies = repliesQ.data ?? [];
+  const solution = replies.find((r) => r.is_solution);
+  const topicPath = `/forums/${forumSlug}/${t.id}`;
+  const qaLd = {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    mainEntity: {
+      "@type": "Question",
+      name: t.title,
+      text: clamp(t.content, 500),
+      answerCount: t.replies_count,
+      upvoteCount: t.score,
+      dateCreated: t.created_at,
+      author: { "@type": "Person", name: t.author_name },
+      ...(solution
+        ? {
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: clamp(solution.content, 500),
+              upvoteCount: solution.score,
+              url: absUrl(topicPath),
+              author: { "@type": "Person", name: (solution as any).author_name || "عضو WekiCode" },
+            },
+          }
+        : {}),
+    },
+  };
 
   return (
     <>
+      <SEOHead
+        title={t.title}
+        description={clamp(t.excerpt || t.content) || `نقاش في منتدى ${t.forum_title} على WekiCode.`}
+        path={topicPath}
+        type="article"
+        publishedTime={t.created_at}
+        modifiedTime={t.last_activity_at}
+        authorName={t.author_name}
+        keywords={(t.tags ?? []).map((tag) => tag.name)}
+        jsonLd={[
+          breadcrumbLd([
+            { name: "الرئيسية", path: "/" },
+            { name: "المنتديات", path: "/forums" },
+            { name: t.forum_title || "منتدى", path: `/forums/${forumSlug}` },
+            { name: t.title, path: topicPath },
+          ]),
+          qaLd,
+        ]}
+      />
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-16" dir="rtl">
-        <div className="text-xs text-muted-foreground mb-3">
+        <nav aria-label="مسار التنقل" className="text-xs text-muted-foreground mb-3">
+          <Link to="/" className="hover:text-primary">الرئيسية</Link> ←{" "}
           <Link to="/forums" className="hover:text-primary">المنتديات</Link> ← <Link to={`/forums/${forumSlug}`} className="hover:text-primary">{t.forum_title}</Link>
-        </div>
+        </nav>
         <Card className="p-5 mb-4">
           <div className="flex items-start gap-4">
             <div className="flex flex-col items-center gap-1">
@@ -112,7 +167,11 @@ export default function TopicDetail() {
               <div className="prose prose-invert max-w-none text-sm whitespace-pre-wrap">{t.content}</div>
               {t.tags && t.tags.length > 0 && (
                 <div className="flex gap-1 flex-wrap mt-3">
-                  {t.tags.map((tag) => <Badge key={tag.id} variant="outline" className="text-[10px]">#{tag.name}</Badge>)}
+                  {t.tags.map((tag) => (
+                    <Link key={tag.id} to={`/tags/${tag.slug}`}>
+                      <Badge variant="outline" className="text-[10px] hover:border-primary/50">#{tag.name}</Badge>
+                    </Link>
+                  ))}
                 </div>
               )}
               <div className="flex gap-2 mt-4">
@@ -166,6 +225,19 @@ export default function TopicDetail() {
           <Card className="p-4 text-center text-sm">
             <Button variant="hero" onClick={() => nav("/auth")}>سجّل الدخول للمشاركة</Button>
           </Card>
+        )}
+
+        {(relatedQ.data ?? []).length > 0 && (
+          <section className="mt-8">
+            <h2 className="text-lg font-bold mb-2">مواضيع ذات صلة</h2>
+            <ul className="space-y-1 text-sm list-disc pr-5">
+              {(relatedQ.data ?? []).map((r: any) => (
+                <li key={r.id}>
+                  <Link to={`/forums/${r.forum_slug}/${r.id}`} className="hover:text-primary">{r.title}</Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
       </div>
     </>

@@ -12,5 +12,15 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /auth
+Disallow: /profile
+Disallow: /settings
+Disallow: /messages
+Disallow: /bookmarks
+Disallow: /notifications
+Disallow: /moderation
+Disallow: /billing
+Disallow: /rewards
+Disallow: /forums/new
 
 Sitemap: https://wekicode.lovable.app/sitemap.xml

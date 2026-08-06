@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/components/notifications/NotificationSystem";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { PrivateRouteNoIndex } from "@/components/seo/PrivateRouteNoIndex";
 import { Loader2 } from "lucide-react";
 
 // Lazy load pages for better performance
@@ -37,6 +38,7 @@ const NewTopic = lazy(() => import("./pages/NewTopic"));
 const Moderation = lazy(() => import("./pages/Moderation"));
 const ForumNotifications = lazy(() => import("./pages/ForumNotifications"));
 const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
+const TagPage = lazy(() => import("./pages/TagPage"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
 
@@ -67,6 +69,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <NotificationProvider>
+            <PrivateRouteNoIndex />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -87,6 +90,7 @@ const App = () => (
                 <Route path="/forums/:forumSlug" element={<ForumDetail />} />
                 <Route path="/forums/:forumSlug/:topicSlugOrId" element={<TopicDetail />} />
                 <Route path="/knowledge/:id" element={<KnowledgeArticle />} />
+                <Route path="/tags/:tagSlug" element={<TagPage />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/rewards" element={<Rewards />} />

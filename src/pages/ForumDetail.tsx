@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Search, Plus, ArrowLeft, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
+import { SEOHead } from "@/components/seo/SEOHead";
+import { breadcrumbLd } from "@/lib/seo";
 
 const SORTS = ["الأحدث", "النشط", "الأكثر ردودًا", "غير محلول", "المثبت"];
 
@@ -31,6 +33,18 @@ export default function ForumDetail() {
 
   return (
     <>
+      {forumQ.data && (
+        <SEOHead
+          title={`${forumQ.data.title} | منتديات WekiCode`}
+          description={forumQ.data.description || `نقاشات ومواضيع ${forumQ.data.title} في مجتمع WekiCode للمبرمجين والفريلانسرز العرب.`}
+          path={`/forums/${forumQ.data.slug}`}
+          jsonLd={breadcrumbLd([
+            { name: "الرئيسية", path: "/" },
+            { name: "المنتديات", path: "/forums" },
+            { name: forumQ.data.title, path: `/forums/${forumQ.data.slug}` },
+          ])}
+        />
+      )}
       <Navbar />
       <div className="container mx-auto px-4 pt-24 pb-16" dir="rtl">
         {forumQ.isLoading ? <Skeleton className="h-20 w-full mb-4" /> : !forumQ.data ? (
