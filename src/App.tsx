@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/components/notifications/NotificationSystem";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { PrivateRouteNoIndex } from "@/components/seo/PrivateRouteNoIndex";
 import { Loader2 } from "lucide-react";
 
 // Lazy load pages for better performance
@@ -68,6 +69,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <NotificationProvider>
+            <PrivateRouteNoIndex />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
