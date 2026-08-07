@@ -1,7 +1,7 @@
 import { Heart, MapPin, Mail, Phone, Github, Linkedin, Twitter, Facebook, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { forwardRef, useState } from "react";
-import wekicodeLogo from "@/assets/wekicode-logo-new.png";
+import { BrandLogo } from "@/components/BrandLogo";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -38,11 +38,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Brand */}
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <img 
-                src={wekicodeLogo} 
-                alt="WekiCode Logo" 
-                className="w-9 h-9 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300"
-              />
+              <BrandLogo className="w-9 h-9 object-contain drop-shadow-[0_2px_8px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.5)] transition-all duration-300" />
               <span className="text-xl font-black transition-all duration-300">
                 <span className="bg-gradient-to-b from-sky-300 via-blue-500 to-blue-700 bg-clip-text text-transparent group-hover:drop-shadow-[0_0_20px_rgba(59,130,246,0.7)]">
                   Weki
