@@ -46,6 +46,9 @@ export default defineConfig(({ mode }) => ({
         screenshots: []
       },
       workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         globPatterns: ["**/*.{js,css,html,ico,svg,woff,woff2}"],
         globIgnores: [],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
@@ -82,7 +85,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
             handler: "CacheFirst",
             options: {
-              cacheName: "unsplash-images-cache",
+              cacheName: "unsplash-images-cache-v2",
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
@@ -96,7 +99,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.*\.supabase\.co\/storage\/v1\/object\/.*/i,
             handler: "CacheFirst",
             options: {
-              cacheName: "storage-images-cache",
+              cacheName: "storage-images-cache-v2",
               expiration: {
                 maxEntries: 80,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
@@ -110,7 +113,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
             handler: "StaleWhileRevalidate",
             options: {
-              cacheName: "images-cache",
+              cacheName: "images-cache-v2",
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
@@ -124,7 +127,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.*\.supabase\.co\/functions\/v1\/.*/i,
             handler: "NetworkFirst",
             options: {
-              cacheName: "functions-cache",
+              cacheName: "functions-cache-v2",
               expiration: {
                 maxEntries: 20,
                 maxAgeSeconds: 60 * 5 // 5 minutes
@@ -139,7 +142,7 @@ export default defineConfig(({ mode }) => ({
             urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
             handler: "NetworkFirst",
             options: {
-              cacheName: "api-cache",
+              cacheName: "api-cache-v2",
               expiration: {
                 maxEntries: 50,
                 maxAgeSeconds: 60 * 5 // 5 minutes
