@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationProvider } from "@/components/notifications/NotificationSystem";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { PrivateRouteNoIndex } from "@/components/seo/PrivateRouteNoIndex";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Loader2 } from "lucide-react";
 
 // Lazy load pages for better performance
@@ -70,6 +71,7 @@ const App = () => (
         <AuthProvider>
           <NotificationProvider>
             <PrivateRouteNoIndex />
+            <ErrorBoundary>
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -108,6 +110,7 @@ const App = () => (
               <AIChatBot />
               <PWAInstallPrompt />
             </Suspense>
+            </ErrorBoundary>
           </NotificationProvider>
         </AuthProvider>
       </BrowserRouter>
