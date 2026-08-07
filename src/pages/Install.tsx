@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { usePWA } from '@/hooks/usePWA';
-import wekicodeLogo from '@/assets/wekicode-logo-new.png';
+import { BrandLogo } from '@/components/BrandLogo';
 
 export default function Install() {
   const { canInstall, installApp, isInstalled } = usePWA();
@@ -61,9 +61,8 @@ export default function Install() {
           >
             <div className="flex justify-center mb-6">
               <div className="w-24 h-24 rounded-3xl bg-gradient-primary p-1 shadow-glow">
-                <img 
-                  src={wekicodeLogo} 
-                  alt="wekicode" 
+                <BrandLogo
+                  alt="wekicode"
                   className="w-full h-full object-contain rounded-3xl bg-background p-2"
                 />
               </div>
