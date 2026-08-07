@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { usePWA } from '@/hooks/usePWA';
-import wekicodeLogo from '@/assets/wekicode-logo.png';
+import wekicodeLogo from '@/assets/wekicode-logo-new.png';
 
 export default function Install() {
   const { canInstall, installApp, isInstalled } = usePWA();
