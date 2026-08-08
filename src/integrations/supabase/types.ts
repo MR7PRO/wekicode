@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievement_definitions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          icon: string | null
+          id: string
+          is_active: boolean
+          points_reward: number
+          rarity: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          points_reward?: number
+          rarity?: string
+          slug: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          points_reward?: number
+          rarity?: string
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
       ai_chat_rate_limits: {
         Row: {
           created_at: string
@@ -453,6 +492,30 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_flags: {
+        Row: {
+          audience: string
+          description: string | null
+          enabled: boolean
+          key: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          description?: string | null
+          enabled?: boolean
+          key: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          description?: string | null
+          enabled?: boolean
+          key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -585,6 +648,35 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      forum_follows: {
+        Row: {
+          created_at: string
+          forum_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          forum_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          forum_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_follows_forum_id_fkey"
+            columns: ["forum_id"]
+            isOneToOne: false
+            referencedRelation: "forums"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       forum_replies: {
         Row: {
@@ -1218,6 +1310,7 @@ export type Database = {
           cover_url: string | null
           created_at: string
           current_streak: number | null
+          experience_level: string | null
           full_name: string | null
           github_url: string | null
           id: string
@@ -1227,11 +1320,16 @@ export type Database = {
           linkedin_url: string | null
           location: string | null
           longest_streak: number | null
+          onboarding_completed: boolean
           points: number | null
+          portfolio_url: string | null
+          preferred_tracks: string[]
+          primary_goal: string | null
           skills: string[] | null
           twitter_url: string | null
           updated_at: string
           user_id: string
+          username: string | null
           website_url: string | null
         }
         Insert: {
@@ -1241,6 +1339,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           current_streak?: number | null
+          experience_level?: string | null
           full_name?: string | null
           github_url?: string | null
           id?: string
@@ -1250,11 +1349,16 @@ export type Database = {
           linkedin_url?: string | null
           location?: string | null
           longest_streak?: number | null
+          onboarding_completed?: boolean
           points?: number | null
+          portfolio_url?: string | null
+          preferred_tracks?: string[]
+          primary_goal?: string | null
           skills?: string[] | null
           twitter_url?: string | null
           updated_at?: string
           user_id: string
+          username?: string | null
           website_url?: string | null
         }
         Update: {
@@ -1264,6 +1368,7 @@ export type Database = {
           cover_url?: string | null
           created_at?: string
           current_streak?: number | null
+          experience_level?: string | null
           full_name?: string | null
           github_url?: string | null
           id?: string
@@ -1273,11 +1378,16 @@ export type Database = {
           linkedin_url?: string | null
           location?: string | null
           longest_streak?: number | null
+          onboarding_completed?: boolean
           points?: number | null
+          portfolio_url?: string | null
+          preferred_tracks?: string[]
+          primary_goal?: string | null
           skills?: string[] | null
           twitter_url?: string | null
           updated_at?: string
           user_id?: string
+          username?: string | null
           website_url?: string | null
         }
         Relationships: []
@@ -1488,6 +1598,97 @@ export type Database = {
         }
         Relationships: []
       }
+      tag_follows: {
+        Row: {
+          created_at: string
+          id: string
+          tag_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tag_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tag_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tag_follows_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "forum_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          progress?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievement_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_activity_streaks: {
+        Row: {
+          current_streak: number
+          last_active_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+          week_start: string
+          weekly_points: number
+        }
+        Insert: {
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+          week_start?: string
+          weekly_points?: number
+        }
+        Update: {
+          current_streak?: number
+          last_active_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+          weekly_points?: number
+        }
+        Relationships: []
+      }
       user_challenge_progress: {
         Row: {
           challenge_id: string
@@ -1532,6 +1733,27 @@ export type Database = {
           },
         ]
       }
+      user_dismissed_nudges: {
+        Row: {
+          dismissed_at: string
+          id: string
+          nudge_key: string
+          user_id: string
+        }
+        Insert: {
+          dismissed_at?: string
+          id?: string
+          nudge_key: string
+          user_id: string
+        }
+        Update: {
+          dismissed_at?: string
+          id?: string
+          nudge_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_favorites: {
         Row: {
           course_id: string | null
@@ -1570,6 +1792,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_invites: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          invited_email: string | null
+          inviter_id: string
+          rewarded: boolean
+          used_at: string | null
+          used_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          invited_email?: string | null
+          inviter_id: string
+          rewarded?: boolean
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          invited_email?: string | null
+          inviter_id?: string
+          rewarded?: boolean
+          used_at?: string | null
+          used_by?: string | null
+        }
+        Relationships: []
       }
       user_notifications: {
         Row: {
@@ -1829,6 +2084,7 @@ export type Database = {
       }
     }
     Functions: {
+      admin_insights: { Args: never; Returns: Json }
       ai_usage_count_today: {
         Args: { _action: string; _user_id: string }
         Returns: number
@@ -1856,6 +2112,11 @@ export type Database = {
       forum_add_points: {
         Args: { _delta: number; _user_id: string }
         Returns: undefined
+      }
+      get_or_create_invite_code: { Args: never; Returns: string }
+      grant_achievement: {
+        Args: { _slug: string; _user_id: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
@@ -1886,6 +2147,11 @@ export type Database = {
       }
       is_forum_mod: { Args: { _user_id: string }; Returns: boolean }
       mark_forum_solution: { Args: { p_reply_id: string }; Returns: Json }
+      record_activity: {
+        Args: { _kind: string; _points?: number }
+        Returns: Json
+      }
+      redeem_invite_code: { Args: { _code: string }; Returns: Json }
       refresh_challenge_progress: {
         Args: { p_challenge_id: string }
         Returns: Json
@@ -1894,6 +2160,7 @@ export type Database = {
         Args: { p_answers: Json; p_quiz_id: string }
         Returns: Json
       }
+      sync_my_achievements: { Args: never; Returns: Json }
       update_profile_info:
         | {
             Args: {
