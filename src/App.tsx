@@ -42,6 +42,9 @@ const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
 const TagPage = lazy(() => import("./pages/TagPage"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
 const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const Achievements = lazy(() => import("./pages/Achievements"));
+const AdminInsights = lazy(() => import("./pages/AdminInsights"));
 
 // Optimized QueryClient with caching settings
 const queryClient = new QueryClient({
@@ -93,8 +96,11 @@ const App = () => (
                 <Route path="/forums/:forumSlug/:topicSlugOrId" element={<TopicDetail />} />
                 <Route path="/knowledge/:id" element={<KnowledgeArticle />} />
                 <Route path="/tags/:tagSlug" element={<TagPage />} />
+                <Route path="/achievements" element={<Achievements />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/admin/insights" element={<AdminInsights />} />
                   <Route path="/rewards" element={<Rewards />} />
                   <Route path="/billing" element={<Billing />} />
                   <Route path="/profile" element={<Profile />} />

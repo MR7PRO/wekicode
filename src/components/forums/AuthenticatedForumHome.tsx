@@ -18,6 +18,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
+import { PersonalizedSections } from "@/components/growth/PersonalizedSections";
+import { WeeklyActivityCard } from "@/components/growth/WeeklyActivityCard";
+import { RetentionNudge } from "@/components/growth/RetentionNudge";
+import { InviteCard } from "@/components/referrals/InviteCard";
+import { ProfileCompletionCard } from "@/components/profile/ProfileCompletionCard";
 import {
   fetchCategoriesWithForums, fetchLatestTopics, fetchTrendingTags,
   fetchCommunityStats, relativeArabic, exactArabic,
@@ -306,6 +311,11 @@ export function AuthenticatedForumHome() {
         </div>
 
         <aside className="space-y-4">
+          <RetentionNudge />
+          <WeeklyActivityCard />
+          <PersonalizedSections />
+          <ProfileCompletionCard />
+          <InviteCard />
           <Card className="p-4 border-border/50">
             <h3 className="font-bold text-sm mb-3 flex items-center gap-2"><Map className="w-4 h-4 text-primary" /> المسارات السريعة</h3>
             <div className="space-y-2">
