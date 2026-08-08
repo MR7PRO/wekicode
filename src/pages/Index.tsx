@@ -8,6 +8,7 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import { HomeAnimator } from "@/components/home/HomeAnimator";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
+import { GrowthGate } from "@/components/growth/GrowthGate";
 
 const AuthenticatedForumHome = lazy(() =>
   import("@/components/forums/AuthenticatedForumHome").then((m) => ({ default: m.AuthenticatedForumHome }))
@@ -63,6 +64,7 @@ const Index = memo(() => {
         />
         <Navbar />
         <main>
+          <GrowthGate />
           <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}>
             <AuthenticatedForumHome />
           </Suspense>
