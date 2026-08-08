@@ -1,0 +1,10 @@
+REVOKE ALL ON FUNCTION public.sync_my_achievements() FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.record_activity(text, integer) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.get_or_create_invite_code() FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.redeem_invite_code(text) FROM PUBLIC, anon;
+REVOKE ALL ON FUNCTION public.admin_insights() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.sync_my_achievements() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.record_activity(text, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.get_or_create_invite_code() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.redeem_invite_code(text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_insights() TO authenticated;
