@@ -166,31 +166,9 @@ export default defineConfig(({ mode }) => ({
             }
           },
           {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/functions\/v1\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "functions-cache-v2",
-              expiration: {
-                maxEntries: 20,
-                maxAgeSeconds: 60 * 5 // 5 minutes
-              },
-              networkTimeoutSeconds: 10,
-              cacheableResponse: {
-                statuses: [200]
-              }
-            }
-          },
-          {
-            urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache-v2",
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 5 // 5 minutes
-              },
-              networkTimeoutSeconds: 10
-            }
+            // Never cache API / auth / edge function traffic — it can contain private data.
+            urlPattern: /^https:\/\/.*\.supabase\.co\/(rest|auth|functions|realtime)\/.*/i,
+            handler: "NetworkOnly"
           }
         ]
       },
