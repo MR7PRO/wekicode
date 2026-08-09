@@ -1302,6 +1302,87 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          achievements_enabled: boolean
+          followed_content_enabled: boolean
+          in_app_enabled: boolean
+          mentions_enabled: boolean
+          push_enabled: boolean
+          quiet_hours_enabled: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          replies_enabled: boolean
+          solutions_enabled: boolean
+          updated_at: string
+          user_id: string
+          weekly_digest_enabled: boolean
+        }
+        Insert: {
+          achievements_enabled?: boolean
+          followed_content_enabled?: boolean
+          in_app_enabled?: boolean
+          mentions_enabled?: boolean
+          push_enabled?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          replies_enabled?: boolean
+          solutions_enabled?: boolean
+          updated_at?: string
+          user_id: string
+          weekly_digest_enabled?: boolean
+        }
+        Update: {
+          achievements_enabled?: boolean
+          followed_content_enabled?: boolean
+          in_app_enabled?: boolean
+          mentions_enabled?: boolean
+          push_enabled?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          replies_enabled?: boolean
+          solutions_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+          weekly_digest_enabled?: boolean
+        }
+        Relationships: []
+      }
+      offline_saved_items: {
+        Row: {
+          id: string
+          item_id: string
+          item_type: string
+          last_synced_at: string | null
+          saved_at: string
+          title: string
+          url: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          item_id: string
+          item_type: string
+          last_synced_at?: string | null
+          saved_at?: string
+          title: string
+          url: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          item_id?: string
+          item_type?: string
+          last_synced_at?: string | null
+          saved_at?: string
+          title?: string
+          url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -1389,6 +1470,45 @@ export type Database = {
           user_id?: string
           username?: string | null
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          device_name: string | null
+          endpoint: string
+          id: string
+          is_active: boolean
+          p256dh: string
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          device_name?: string | null
+          endpoint: string
+          id?: string
+          is_active?: boolean
+          p256dh: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          device_name?: string | null
+          endpoint?: string
+          id?: string
+          is_active?: boolean
+          p256dh?: string
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
         }
         Relationships: []
       }
