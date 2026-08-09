@@ -41,7 +41,12 @@ const ForumNotifications = lazy(() => import("./pages/ForumNotifications"));
 const KnowledgeArticle = lazy(() => import("./pages/KnowledgeArticle"));
 const TagPage = lazy(() => import("./pages/TagPage"));
 const AIChatBot = lazy(() => import("./components/ai/AIChatBot").then(m => ({ default: m.AIChatBot })));
-const PWAInstallPrompt = lazy(() => import("./components/pwa/PWAInstallPrompt").then(m => ({ default: m.PWAInstallPrompt })));
+const InstallPrompt = lazy(() => import("./components/pwa/InstallPrompt").then(m => ({ default: m.InstallPrompt })));
+const AppUpdatePrompt = lazy(() => import("./components/pwa/AppUpdatePrompt").then(m => ({ default: m.AppUpdatePrompt })));
+const NetworkStatusBanner = lazy(() => import("./components/pwa/NetworkStatusBanner").then(m => ({ default: m.NetworkStatusBanner })));
+const OfflineLibrary = lazy(() => import("./pages/OfflineLibrary"));
+const NotificationSettings = lazy(() => import("./pages/NotificationSettings"));
+const AppSettings = lazy(() => import("./pages/AppSettings"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const AdminInsights = lazy(() => import("./pages/AdminInsights"));
@@ -97,6 +102,7 @@ const App = () => (
                 <Route path="/knowledge/:id" element={<KnowledgeArticle />} />
                 <Route path="/tags/:tagSlug" element={<TagPage />} />
                 <Route path="/achievements" element={<Achievements />} />
+                <Route path="/saved-offline" element={<OfflineLibrary />} />
                 {/* Protected Routes - require authentication */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/onboarding" element={<Onboarding />} />
@@ -105,6 +111,8 @@ const App = () => (
                   <Route path="/billing" element={<Billing />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/settings" element={<Settings />} />
+                  <Route path="/settings/notifications" element={<NotificationSettings />} />
+                  <Route path="/settings/app" element={<AppSettings />} />
                   <Route path="/messages" element={<Messages />} />
                   <Route path="/bookmarks" element={<Bookmarks />} />
                   <Route path="/notifications" element={<ForumNotifications />} />
@@ -114,7 +122,9 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <AIChatBot />
-              <PWAInstallPrompt />
+              <InstallPrompt />
+              <AppUpdatePrompt />
+              <NetworkStatusBanner />
             </Suspense>
             </ErrorBoundary>
           </NotificationProvider>
