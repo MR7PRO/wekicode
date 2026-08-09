@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
+import { registerServiceWorker } from "./pwa/registerServiceWorker";
 
 // Restore saved theme preference
 const savedTheme = localStorage.getItem("theme");
@@ -16,3 +17,7 @@ createRoot(document.getElementById("root")!).render(
     <App />
   </HelmetProvider>
 );
+
+registerServiceWorker(() => {
+  window.dispatchEvent(new CustomEvent("wekicode:sw-update-ready"));
+});
