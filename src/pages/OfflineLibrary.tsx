@@ -20,7 +20,12 @@ export default function OfflineLibrary() {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead title="المحتوى المحفوظ بدون اتصال | WekiCode" description="اقرأ المقالات والنقاشات المحفوظة على جهازك بدون اتصال." noindex />
+      <SEOHead
+        title="المحتوى المحفوظ بدون اتصال"
+        description="اقرأ المقالات والنقاشات المحفوظة على جهازك بدون اتصال."
+        path="/saved-offline"
+        noindex
+      />
       <Navbar />
       <main className="container mx-auto px-4 py-8 max-w-3xl pb-24">
         <header className="mb-6">
