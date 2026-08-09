@@ -16,6 +16,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ArrowUp, ArrowDown, Bookmark, Flag, CheckCircle2, Eye, MessageSquare } from "lucide-react";
+import { ShareButton } from "@/components/share/ShareButton";
+import { OfflineSaveButton } from "@/components/pwa/OfflineSaveButton";
 import { TopicSummaryCard } from "@/components/ai/TopicSummaryCard";
 import { AiReplyAssistant } from "@/components/ai/AiReplyAssistant";
 import { ConvertToArticleButton } from "@/components/ai/ConvertToArticleButton";
