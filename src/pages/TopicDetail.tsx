@@ -16,6 +16,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { ArrowUp, ArrowDown, Bookmark, Flag, CheckCircle2, Eye, MessageSquare } from "lucide-react";
+import { ShareButton } from "@/components/share/ShareButton";
+import { OfflineSaveButton } from "@/components/pwa/OfflineSaveButton";
 import { TopicSummaryCard } from "@/components/ai/TopicSummaryCard";
 import { AiReplyAssistant } from "@/components/ai/AiReplyAssistant";
 import { ConvertToArticleButton } from "@/components/ai/ConvertToArticleButton";
@@ -174,8 +176,18 @@ export default function TopicDetail() {
                   ))}
                 </div>
               )}
-              <div className="flex gap-2 mt-4">
+              <div className="flex gap-2 mt-4 flex-wrap">
                 <Button size="sm" variant="outline" onClick={onBookmark} className="gap-1"><Bookmark className="w-3 h-3" /> {bookmarked ? "محفوظ" : "حفظ"}</Button>
+                <ShareButton title={t.title} text={t.excerpt ?? undefined} />
+                <OfflineSaveButton
+                  id={t.id}
+                  type="topic"
+                  title={t.title}
+                  url={window.location.pathname}
+                  excerpt={t.excerpt ?? undefined}
+                  content={t.content}
+                  tags={t.tags?.map((tg) => tg.name)}
+                />
                 <Button size="sm" variant="outline" className="gap-1" onClick={() => toast.info("تم إرسال البلاغ")}><Flag className="w-3 h-3" /> إبلاغ</Button>
                 {canConvert && <ConvertToArticleButton topicId={t.id} />}
               </div>

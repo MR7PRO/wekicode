@@ -7,7 +7,12 @@ export type FeatureKey =
   | "leaderboards"
   | "ai_tools"
   | "public_knowledge"
-  | "semantic_search";
+  | "semantic_search"
+  | "pwa"
+  | "offline_reading"
+  | "push_notifications"
+  | "install_prompt"
+  | "mobile_action_sheet";
 
 /** Build-time defaults. Env vars win over these, DB flags win over env. */
 const DEFAULTS: Record<FeatureKey, boolean> = {
@@ -18,6 +23,11 @@ const DEFAULTS: Record<FeatureKey, boolean> = {
   ai_tools: true,
   public_knowledge: true,
   semantic_search: false,
+  pwa: true,
+  offline_reading: true,
+  push_notifications: false,
+  install_prompt: true,
+  mobile_action_sheet: true,
 };
 
 const ENV_MAP: Record<FeatureKey, string> = {
@@ -28,6 +38,11 @@ const ENV_MAP: Record<FeatureKey, string> = {
   ai_tools: "VITE_FEATURE_AI_TOOLS",
   public_knowledge: "VITE_FEATURE_PUBLIC_KNOWLEDGE",
   semantic_search: "VITE_FEATURE_SEMANTIC_SEARCH",
+  pwa: "VITE_FEATURE_PWA",
+  offline_reading: "VITE_FEATURE_OFFLINE_READING",
+  push_notifications: "VITE_FEATURE_PUSH",
+  install_prompt: "VITE_FEATURE_INSTALL_PROMPT",
+  mobile_action_sheet: "VITE_FEATURE_MOBILE_ACTION_SHEET",
 };
 
 function envFlag(key: FeatureKey): boolean | undefined {
