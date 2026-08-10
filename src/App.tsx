@@ -50,6 +50,7 @@ const AppSettings = lazy(() => import("./pages/AppSettings"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const AdminInsights = lazy(() => import("./pages/AdminInsights"));
+const Marketplace = lazy(() => import("./pages/Marketplace"));
 
 // Optimized QueryClient with caching settings
 const queryClient = new QueryClient({
@@ -95,6 +96,7 @@ const App = () => (
                 <Route path="/articles" element={<Articles />} />
                 <Route path="/articles/:id" element={<ArticleDetail />} />
                 <Route path="/developers" element={<Developers />} />
+                <Route path="/marketplace" element={<Marketplace />} />
                 <Route path="/forums" element={<Forums />} />
                 <Route path="/forums/new" element={<NewTopic />} />
                 <Route path="/forums/:forumSlug" element={<ForumDetail />} />
