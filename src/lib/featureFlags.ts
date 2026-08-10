@@ -12,7 +12,17 @@ export type FeatureKey =
   | "offline_reading"
   | "push_notifications"
   | "install_prompt"
-  | "mobile_action_sheet";
+  | "mobile_action_sheet"
+  | "marketplace_enabled"
+  | "services_enabled"
+  | "project_requests_enabled"
+  | "proposals_enabled"
+  | "orders_enabled"
+  | "reviews_enabled"
+  | "payments_enabled"
+  | "provider_stripe_enabled"
+  | "provider_paypal_enabled"
+  | "manual_payment_enabled";
 
 /** Build-time defaults. Env vars win over these, DB flags win over env. */
 const DEFAULTS: Record<FeatureKey, boolean> = {
@@ -28,6 +38,18 @@ const DEFAULTS: Record<FeatureKey, boolean> = {
   push_notifications: false,
   install_prompt: true,
   mobile_action_sheet: true,
+  // Phase 9 — marketplace
+  marketplace_enabled: true,
+  services_enabled: true,
+  project_requests_enabled: true,
+  proposals_enabled: true,
+  orders_enabled: true,
+  reviews_enabled: true,
+  /** Payments stay OFF until a provider is actually configured server-side. */
+  payments_enabled: false,
+  provider_stripe_enabled: false,
+  provider_paypal_enabled: false,
+  manual_payment_enabled: true,
 };
 
 const ENV_MAP: Record<FeatureKey, string> = {
@@ -43,6 +65,16 @@ const ENV_MAP: Record<FeatureKey, string> = {
   push_notifications: "VITE_FEATURE_PUSH",
   install_prompt: "VITE_FEATURE_INSTALL_PROMPT",
   mobile_action_sheet: "VITE_FEATURE_MOBILE_ACTION_SHEET",
+  marketplace_enabled: "VITE_FEATURE_MARKETPLACE",
+  services_enabled: "VITE_FEATURE_SERVICES",
+  project_requests_enabled: "VITE_FEATURE_PROJECT_REQUESTS",
+  proposals_enabled: "VITE_FEATURE_PROPOSALS",
+  orders_enabled: "VITE_FEATURE_ORDERS",
+  reviews_enabled: "VITE_FEATURE_REVIEWS",
+  payments_enabled: "VITE_FEATURE_PAYMENTS",
+  provider_stripe_enabled: "VITE_FEATURE_PROVIDER_STRIPE",
+  provider_paypal_enabled: "VITE_FEATURE_PROVIDER_PAYPAL",
+  manual_payment_enabled: "VITE_FEATURE_MANUAL_PAYMENT",
 };
 
 function envFlag(key: FeatureKey): boolean | undefined {
