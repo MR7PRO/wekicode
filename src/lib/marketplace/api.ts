@@ -12,16 +12,13 @@ const db = supabase as any;
 const SELLER_FIELDS =
   "user_id, full_name, username, avatar_url, headline, freelancer_role, level, points, skills, availability_status, marketplace_verified, marketplace_rating_avg, marketplace_rating_count, completed_orders_count";
 
-async function attachProfiles<T extends Record<string, unknown>>(
-  rows: T[],
-  idKey: string,
-  target: string,
-): Promise<T[]> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function attachProfiles<T = any>(rows: any[], idKey: string, target: string): Promise<T[]> {
   const ids = [...new Set(rows.map((r) => r[idKey]).filter(Boolean))] as string[];
   if (ids.length === 0) return rows;
   const { data } = await db.from("profiles").select(SELLER_FIELDS).in("user_id", ids);
   const map = new Map<string, SellerMini>((data ?? []).map((p: SellerMini) => [p.user_id, p]));
-  return rows.map((r) => ({ ...r, [target]: map.get(r[idKey] as string) ?? null }));
+  return rows.map((r) => ({ ...r, [target]: map.get(r[idKey] as string) ?? null })) as T[];
 }
 
 /* ---------------- categories ---------------- */
@@ -233,7 +230,7 @@ export async function fetchMyOrders(userId: string): Promise<MarketplaceOrder[]>
     .order("created_at", { ascending: false });
   if (error) throw error;
   const withBuyer = await attachProfiles(data ?? [], "buyer_id", "buyer");
-  return attachProfiles(withBuyer, "seller_id", "seller") as Promise<MarketplaceOrder[]>;
+  return attachProfiles<MarketplaceOrder>(withBuyer, "seller_id", "seller");
 }
 
 export async function fetchOrderById(id: string): Promise<MarketplaceOrder | null> {
