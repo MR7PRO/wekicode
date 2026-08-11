@@ -22,7 +22,20 @@ export type FeatureKey =
   | "payments_enabled"
   | "provider_stripe_enabled"
   | "provider_paypal_enabled"
-  | "manual_payment_enabled";
+  | "manual_payment_enabled"
+  | "trust_system_enabled"
+  | "identity_verification_enabled"
+  | "professional_verification_enabled"
+  | "seller_levels_enabled"
+  | "trust_score_enabled"
+  | "support_center_enabled"
+  | "support_tickets_enabled"
+  | "legal_center_enabled"
+  | "account_mfa_enabled"
+  | "data_export_enabled"
+  | "account_deletion_enabled"
+  | "appeals_enabled"
+  | "enhanced_disputes_enabled";
 
 /** Build-time defaults. Env vars win over these, DB flags win over env. */
 const DEFAULTS: Record<FeatureKey, boolean> = {
@@ -50,6 +63,21 @@ const DEFAULTS: Record<FeatureKey, boolean> = {
   provider_stripe_enabled: false,
   provider_paypal_enabled: false,
   manual_payment_enabled: true,
+  // Phase 10 — trust & safety
+  trust_system_enabled: true,
+  /** Official identity verification stays OFF until a real provider is configured. */
+  identity_verification_enabled: false,
+  professional_verification_enabled: true,
+  seller_levels_enabled: true,
+  trust_score_enabled: true,
+  support_center_enabled: true,
+  support_tickets_enabled: true,
+  legal_center_enabled: true,
+  account_mfa_enabled: false,
+  data_export_enabled: true,
+  account_deletion_enabled: true,
+  appeals_enabled: true,
+  enhanced_disputes_enabled: true,
 };
 
 const ENV_MAP: Record<FeatureKey, string> = {
@@ -75,6 +103,19 @@ const ENV_MAP: Record<FeatureKey, string> = {
   provider_stripe_enabled: "VITE_FEATURE_PROVIDER_STRIPE",
   provider_paypal_enabled: "VITE_FEATURE_PROVIDER_PAYPAL",
   manual_payment_enabled: "VITE_FEATURE_MANUAL_PAYMENT",
+  trust_system_enabled: "VITE_FEATURE_TRUST_SYSTEM",
+  identity_verification_enabled: "VITE_FEATURE_IDENTITY_VERIFICATION",
+  professional_verification_enabled: "VITE_FEATURE_PRO_VERIFICATION",
+  seller_levels_enabled: "VITE_FEATURE_SELLER_LEVELS",
+  trust_score_enabled: "VITE_FEATURE_TRUST_SCORE",
+  support_center_enabled: "VITE_FEATURE_SUPPORT_CENTER",
+  support_tickets_enabled: "VITE_FEATURE_SUPPORT_TICKETS",
+  legal_center_enabled: "VITE_FEATURE_LEGAL_CENTER",
+  account_mfa_enabled: "VITE_FEATURE_ACCOUNT_MFA",
+  data_export_enabled: "VITE_FEATURE_DATA_EXPORT",
+  account_deletion_enabled: "VITE_FEATURE_ACCOUNT_DELETION",
+  appeals_enabled: "VITE_FEATURE_APPEALS",
+  enhanced_disputes_enabled: "VITE_FEATURE_ENHANCED_DISPUTES",
 };
 
 function envFlag(key: FeatureKey): boolean | undefined {
