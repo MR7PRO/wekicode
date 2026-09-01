@@ -155,7 +155,7 @@ export default function ServiceDetail() {
                 {reviews.data.map((r) => (
                   <div key={r.id} className="border-b border-border/40 pb-3 last:border-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <img src={getUserAvatarSrc(r.reviewer?.user_id ?? r.reviewer_id, r.reviewer?.avatar_url ?? null)}
+                      <img src={r.reviewer?.avatar_url || getUserAvatarSrc(r.reviewer_id)}
                         alt="" className="w-6 h-6 rounded-full object-cover" />
                       <span className="text-sm font-bold">{r.reviewer?.full_name ?? "مستخدم"}</span>
                       <span className="text-xs text-amber-500">★ {r.rating}</span>
@@ -188,7 +188,7 @@ export default function ServiceDetail() {
           {s.seller && (
             <Card className="glass border-border/50 p-5">
               <Link to={`/u/${s.seller.user_id}`} className="flex items-center gap-3 mb-3">
-                <img src={getUserAvatarSrc(s.seller.user_id, s.seller.avatar_url)} alt="" className="w-11 h-11 rounded-full object-cover" />
+                <img src={s.seller.avatar_url || getUserAvatarSrc(s.seller.user_id)} alt="" className="w-11 h-11 rounded-full object-cover" />
                 <div>
                   <p className="font-bold text-sm">{s.seller.full_name ?? "مستقل"}</p>
                   <p className="text-[11px] text-muted-foreground">{s.seller.headline ?? s.seller.freelancer_role ?? ""}</p>
