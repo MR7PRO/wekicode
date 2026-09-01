@@ -13,7 +13,7 @@ interface Props {
   width?: "narrow" | "wide";
 }
 
-export function PageShell({ title, description, path, noindex, children, width = "wide" }: Props) {
+export function PageShell({ title, description, path = "/", noindex, children, width = "wide" }: Props) {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       <SEOHead title={title} description={description} path={path} noindex={noindex} />
