@@ -207,3 +207,49 @@ export async function cancelAccountDeletion(id: string) {
     .update({ status: "cancelled", cancelled_at: new Date().toISOString() }).eq("id", id);
   if (error) throw error;
 }
+/* ---------------- staff (trust & safety) ---------------- */
+export async function fetchMyStaffRoles(userId: string): Promise<string[]> {
+  const { data } = await db.from("staff_roles").select("role").eq("user_id", userId);
+  return (data ?? []).map((r: { role: string }) => r.role);
+}
+
+export async function staffFetchProRequests(): Promise<ProfessionalVerificationRequest[]> {
+  const { data } = await db.from("professional_verification_requests")
+    .select("*").in("status", ["submitted", "under_review", "changes_requested"])
+    .order("submitted_at", { ascending: true }).limit(50);
+  return data ?? [];
+}
+
+export async function staffReviewProRequest(id: string, status: "approved" | "rejected" | "changes_requested", reviewerNotes: string) {
+  const { error } = await db.from("professional_verification_requests")
+    .update({ status, reviewer_notes: reviewerNotes || null, reviewed_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function staffFetchAppeals(): Promise<(AccountAppeal & { user_id: string })[]> {
+  const { data } = await db.from("account_appeals")
+    .select("id, user_id, restriction_id, explanation, status, reviewer_response, submitted_at, reviewed_at")
+    .in("status", ["submitted", "under_review", "more_information_required"])
+    .order("submitted_at", { ascending: true }).limit(50);
+  return data ?? [];
+}
+
+export async function staffReviewAppeal(id: string, status: "approved" | "rejected" | "more_information_required", response: string) {
+  const { error } = await db.from("account_appeals")
+    .update({ status, reviewer_response: response || null, reviewed_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function staffFetchTickets(): Promise<SupportTicket[]> {
+  const { data } = await db.from("support_tickets").select("*")
+    .in("status", ["open", "waiting_on_support", "waiting_on_user"])
+    .order("created_at", { ascending: true }).limit(50);
+  return data ?? [];
+}
+
+export async function staffUpdateTicketStatus(id: string, status: string) {
+  const { error } = await db.from("support_tickets").update({ status }).eq("id", id);
+  if (error) throw error;
+}
