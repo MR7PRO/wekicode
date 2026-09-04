@@ -130,6 +130,18 @@ const App = () => (
                 <Route element={<ProtectedRoute />}>
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/admin/insights" element={<AdminInsights />} />
+                  <Route path="/admin/trust-safety" element={<TrustSafetyAdmin />} />
+                  <Route path="/marketplace/dashboard" element={<MarketplaceDashboard />} />
+                  <Route path="/marketplace/service/new" element={<ServiceEditor />} />
+                  <Route path="/marketplace/service/:id/edit" element={<ServiceEditor />} />
+                  <Route path="/support" element={<SupportTickets />} />
+                  <Route path="/support/new" element={<NewSupportTicket />} />
+                  <Route path="/support/:id" element={<SupportTicketDetail />} />
+                  <Route path="/settings/verification" element={<VerificationSettings />} />
+                  <Route path="/settings/security" element={<SecuritySettings />} />
+                  <Route path="/settings/privacy" element={<PrivacySettings />} />
+                  <Route path="/verification/professional" element={<ProfessionalVerification />} />
+                  <Route path="/appeals" element={<Appeals />} />
                   <Route path="/rewards" element={<Rewards />} />
                   <Route path="/billing" element={<Billing />} />
                   <Route path="/profile" element={<Profile />} />
