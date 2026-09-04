@@ -60,7 +60,7 @@ export default function Projects() {
         <Button size="sm" variant={!categoryId ? "default" : "outline"} onClick={() => setCategoryId(undefined)}>الكل</Button>
         {categories.map((c) => (
           <Button key={c.id} size="sm" variant={categoryId === c.id ? "default" : "outline"} onClick={() => setCategoryId(c.id)}>
-            {c.name_ar ?? c.name}
+            {c.title}
           </Button>
         ))}
       </div>
