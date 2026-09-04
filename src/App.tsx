@@ -113,6 +113,11 @@ const App = () => (
                 <Route path="/articles/:id" element={<ArticleDetail />} />
                 <Route path="/developers" element={<Developers />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/marketplace/service/:id" element={<ServiceDetail />} />
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/help/:slug" element={<HelpArticlePage />} />
+                <Route path="/legal" element={<LegalCenter />} />
+                <Route path="/legal/:key" element={<LegalDocumentPage />} />
                 <Route path="/forums" element={<Forums />} />
                 <Route path="/forums/new" element={<NewTopic />} />
                 <Route path="/forums/:forumSlug" element={<ForumDetail />} />
