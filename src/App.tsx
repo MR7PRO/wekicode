@@ -51,6 +51,22 @@ const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const AdminInsights = lazy(() => import("./pages/AdminInsights"));
 const Marketplace = lazy(() => import("./pages/Marketplace"));
+const MarketplaceDashboard = lazy(() => import("./pages/marketplace/MarketplaceDashboard"));
+const ServiceDetail = lazy(() => import("./pages/marketplace/ServiceDetail"));
+const ServiceEditor = lazy(() => import("./pages/marketplace/ServiceEditor"));
+const HelpCenter = lazy(() => import("./pages/trust/HelpCenter"));
+const HelpArticlePage = lazy(() => import("./pages/trust/HelpArticlePage"));
+const LegalCenter = lazy(() => import("./pages/trust/LegalCenter"));
+const LegalDocumentPage = lazy(() => import("./pages/trust/LegalDocumentPage"));
+const SupportTickets = lazy(() => import("./pages/trust/SupportTickets"));
+const NewSupportTicket = lazy(() => import("./pages/trust/NewSupportTicket"));
+const SupportTicketDetail = lazy(() => import("./pages/trust/SupportTicketDetail"));
+const VerificationSettings = lazy(() => import("./pages/trust/VerificationSettings"));
+const ProfessionalVerification = lazy(() => import("./pages/trust/ProfessionalVerification"));
+const SecuritySettings = lazy(() => import("./pages/trust/SecuritySettings"));
+const PrivacySettings = lazy(() => import("./pages/trust/PrivacySettings"));
+const Appeals = lazy(() => import("./pages/trust/Appeals"));
+const TrustSafetyAdmin = lazy(() => import("./pages/trust/TrustSafetyAdmin"));
 
 // Optimized QueryClient with caching settings
 const queryClient = new QueryClient({
@@ -97,6 +113,11 @@ const App = () => (
                 <Route path="/articles/:id" element={<ArticleDetail />} />
                 <Route path="/developers" element={<Developers />} />
                 <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/marketplace/service/:id" element={<ServiceDetail />} />
+                <Route path="/help" element={<HelpCenter />} />
+                <Route path="/help/:slug" element={<HelpArticlePage />} />
+                <Route path="/legal" element={<LegalCenter />} />
+                <Route path="/legal/:key" element={<LegalDocumentPage />} />
                 <Route path="/forums" element={<Forums />} />
                 <Route path="/forums/new" element={<NewTopic />} />
                 <Route path="/forums/:forumSlug" element={<ForumDetail />} />
@@ -109,6 +130,18 @@ const App = () => (
                 <Route element={<ProtectedRoute />}>
                   <Route path="/onboarding" element={<Onboarding />} />
                   <Route path="/admin/insights" element={<AdminInsights />} />
+                  <Route path="/admin/trust-safety" element={<TrustSafetyAdmin />} />
+                  <Route path="/marketplace/dashboard" element={<MarketplaceDashboard />} />
+                  <Route path="/marketplace/service/new" element={<ServiceEditor />} />
+                  <Route path="/marketplace/service/:id/edit" element={<ServiceEditor />} />
+                  <Route path="/support" element={<SupportTickets />} />
+                  <Route path="/support/new" element={<NewSupportTicket />} />
+                  <Route path="/support/:id" element={<SupportTicketDetail />} />
+                  <Route path="/settings/verification" element={<VerificationSettings />} />
+                  <Route path="/settings/security" element={<SecuritySettings />} />
+                  <Route path="/settings/privacy" element={<PrivacySettings />} />
+                  <Route path="/verification/professional" element={<ProfessionalVerification />} />
+                  <Route path="/appeals" element={<Appeals />} />
                   <Route path="/rewards" element={<Rewards />} />
                   <Route path="/billing" element={<Billing />} />
                   <Route path="/profile" element={<Profile />} />

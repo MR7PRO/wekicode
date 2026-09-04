@@ -110,6 +110,22 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
               <li className="text-muted-foreground">فرص عمل حر</li>
               <li className="text-muted-foreground">دورات تدريبية</li>
             </ul>
+
+            <h4 className="font-bold text-foreground mt-6 mb-4">الدعم والسياسات</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/help" className="text-muted-foreground hover:text-primary transition-colors">مركز المساعدة</Link>
+              </li>
+              <li>
+                <Link to="/support" className="text-muted-foreground hover:text-primary transition-colors">تذاكر الدعم</Link>
+              </li>
+              <li>
+                <Link to="/legal" className="text-muted-foreground hover:text-primary transition-colors">المركز القانوني</Link>
+              </li>
+              <li>
+                <Link to="/appeals" className="text-muted-foreground hover:text-primary transition-colors">الاعتراضات</Link>
+              </li>
+            </ul>
           </div>
 
           {/* Contact */}
