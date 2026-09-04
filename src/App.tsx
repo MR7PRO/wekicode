@@ -51,6 +51,22 @@ const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Achievements = lazy(() => import("./pages/Achievements"));
 const AdminInsights = lazy(() => import("./pages/AdminInsights"));
 const Marketplace = lazy(() => import("./pages/Marketplace"));
+const MarketplaceDashboard = lazy(() => import("./pages/marketplace/MarketplaceDashboard"));
+const ServiceDetail = lazy(() => import("./pages/marketplace/ServiceDetail"));
+const ServiceEditor = lazy(() => import("./pages/marketplace/ServiceEditor"));
+const HelpCenter = lazy(() => import("./pages/trust/HelpCenter"));
+const HelpArticlePage = lazy(() => import("./pages/trust/HelpArticlePage"));
+const LegalCenter = lazy(() => import("./pages/trust/LegalCenter"));
+const LegalDocumentPage = lazy(() => import("./pages/trust/LegalDocumentPage"));
+const SupportTickets = lazy(() => import("./pages/trust/SupportTickets"));
+const NewSupportTicket = lazy(() => import("./pages/trust/NewSupportTicket"));
+const SupportTicketDetail = lazy(() => import("./pages/trust/SupportTicketDetail"));
+const VerificationSettings = lazy(() => import("./pages/trust/VerificationSettings"));
+const ProfessionalVerification = lazy(() => import("./pages/trust/ProfessionalVerification"));
+const SecuritySettings = lazy(() => import("./pages/trust/SecuritySettings"));
+const PrivacySettings = lazy(() => import("./pages/trust/PrivacySettings"));
+const Appeals = lazy(() => import("./pages/trust/Appeals"));
+const TrustSafetyAdmin = lazy(() => import("./pages/trust/TrustSafetyAdmin"));
 
 // Optimized QueryClient with caching settings
 const queryClient = new QueryClient({
