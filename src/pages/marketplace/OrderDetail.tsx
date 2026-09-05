@@ -91,10 +91,10 @@ export default function OrderDetail() {
   });
 
   if (order.isLoading) {
-    return <PageShell title="جارٍ التحميل" noindex><Loader2 className="w-6 h-6 animate-spin mx-auto my-20 text-primary" /></PageShell>;
+    return <PageShell title="جارٍ التحميل" description="تحميل بيانات الطلب" noindex><Loader2 className="w-6 h-6 animate-spin mx-auto my-20 text-primary" /></PageShell>;
   }
   if (!order.data) {
-    return <PageShell title="الطلب غير موجود" noindex><p className="text-center py-20 text-muted-foreground">الطلب غير موجود أو لا تملك صلاحية الوصول.</p></PageShell>;
+    return <PageShell title="الطلب غير موجود" description="الطلب غير متاح" noindex><p className="text-center py-20 text-muted-foreground">الطلب غير موجود أو لا تملك صلاحية الوصول.</p></PageShell>;
   }
 
   const o = order.data;
