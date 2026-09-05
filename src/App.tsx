@@ -57,6 +57,7 @@ const ServiceEditor = lazy(() => import("./pages/marketplace/ServiceEditor"));
 const Projects = lazy(() => import("./pages/marketplace/Projects"));
 const NewProject = lazy(() => import("./pages/marketplace/NewProject"));
 const ProjectDetail = lazy(() => import("./pages/marketplace/ProjectDetail"));
+const OrderDetail = lazy(() => import("./pages/marketplace/OrderDetail"));
 const HelpCenter = lazy(() => import("./pages/trust/HelpCenter"));
 const HelpArticlePage = lazy(() => import("./pages/trust/HelpArticlePage"));
 const LegalCenter = lazy(() => import("./pages/trust/LegalCenter"));
