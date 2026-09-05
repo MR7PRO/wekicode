@@ -39,7 +39,7 @@ export default function MarketplaceDashboard() {
         <h1 className="text-2xl font-bold">لوحة السوق</h1>
         <div className="flex gap-2">
           <Button size="sm" asChild><Link to="/marketplace/services/new"><Plus className="w-4 h-4 ml-1" />خدمة جديدة</Link></Button>
-          <Button size="sm" variant="outline" asChild><Link to="/projects/new"><Briefcase className="w-4 h-4 ml-1" />طلب مشروع</Link></Button>
+          <Button size="sm" variant="outline" asChild><Link to="/marketplace/projects/new"><Briefcase className="w-4 h-4 ml-1" />طلب مشروع</Link></Button>
         </div>
       </div>
 
