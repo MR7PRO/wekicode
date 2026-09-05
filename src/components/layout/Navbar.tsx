@@ -16,6 +16,7 @@ import {
   Trophy,
   Gift,
   CreditCard,
+  Store,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -41,6 +42,7 @@ const navLinks = [
   { path: "/articles", label: "المقالات", icon: FileText },
   { path: "/jobs", label: "الوظائف", icon: Briefcase },
   { path: "/courses", label: "التعليم", icon: BookOpen },
+  { path: "/marketplace", label: "السوق", icon: Store },
   { path: "/developers", label: "المبرمجين", icon: Users },
   { path: "/leaderboard", label: "المتصدرين", icon: Trophy },
   { path: "/rewards", label: "المكافئات", icon: Gift },

@@ -114,7 +114,7 @@ export function ProjectCard({ project }: { project: ProjectRequest }) {
     : "الميزانية غير محددة";
   return (
     <Card className="glass border-border/50 p-4 hover:border-primary/40 transition-colors">
-      <Link to={`/projects/${project.id}`} className="font-bold text-sm hover:text-primary line-clamp-2">
+      <Link to={`/marketplace/projects/${project.id}`} className="font-bold text-sm hover:text-primary line-clamp-2">
         {project.title}
       </Link>
       <p className="text-[12px] text-muted-foreground mt-1.5 line-clamp-2">{project.description}</p>
