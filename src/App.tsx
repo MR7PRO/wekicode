@@ -54,6 +54,10 @@ const Marketplace = lazy(() => import("./pages/Marketplace"));
 const MarketplaceDashboard = lazy(() => import("./pages/marketplace/MarketplaceDashboard"));
 const ServiceDetail = lazy(() => import("./pages/marketplace/ServiceDetail"));
 const ServiceEditor = lazy(() => import("./pages/marketplace/ServiceEditor"));
+const Projects = lazy(() => import("./pages/marketplace/Projects"));
+const NewProject = lazy(() => import("./pages/marketplace/NewProject"));
+const ProjectDetail = lazy(() => import("./pages/marketplace/ProjectDetail"));
+const OrderDetail = lazy(() => import("./pages/marketplace/OrderDetail"));
 const HelpCenter = lazy(() => import("./pages/trust/HelpCenter"));
 const HelpArticlePage = lazy(() => import("./pages/trust/HelpArticlePage"));
 const LegalCenter = lazy(() => import("./pages/trust/LegalCenter"));
@@ -113,7 +117,8 @@ const App = () => (
                 <Route path="/articles/:id" element={<ArticleDetail />} />
                 <Route path="/developers" element={<Developers />} />
                 <Route path="/marketplace" element={<Marketplace />} />
-                <Route path="/marketplace/service/:id" element={<ServiceDetail />} />
+                <Route path="/marketplace/services/:id" element={<ServiceDetail />} />
+                <Route path="/marketplace/projects" element={<Projects />} />
                 <Route path="/help" element={<HelpCenter />} />
                 <Route path="/help/:slug" element={<HelpArticlePage />} />
                 <Route path="/legal" element={<LegalCenter />} />
@@ -132,8 +137,11 @@ const App = () => (
                   <Route path="/admin/insights" element={<AdminInsights />} />
                   <Route path="/admin/trust-safety" element={<TrustSafetyAdmin />} />
                   <Route path="/marketplace/dashboard" element={<MarketplaceDashboard />} />
-                  <Route path="/marketplace/service/new" element={<ServiceEditor />} />
-                  <Route path="/marketplace/service/:id/edit" element={<ServiceEditor />} />
+                  <Route path="/marketplace/services/new" element={<ServiceEditor />} />
+                  <Route path="/marketplace/services/:id/edit" element={<ServiceEditor />} />
+                  <Route path="/marketplace/projects/new" element={<NewProject />} />
+                  <Route path="/marketplace/projects/:id" element={<ProjectDetail />} />
+                  <Route path="/marketplace/orders/:id" element={<OrderDetail />} />
                   <Route path="/support" element={<SupportTickets />} />
                   <Route path="/support/new" element={<NewSupportTicket />} />
                   <Route path="/support/:id" element={<SupportTicketDetail />} />

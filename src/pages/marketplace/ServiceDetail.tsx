@@ -66,7 +66,7 @@ export default function ServiceDetail() {
         status: "pending",
       });
       toast.success("تم إنشاء الطلب وبانتظار قبول المستقل");
-      navigate(`/orders/${(order as { id: string }).id}`);
+      navigate(`/marketplace/orders/${(order as { id: string }).id}`);
     } catch {
       toast.error("تعذر إنشاء الطلب");
     } finally { setOrdering(false); }

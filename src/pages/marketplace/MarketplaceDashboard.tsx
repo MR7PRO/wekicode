@@ -39,7 +39,7 @@ export default function MarketplaceDashboard() {
         <h1 className="text-2xl font-bold">لوحة السوق</h1>
         <div className="flex gap-2">
           <Button size="sm" asChild><Link to="/marketplace/services/new"><Plus className="w-4 h-4 ml-1" />خدمة جديدة</Link></Button>
-          <Button size="sm" variant="outline" asChild><Link to="/projects/new"><Briefcase className="w-4 h-4 ml-1" />طلب مشروع</Link></Button>
+          <Button size="sm" variant="outline" asChild><Link to="/marketplace/projects/new"><Briefcase className="w-4 h-4 ml-1" />طلب مشروع</Link></Button>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export default function MarketplaceDashboard() {
           {orders.isLoading ? <Spin /> : orders.data?.length ? (
             <div className="space-y-2">
               {orders.data.map((o) => (
-                <Link key={o.id} to={`/orders/${o.id}`} className="block">
+                <Link key={o.id} to={`/marketplace/orders/${o.id}`} className="block">
                   <Card className="glass border-border/50 p-4 flex items-center justify-between gap-3 hover:border-primary/40 transition-colors">
                     <div className="min-w-0">
                       <p className="font-bold text-sm truncate">{o.title}</p>
@@ -103,7 +103,7 @@ export default function MarketplaceDashboard() {
           {projects.isLoading ? <Spin /> : projects.data?.length ? (
             <div className="space-y-2">
               {projects.data.map((p) => (
-                <Link key={p.id} to={`/projects/${p.id}`} className="block">
+                <Link key={p.id} to={`/marketplace/projects/${p.id}`} className="block">
                   <Card className="glass border-border/50 p-4 flex items-center justify-between gap-3 hover:border-primary/40 transition-colors">
                     <div className="min-w-0">
                       <p className="font-bold text-sm truncate">{p.title}</p>
@@ -121,7 +121,7 @@ export default function MarketplaceDashboard() {
           {proposals.isLoading ? <Spin /> : proposals.data?.length ? (
             <div className="space-y-2">
               {proposals.data.map((p) => (
-                <Link key={p.id} to={`/projects/${p.project_id}`} className="block">
+                <Link key={p.id} to={`/marketplace/projects/${p.project_id}`} className="block">
                   <Card className="glass border-border/50 p-4 flex items-center justify-between gap-3 hover:border-primary/40 transition-colors">
                     <div className="min-w-0">
                       <p className="font-bold text-sm truncate">{p.project?.title ?? "مشروع"}</p>

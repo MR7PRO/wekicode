@@ -55,7 +55,8 @@ export default function Marketplace() {
             </div>
             <div className="flex flex-wrap gap-2">
               <Button size="sm" asChild><Link to="/marketplace/services/new"><Store className="w-4 h-4 ml-1" />اعرض خدمتك</Link></Button>
-              <Button size="sm" variant="outline" asChild><Link to="/projects/new"><Briefcase className="w-4 h-4 ml-1" />اطلب مشروع</Link></Button>
+              <Button size="sm" variant="outline" asChild><Link to="/marketplace/projects/new"><Briefcase className="w-4 h-4 ml-1" />اطلب مشروع</Link></Button>
+              <Button size="sm" variant="ghost" asChild><Link to="/marketplace/projects"><Briefcase className="w-4 h-4 ml-1" />المشاريع</Link></Button>
               <Button size="sm" variant="ghost" asChild><Link to="/marketplace?tab=freelancers"><Users className="w-4 h-4 ml-1" />تصفح المستقلين</Link></Button>
             </div>
           </section>
