@@ -10,7 +10,16 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predev": "bunx tsx scripts/generate-sitemap.ts",
-    "prebuild": "bunx tsx scripts/generate-sitemap.ts"
+    "prebuild": "bunx tsx scripts/generate-sitemap.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "typecheck": "tsgo --noEmit -p tsconfig.app.json || tsc --noEmit -p tsconfig.app.json",
+    "test:all": "vitest run && playwright test",
+    "verify": "bun run typecheck && vitest run && vite build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
