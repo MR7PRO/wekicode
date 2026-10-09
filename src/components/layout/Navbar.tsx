@@ -84,7 +84,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav links - text only */}
-          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
+          <div className="hidden xl:flex items-center gap-0.5 flex-1 min-w-0 justify-center">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -92,7 +92,7 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={`h-10 px-3.5 text-base font-semibold ${isActive ? "shadow-glow" : ""}`}
+                    className={`h-9 px-2.5 text-sm font-semibold ${isActive ? "shadow-glow" : ""}`}
                   >
                     {link.label}
                   </Button>
@@ -172,7 +172,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-foreground"
+            className="xl:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="القائمة"
           >
@@ -182,7 +182,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border/50 animate-slide-up">
+          <div className="xl:hidden py-4 border-t border-border/50 animate-slide-up">
             <div className="mb-3">
               <GlobalSearch variant="inline" />
             </div>
