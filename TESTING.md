@@ -26,3 +26,22 @@
 
 ## Bug severity
 P0 security/data leak or payment integrity · P1 core flow broken · P2 degraded feature · P3 cosmetic.
+
+
+## Staging environment for RLS tests
+
+RLS tests run only against a dedicated, isolated backend (never production). A safety gate
+(`tests/security/rlsEnvGate.ts`) runs at module load, before any client is created:
+- No `RLS_*` vars set → suite is **skipped**.
+- Partial or unsafe config → the file **fails immediately** with the reasons.
+
+Setup:
+1. Create a separate staging backend and apply the same migrations.
+2. Create two test users whose emails contain `+rls`, `test` or `staging`.
+3. Export:
+   `RLS_TEST_ENV=staging` (or `local`/`test`), `RLS_TEST_URL`, `RLS_TEST_ANON_KEY` (publishable/anon key only),
+   `RLS_USER_A_EMAIL`, `RLS_USER_A_PASSWORD`, `RLS_USER_B_EMAIL`, `RLS_USER_B_PASSWORD`.
+4. Run `bunx vitest run tests/security`.
+
+The gate rejects: the production project ref/hosts, the app's own backend URL/key, any
+`service_role`/secret key, a service-role key present in the environment, and non-test accounts.
