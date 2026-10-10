@@ -172,7 +172,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="xl:hidden p-2 text-foreground"
+            className="lg:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="القائمة"
           >
@@ -182,7 +182,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="xl:hidden py-4 border-t border-border/50 animate-slide-up">
+          <div className="lg:hidden py-4 border-t border-border/50 animate-slide-up">
             <div className="mb-3">
               <GlobalSearch variant="inline" />
             </div>
