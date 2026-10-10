@@ -84,7 +84,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Nav links - text only */}
-          <div className="hidden xl:flex items-center gap-0.5 flex-1 min-w-0 justify-center">
+          <div className="hidden lg:flex items-center gap-0 flex-1 min-w-0 justify-center">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
@@ -92,7 +92,7 @@ export function Navbar() {
                   <Button
                     variant={isActive ? "default" : "ghost"}
                     size="sm"
-                    className={`h-9 px-2.5 text-sm font-semibold ${isActive ? "shadow-glow" : ""}`}
+                    className={`h-8 px-1.5 text-xs font-semibold ${isActive ? "shadow-glow" : ""}`}
                   >
                     {link.label}
                   </Button>
@@ -102,9 +102,9 @@ export function Navbar() {
           </div>
 
           {/* Right side: actions */}
-          <div className="hidden lg:flex items-center gap-2 shrink-0">
+          <div className="hidden lg:flex items-center gap-1 shrink-0">
             {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+              <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
             ) : user ? (
               <>
                 <GlobalSearch variant="icon" />
@@ -115,8 +115,8 @@ export function Navbar() {
                 <ProgressWidget />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full ms-1">
-                      <Avatar className="h-9 w-9">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full ms-0.5">
+                      <Avatar className="h-8 w-8">
                         <AvatarImage src={profile?.avatar_url ?? undefined} />
                         <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                           {getInitials(profile?.full_name)}
@@ -172,7 +172,7 @@ export function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
-            className="xl:hidden p-2 text-foreground"
+            className="lg:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="القائمة"
           >
@@ -182,7 +182,7 @@ export function Navbar() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="xl:hidden py-4 border-t border-border/50 animate-slide-up">
+          <div className="lg:hidden py-4 border-t border-border/50 animate-slide-up">
             <div className="mb-3">
               <GlobalSearch variant="inline" />
             </div>
