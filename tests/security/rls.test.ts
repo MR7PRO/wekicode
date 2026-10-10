@@ -9,15 +9,17 @@ import { vi } from "vitest";
 
 vi.unmock("@/integrations/supabase/client");
 
+import { evaluateRlsEnv } from "./rlsEnvGate";
+
 const env = process.env;
-const enabled = !!(env.RLS_TEST_URL && env.RLS_TEST_ANON_KEY && env.RLS_USER_A_EMAIL && env.RLS_USER_B_EMAIL);
-const PROD_REF = "epajjiiuaqjieecvmpln";
+// Fail-fast gate: runs at module load, before any client is created.
+const gate = evaluateRlsEnv(env);
+if (gate.status === "reject") {
+  throw new Error(`RLS safety gate rejected environment:\n- ${gate.errors.join("\n- ")}`);
+}
+const enabled = gate.status === "ok";
 
 describe.skipIf(!enabled)("RLS (isolated backend only)", () => {
-  it("refuses to run against production", () => {
-    expect(env.RLS_TEST_URL!).not.toContain(PROD_REF);
-  });
-
   const anon = () => createClient(env.RLS_TEST_URL!, env.RLS_TEST_ANON_KEY!, { auth: { persistSession: false } });
   const as = async (email: string, password: string) => {
     const c = anon();
