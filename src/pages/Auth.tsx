@@ -49,7 +49,7 @@ export default function Auth() {
       if (err instanceof z.ZodError) {
         toast({
           title: "خطأ في البيانات",
-          description: err.errors[0].message,
+          description: err.issues[0].message,
           variant: "destructive",
         });
         return;
@@ -106,7 +106,7 @@ export default function Auth() {
       if (err instanceof z.ZodError) {
         toast({
           title: "خطأ في البيانات",
-          description: err.errors[0].message,
+          description: err.issues[0].message,
           variant: "destructive",
         });
         return;

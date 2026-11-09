@@ -247,7 +247,7 @@ export default function QuestionDetail() {
       }
     } else {
       // Upsert vote
-      const voteData = type === 'question' 
+      const voteData: { user_id: string; question_id?: string; answer_id?: string; vote_type: number } = type === 'question' 
         ? { user_id: user.id, question_id: targetId, vote_type: voteType }
         : { user_id: user.id, answer_id: targetId, vote_type: voteType };
 
