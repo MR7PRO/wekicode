@@ -33,7 +33,7 @@ export function CertificateDialog({
     if (!node) return;
     const w = window.open("", "_blank", "width=1100,height=800");
     if (!w) return;
-    w.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>شهادة - ${courseTitle}</title>
+    w.document.write(`<!doctype html><html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>شهادة - ${courseTitle.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string))}</title>
       <style>
         @page { size: A4 landscape; margin: 0; }
         body { margin: 0; font-family: 'Cairo', system-ui, sans-serif; background: #f5f5f5; }
