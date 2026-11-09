@@ -8,6 +8,13 @@
       "when": 1794216426682,
       "tag": "0000_security_fixes_batch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794216876631,
+      "tag": "0001_restrict_profiles_seller_level",
+      "breakpoints": true
     }
   ]
 }
