@@ -15,6 +15,13 @@
       "when": 1794216876631,
       "tag": "0001_restrict_profiles_seller_level",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794217807483,
+      "tag": "0002_verification_summary_respect_expiry",
+      "breakpoints": true
     }
   ]
 }
