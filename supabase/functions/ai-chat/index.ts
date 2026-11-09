@@ -11,7 +11,12 @@ const ALLOWED_ORIGINS = [
 
 const getCorsHeaders = (origin: string | null) => {
   const allowOrigin =
-    origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+    origin &&
+    (ALLOWED_ORIGINS.includes(origin) ||
+      /^https:\/\/([a-z0-9-]+\.)*a699ad31-eba0-4c1b-ae9b-fe12b2562e4e\.(lovableproject\.com|lovable\.app)$/.test(origin) ||
+      /^https:\/\/[a-z0-9-]*a699ad31-eba0-4c1b-ae9b-fe12b2562e4e[a-z0-9-]*\.(lovableproject\.com|lovable\.app)$/.test(origin))
+      ? origin
+      : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowOrigin,
     "Vary": "Origin",
