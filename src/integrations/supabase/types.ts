@@ -3835,6 +3835,17 @@ export type Database = {
         Returns: undefined
       }
       get_or_create_invite_code: { Args: never; Returns: string }
+      get_public_seller_level: {
+        Args: { p_user_id: string }
+        Returns: {
+          average_rating: number
+          completed_orders_count: number
+          current_level: string
+          has_enough_data: boolean
+          reviews_count: number
+          user_id: string
+        }[]
+      }
       grant_achievement: {
         Args: { _slug: string; _user_id: string }
         Returns: boolean
