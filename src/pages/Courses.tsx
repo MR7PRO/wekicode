@@ -377,6 +377,7 @@ export default function Courses() {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
+              <Link to="/learn-programming" className="text-sm text-primary font-semibold hover:underline block mb-2">جديد في البرمجة؟ اقرأ دليل تعلم البرمجة بالعربية ←</Link>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">
                 <span className="text-foreground">المواد</span>
                 {" "}
