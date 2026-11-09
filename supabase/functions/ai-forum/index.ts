@@ -125,8 +125,13 @@ serve(async (req) => {
       const forumId = body.forum_id as string | undefined;
       if (!title.trim()) return json({ error: "empty" }, 400);
       // simple DB pre-search
-      const words = title.trim().split(/\s+/).filter((w) => w.length > 2).slice(0, 5);
-      const pattern = words.length ? words.map((w) => `title.ilike.%${w}%`).join(",") : `title.ilike.%${title.slice(0, 20)}%`;
+      if (forumId !== undefined && (typeof forumId !== "string" || !/^[0-9a-f-]{36}$/i.test(forumId))) return json({ error: "bad_request" }, 400);
+      // Keep only letters/digits so caller text can never inject PostgREST filter syntax
+      const clean = (w: string) => w.replace(/[^\p{L}\p{N}]/gu, "");
+      const words = title.trim().split(/\s+/).map(clean).filter((w) => w.length > 2).slice(0, 5);
+      const fallback = clean(title).slice(0, 20);
+      if (!words.length && !fallback) return json({ error: "empty" }, 400);
+      const pattern = words.length ? words.map((w) => `title.ilike.%${w}%`).join(",") : `title.ilike.%${fallback}%`;
       let q = sb.from("forum_topics").select("id, title, forum_id, forums(slug)").limit(15);
       if (forumId) q = q.eq("forum_id", forumId);
       const { data: candidates } = await q.or(pattern);
