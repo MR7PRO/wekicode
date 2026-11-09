@@ -48,7 +48,11 @@ export async function submitProRequest(
 /* ---------------- seller level & trust ---------------- */
 export async function fetchSellerLevel(userId: string): Promise<SellerLevelStatus | null> {
   const { data } = await db.from("seller_level_status").select("*").eq("user_id", userId).maybeSingle();
-  return data ?? null;
+  if (data) return data;
+  // Other users' levels: only public-safe fields via RPC
+  const { data: pub } = await db.rpc("get_public_seller_level", { p_user_id: userId });
+  const row = Array.isArray(pub) ? pub[0] : pub;
+  return (row as SellerLevelStatus) ?? null;
 }
 
 export async function recalculateTrust(userId: string) {
