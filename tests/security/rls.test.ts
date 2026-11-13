@@ -3,13 +3,9 @@
  * and real user sessions. They never use a service role and never touch production.
  * Enable with: RLS_TEST_URL, RLS_TEST_ANON_KEY, RLS_USER_A_EMAIL/PASSWORD, RLS_USER_B_EMAIL/PASSWORD.
  */
-import { describe, it, expect } from "vitest";
-import { createClient } from "@supabase/supabase-js";
-import { vi } from "vitest";
-
-vi.unmock("@/integrations/supabase/client");
-
-import { evaluateRlsEnv } from "./rlsEnvGate";
+import { beforeAll, describe, it, expect } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { createRlsFetch, evaluateRlsEnv } from "./rlsEnvGate";
 
 const env = process.env;
 // Fail-fast gate: runs at module load, before any client is created.
@@ -20,7 +16,21 @@ if (gate.status === "reject") {
 const enabled = gate.status === "ok";
 
 describe.skipIf(!enabled)("RLS (isolated backend only)", () => {
-  const anon = () => createClient(env.RLS_TEST_URL!, env.RLS_TEST_ANON_KEY!, { auth: { persistSession: false } });
+  let clientFactory: (() => SupabaseClient) | undefined;
+  beforeAll(async () => {
+    if (gate.status !== "ok") throw new Error("Isolated RLS config required");
+    const { createClient } = await import("@supabase/supabase-js");
+    const config = gate.config;
+    const scopedFetch = createRlsFetch(config);
+    clientFactory = () => createClient(config.url, config.anonKey, {
+      global: { fetch: scopedFetch },
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+    });
+  });
+  const anon = () => {
+    if (!clientFactory) throw new Error("RLS client unavailable before safety checks");
+    return clientFactory();
+  };
   const as = async (email: string, password: string) => {
     const c = anon();
     const { error } = await c.auth.signInWithPassword({ email, password });
@@ -37,23 +47,21 @@ describe.skipIf(!enabled)("RLS (isolated backend only)", () => {
   });
 
   it("user B cannot read user A's support tickets", async () => {
-    const a = await as(env.RLS_USER_A_EMAIL!, env.RLS_USER_A_PASSWORD!);
-    const b = await as(env.RLS_USER_B_EMAIL!, env.RLS_USER_B_PASSWORD!);
+    if (gate.status !== "ok") throw new Error("Isolated RLS config required");
+    const a = await as(gate.config.userA.email, gate.config.userA.password);
+    const b = await as(gate.config.userB.email, gate.config.userB.password);
     const { data: { user } } = await a.auth.getUser();
-    const { data } = await b.from("support_tickets" as never).select("id").eq("user_id", user!.id);
+    if (!user) throw new Error("Test user A failed authentication");
+    const { data } = await b.from("support_tickets" as never).select("id").eq("user_id", user.id);
     expect(data ?? []).toEqual([]);
   });
 
   it("a normal user cannot grant themselves a role", async () => {
-    const a = await as(env.RLS_USER_A_EMAIL!, env.RLS_USER_A_PASSWORD!);
+    if (gate.status !== "ok") throw new Error("Isolated RLS config required");
+    const a = await as(gate.config.userA.email, gate.config.userA.password);
     const { data: { user } } = await a.auth.getUser();
-    const { error } = await a.from("user_roles" as never).insert({ user_id: user!.id, role: "admin" } as never);
+    if (!user) throw new Error("Test user A failed authentication");
+    const { error } = await a.from("user_roles" as never).insert({ user_id: user.id, role: "admin" } as never);
     expect(error).not.toBeNull();
-  });
-});
-
-describe("RLS suite gating", () => {
-  it("is skipped unless an isolated backend is configured", () => {
-    expect(typeof enabled).toBe("boolean");
   });
 });
