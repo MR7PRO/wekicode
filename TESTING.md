@@ -36,12 +36,26 @@ RLS tests run only against a dedicated, isolated backend (never production). A s
 - Partial or unsafe config → the file **fails immediately** with the reasons.
 
 Setup:
-1. Create a separate staging backend and apply the same migrations.
-2. Create two test users whose emails contain `+rls`, `test` or `staging`.
+1. Manually create a separate staging backend and apply the same migrations; never copy production users or data. No infrastructure is provisioned by these tests.
+2. Create and confirm two non-admin test users with valid emails and a distinct `rls`, `test` or `staging` marker in the local part (for example `a+rls@example.test`). Use dedicated passwords of at least 8 characters. Seed test-only support tickets for user A if checking cross-user visibility.
 3. Export:
-   `RLS_TEST_ENV=staging` (or `local`/`test`), `RLS_TEST_URL`, `RLS_TEST_ANON_KEY` (publishable/anon key only),
+   `RLS_TEST_ENV=staging` (or `local`/`test`), `RLS_TEST_ISOLATED=true`, `RLS_TEST_PROJECT_REF`,
+   `RLS_TEST_URL`, `RLS_TEST_ANON_KEY` (publishable/anon key only),
    `RLS_USER_A_EMAIL`, `RLS_USER_A_PASSWORD`, `RLS_USER_B_EMAIL`, `RLS_USER_B_PASSWORD`.
 4. Run `bunx vitest run tests/security`.
 
 The gate rejects: the production project ref/hosts, the app's own backend URL/key, any
 `service_role`/secret key, a service-role key present in the environment, and non-test accounts.
+
+Hosted URLs must be the exact HTTPS backend origin matching `RLS_TEST_PROJECT_REF`; local tests
+require a loopback HTTP(S) origin and `RLS_TEST_PROJECT_REF=local`. Paths, embedded credentials,
+query strings and fragments are rejected. Anon JWTs require role `anon`, a future expiry and a
+matching hosted project ref; unknown key formats are rejected. Publishable key ownership and
+whether a backend really is isolated must be verified manually before setting the isolation flag.
+No credentials are printed by the gate. Keep them out of source control.
+
+The SDK loads only after validation, and every request is restricted to the validated origin's
+auth/database endpoints with redirects disabled. The ordinary application client stays mocked.
+With no staging available, run only `bun run test tests/security` with all `RLS_*` variables unset:
+offline gate tests execute; all three database RLS tests skip. Passing gate tests are **not** evidence
+that live RLS policies pass. No real email, notification, payment, AI or identity flow is exercised.
