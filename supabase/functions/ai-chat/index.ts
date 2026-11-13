@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // CORS headers - whitelist trusted origins; do not reflect arbitrary origins with credentials.
 const ALLOWED_ORIGINS = [
   "https://wekicode.lovable.app",
+  "https://weki7code.netlify.app",
   "https://id-preview--a699ad31-eba0-4c1b-ae9b-fe12b2562e4e.lovable.app",
   "http://localhost:5173",
   "http://localhost:8080",
